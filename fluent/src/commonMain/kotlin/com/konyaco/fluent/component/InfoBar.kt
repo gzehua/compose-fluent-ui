@@ -223,6 +223,42 @@ enum class InfoBarSeverity {
     Critical,
 }
 
+/*@Composable
+private fun InfoBarLayoutNew(
+    title: @Composable () -> Unit,
+    message: @Composable () -> Unit,
+    action: (@Composable () -> Unit)?,
+    closeAction: (@Composable () -> Unit)?,
+    icon: (@Composable () -> Unit)?,
+    modifier: Modifier
+) {
+    Row {
+        icon?.invoke()
+        Layout(
+            contents = listOf({
+
+            }, {
+
+            }),
+            modifier = modifier.align(Alignment.CenterVertically)
+        )
+        closeAction?.invoke()
+    }
+    Layout(
+        contents = listOf(
+            title,
+            message,
+            action ?: {},
+            closeAction ?: {},
+            icon ?: {},
+        ),
+        modifier = modifier,
+        measurePolicy = { measurables, constraints ->
+
+        }
+    )
+}*/
+
 @Composable
 private fun InfoBarLayout(
     title: @Composable () -> Unit,
@@ -415,11 +451,12 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
         } else {
             val topPadding = MultiLineTopSpacing.roundToPx()
             val bottomPadding = MultiLineBottomSpacing.roundToPx()
+            val messageTopPadding = if (titleMeasurable != null) MultiLineMessageTopSpacing.roundToPx() else 0
             val iconPlaceable = iconMeasurable?.measure(looseConstraints)
             val closeActionPlaceable = closeActionMeasurable?.measure(looseConstraints)
             val iconWidthWithSpacing = iconPlaceable?.width?.plus(iconSpacing) ?: 0
             val closeActionWidthWithSpacing =
-                closeActionPlaceable?.width?.plus(closeActionSpacing) ?: 0
+                closeActionPlaceable?.width?.plus(closeActionSpacing + messageSpacing) ?: 0
             val contentWidth =
                 (constraints.maxWidth - iconWidthWithSpacing - closeActionWidthWithSpacing)
                     .coerceAtLeast(0)
@@ -451,7 +488,7 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
                 val layoutHeight = maxOf(
                     a = constraints.minHeight,
                     b = (titlePlaceable?.height ?: 0)
-                            + (messagePlaceable?.height ?: 0)
+                            + (messagePlaceable?.height?.plus(messageTopPadding) ?: 0)
                             + actionButtonHeightWithSpacing
                             + topPadding + bottomPadding
                 )
@@ -466,29 +503,41 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
                 )
                 layout(layoutWidth, layoutHeight) {
                     val alignment = Alignment.CenterVertically
+                    var iconY = 0
                     iconPlaceable?.let { placeable ->
+                        iconY = alignment.align(placeable.height, constraints.minHeight)
                         placeable.placeRelative(
                             0,
-                            alignment.align(placeable.height, constraints.minHeight)
+                            iconY
                         )
                     }
+                    var closeActionY = 0
                     closeActionPlaceable?.let { placeable ->
+                        closeActionY = alignment.align(placeable.height, constraints.minHeight)
                         placeable.placeRelative(
                             layoutWidth - placeable.width - closeActionSpacing,
-                            alignment.align(placeable.height, constraints.minHeight)
+                            closeActionY
                         )
                     }
                     val startOffset = iconWidthWithSpacing
-                    var offset = topPadding
+                    var offsetAcc = 0
                     titlePlaceable?.let { placeable ->
-                        placeable.placeRelative(startOffset, offset)
-                        offset += placeable.height
+                        val titleY = if (iconY != 0) {
+                            iconY - alignment.align(placeable.height, iconPlaceable!!.height)
+                        } else if (closeActionY != 0) {
+                            closeActionY - alignment.align(placeable.height, closeActionPlaceable!!.height)
+                        } else {
+                            topPadding
+                        }
+                        offsetAcc += titleY
+                        placeable.placeRelative(startOffset, titleY)
+                        offsetAcc += placeable.height
                     }
                     messagePlaceable?.let { placeable ->
-                        placeable.placeRelative(startOffset, offset)
-                        offset += placeable.height
+                        placeable.placeRelative(startOffset, offsetAcc + messageTopPadding)
+                        offsetAcc += messageTopPadding + placeable.height
                     }
-                    actionButtonPlaceable?.placeRelative(startOffset, offset + bottomPadding)
+                    actionButtonPlaceable?.placeRelative(startOffset, offsetAcc + bottomPadding)
                 }
             } else {
                 val contentConstraints = looseConstraints.copy(maxWidth = contentWidth)
@@ -497,7 +546,7 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
                 val actionButtonPlaceable = actionMeasurable?.measure(contentConstraints)
                 val iconWidthWithSpacing = iconPlaceable?.width?.plus(iconSpacing) ?: 0
                 val closeActionWidthWithSpacing =
-                    closeActionPlaceable?.width?.plus(closeActionSpacing) ?: 0
+                    closeActionPlaceable?.width?.plus(closeActionSpacing + messageSpacing) ?: 0
                 val contentWidth =
                     iconWidthWithSpacing + closeActionWidthWithSpacing +
                             maxOf(
@@ -525,8 +574,8 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
                     var offset = topPadding
                     titlePlaceable?.placeRelative(startOffset, 0)
                     messagePlaceable?.let { placeable ->
-                        placeable.placeRelative(startOffset, titlePlaceable?.height ?: 0)
-                        offset += placeable.height
+                        placeable.placeRelative(startOffset, titlePlaceable?.height?.plus(messageTopPadding) ?: 0)
+                        offset += messageTopPadding + placeable.height
                     }
                     actionButtonPlaceable?.placeRelative(startOffset, offset + bottomPadding)
                 }
@@ -583,4 +632,5 @@ private val CloseActionEndSpacing = 5.dp
 private val SingleLineTitleEndSpacing = 12.dp
 private val SingleLineActionEndSpacing = 8.dp
 private val MultiLineTopSpacing = 14.dp
+private val MultiLineMessageTopSpacing = 4.dp
 private val MultiLineBottomSpacing = 16.dp
