@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
+
 package com.konyaco.fluent.component
 
 import androidx.compose.animation.AnimatedVisibility
@@ -121,7 +123,6 @@ class NavigationState(
     val indicatorState = IndicatorState(initialOffset)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NavigationView(
     menuItems: NavigationMenuScope.() -> Unit,
@@ -217,7 +218,6 @@ fun NavigationView(
     }
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun TopLayout(
     modifier: Modifier,
@@ -269,7 +269,6 @@ private fun TopLayout(
     )
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun LeftLayout(
     menuItems: NavigationMenuScope.() -> Unit,
@@ -333,7 +332,6 @@ private fun LeftLayout(
     }
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun LeftCollapsedLayout(
     modifier: Modifier,
@@ -500,7 +498,6 @@ private fun LeftCollapsedLayout(
     }
 }
 
-@OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun LeftCompactLayout(
     modifier: Modifier,
@@ -661,6 +658,7 @@ fun NavigationMenuScope.menuItem(
     onClick: (selected: Boolean) -> Unit,
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
+    badge: (@Composable () -> Unit)? = null,
     key: Any? = null,
     contentType: Any? = null,
     expandItems: Boolean = false,
@@ -679,12 +677,12 @@ fun NavigationMenuScope.menuItem(
             onExpandItemsChanged = onExpandItemsChanged,
             interactionSource = interactionSource,
             items = items,
-            enabled = enabled
+            enabled = enabled,
+            badge = badge
         )
     }
 }
 
-@OptIn(ExperimentalFluentApi::class)
 @Composable
 fun NavigationMenuItemScope.MenuItem(
     selected: Boolean,
@@ -696,10 +694,11 @@ fun NavigationMenuItemScope.MenuItem(
     indicatorState: IndicatorState? = LocalIndicatorState.current,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
-    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
-        NavigationDefaults.defaultTopItemColors()
-    } else {
-        NavigationDefaults.defaultSideItemColors()
+    colors: NavigationItemColorScheme = when {
+        displayMode == NavigationDisplayMode.Top && selected -> NavigationDefaults.selectedTopItemColors()
+        displayMode == NavigationDisplayMode.Top -> NavigationDefaults.defaultTopItemColors()
+        selected -> NavigationDefaults.selectedSideItemColors()
+        else -> NavigationDefaults.defaultSideItemColors()
     },
     indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
         { color ->
@@ -714,28 +713,35 @@ fun NavigationMenuItemScope.MenuItem(
                 modifier = Modifier.indicatorOffset { selected })
         }
     },
+    badge: (@Composable () -> Unit)? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
 
     if (displayMode == NavigationDisplayMode.Top) {
         var flyoutVisible by remember { mutableStateOf(false) }
-        TopNavItem(
-            selected = selected,
-            onClick = {
-                onClick(!selected)
-                flyoutVisible = !flyoutVisible
-            },
-            text = if (isFooter) null else text,
-            flyoutVisible = flyoutVisible,
-            onFlyoutVisibleChanged = { flyoutVisible = it },
-            indicatorState = indicatorState,
-            icon = icon,
-            items = items,
-            enabled = enabled,
-            interactionSource = interactionSource,
-            colors = colors,
-            indicator = indicator
-        )
+        TooltipBox(
+            tooltip = text,
+            enabled = isFooter
+        ) {
+            TopNavItem(
+                selected = selected,
+                onClick = {
+                    onClick(!selected)
+                    flyoutVisible = !flyoutVisible
+                },
+                text = if (isFooter) null else text,
+                icon = icon,
+                flyoutVisible = flyoutVisible,
+                onFlyoutVisibleChanged = { flyoutVisible = it },
+                indicatorState = indicatorState,
+                items = items,
+                enabled = enabled,
+                interactionSource = interactionSource,
+                colors = colors,
+                indicator = indicator,
+                badge = badge
+            )
+        }
     } else {
         val isExpanded = LocalNavigationExpand.current
         var flyoutVisible by remember(isExpanded) { mutableStateOf(false) }
@@ -759,7 +765,8 @@ fun NavigationMenuItemScope.MenuItem(
             enabled = enabled,
             interactionSource = interactionSource,
             colors = colors,
-            indicator = indicator
+            indicator = indicator,
+            badge = badge
         )
     }
 }
@@ -777,10 +784,11 @@ fun NavigationMenuItemScope.MenuItem(
     indicatorState: IndicatorState? = LocalIndicatorState.current,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
-    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
-        NavigationDefaults.defaultTopItemColors()
-    } else {
-        NavigationDefaults.defaultSideItemColors()
+    colors: NavigationItemColorScheme = when {
+        displayMode == NavigationDisplayMode.Top && selected -> NavigationDefaults.selectedTopItemColors()
+        displayMode == NavigationDisplayMode.Top -> NavigationDefaults.defaultTopItemColors()
+        selected -> NavigationDefaults.selectedSideItemColors()
+        else -> NavigationDefaults.defaultSideItemColors()
     },
     indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
         { color ->
@@ -795,6 +803,7 @@ fun NavigationMenuItemScope.MenuItem(
                 modifier = Modifier.indicatorOffset { selected })
         }
     },
+    badge: (@Composable () -> Unit)? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
     if (displayMode == NavigationDisplayMode.Top) {
@@ -812,7 +821,8 @@ fun NavigationMenuItemScope.MenuItem(
                 items = items,
                 indicatorState = indicatorState,
                 indicator = indicator,
-                colors = colors
+                colors = colors,
+                badge = badge
             )
             if (separatorVisible) {
                 MenuItemSeparator()
@@ -833,7 +843,8 @@ fun NavigationMenuItemScope.MenuItem(
                 interactionSource = interactionSource,
                 indicatorState = indicatorState,
                 indicator = indicator,
-                colors = colors
+                colors = colors,
+                badge = badge
             )
             if (separatorVisible) {
                 MenuItemSeparator()
@@ -1017,16 +1028,26 @@ object NavigationDefaults {
         disabled: Boolean = false,
         buttonColors: ButtonColorScheme = ButtonDefaults.subtleButtonColors(),
         interaction: MutableInteractionSource = remember { MutableInteractionSource() },
+        expanded: Boolean = LocalNavigationExpand.current,
         icon: @Composable (() -> Unit) = { FontIconDefaults.NavigationIcon(interaction) },
     ) {
-        Button(
-            onClick = onClick,
-            interaction = interaction,
-            icon = { icon() },
-            modifier = modifier,
-            disabled = disabled,
-            buttonColors = buttonColors
-        )
+        TooltipBox(
+            tooltip = {
+                Text(
+                    text = if (expanded) "Close Navigation" else "Open Navigation"
+                )
+            },
+            enabled = !disabled
+        ) {
+            Button(
+                onClick = onClick,
+                interaction = interaction,
+                icon = { icon() },
+                modifier = modifier,
+                disabled = disabled,
+                buttonColors = buttonColors
+            )
+        }
     }
 
     @Composable
@@ -1060,18 +1081,25 @@ object NavigationDefaults {
         interaction: MutableInteractionSource = remember { MutableInteractionSource() },
         icon: @Composable (() -> Unit) = { FontIconDefaults.BackIcon(interaction, size = FontIconSize.Small) },
     ) {
-        Button(
-            onClick = onClick,
-            iconOnly = true,
-            interaction = interaction,
-            content = { icon() },
-            modifier = modifier
-                .size(44.dp, 40.dp)
-                .padding(vertical = 2.dp)
-                .padding(start = 4.dp),
-            disabled = disabled,
-            buttonColors = buttonColors
-        )
+        TooltipBox(
+            tooltip = {
+                Text(text = "Back")
+            },
+            enabled = !disabled
+        ) {
+            Button(
+                onClick = onClick,
+                iconOnly = true,
+                interaction = interaction,
+                content = { icon() },
+                modifier = modifier
+                    .size(44.dp, 40.dp)
+                    .padding(vertical = 2.dp)
+                    .padding(start = 4.dp),
+                disabled = disabled,
+                buttonColors = buttonColors
+            )
+        }
     }
 
 }
@@ -1317,7 +1345,6 @@ private data class ValueNavigationMenuItemScope(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private inline fun <T> IntervalList<T>.forEachItem(action: T.(index: Int) -> Unit) {
     repeat(size) {
         val item = get(it)
@@ -1325,7 +1352,6 @@ private inline fun <T> IntervalList<T>.forEachItem(action: T.(index: Int) -> Uni
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun rememberNavigationMenuInterval(
     content: NavigationMenuScope.() -> Unit
@@ -1338,7 +1364,6 @@ private fun rememberNavigationMenuInterval(
     }.value
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private class NavigationMenuScopeImpl(
     content: NavigationMenuScope.() -> Unit
 ) : NavigationMenuScope, LazyLayoutIntervalContent<NavigationViewMenuInterval>() {
@@ -1381,7 +1406,6 @@ private class NavigationMenuScopeImpl(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private class NavigationViewMenuInterval(
     override val key: ((index: Int) -> Any)?,
     override val type: ((index: Int) -> Any?),
@@ -1395,8 +1419,10 @@ internal fun rememberNavigationItemsFlyoutScope(
 ): MenuFlyoutContainerScope {
     val expandedState = rememberUpdatedState(expanded)
     val onExpandedChangedState = rememberUpdatedState(onExpandedChanged)
-    return remember {
-        object : MenuFlyoutContainerScope, MenuFlyoutScope by MenuFlyoutScopeImpl() {
+    val anchorScope = rememberFlyoutAnchorScope()
+    return remember(anchorScope, expandedState, onExpandedChangedState) {
+        object : MenuFlyoutContainerScope, MenuFlyoutScope by MenuFlyoutScopeImpl(),
+            FlyoutAnchorScope by anchorScope {
             override var isFlyoutVisible: Boolean
                 get() = expandedState.value
                 set(value) {

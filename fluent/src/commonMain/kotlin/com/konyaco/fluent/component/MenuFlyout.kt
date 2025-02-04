@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -122,12 +124,19 @@ internal fun MenuFlyout(
         onKeyEvent = onKeyEvent,
         onPreviewKeyEvent = onPreviewKeyEvent
     ) {
-        Column(
-            modifier = Modifier.width(IntrinsicSize.Max)
+        val state = rememberScrollState()
+        ScrollbarContainer(
+            adapter = rememberScrollbarAdapter(state)
         ) {
-            val scope = remember { MenuFlyoutScopeImpl() }
-            scope.content()
+            Column(
+                modifier = Modifier.width(IntrinsicSize.Max)
+                    .verticalScroll(state)
+            ) {
+                val scope = remember { MenuFlyoutScopeImpl() }
+                scope.content()
+            }
         }
+
     }
 }
 
@@ -304,7 +313,7 @@ private class MenuFlyoutContainerScopeImpl(
 ) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope,
     MenuFlyoutScope by menuFlyoutScope
 
-private fun defaultMenuFlyoutEnterPlacementAnimation(
+internal fun defaultMenuFlyoutEnterPlacementAnimation(
     placement: FlyoutPlacement,
     paddingTop: Int
 ): EnterTransition {
@@ -339,7 +348,7 @@ private fun defaultMenuFlyoutEnterPlacementAnimation(
 }
 
 @Composable
-private fun rememberSubMenuFlyoutPositionProvider(
+internal fun rememberSubMenuFlyoutPositionProvider(
     initialPlacement: FlyoutPlacement = FlyoutPlacement.Auto,
     paddingToAnchor: PaddingValues = PaddingValues(vertical = flyoutDefaultPadding)
 ): SubMenuFlyoutPositionProvider {
@@ -350,7 +359,7 @@ private fun rememberSubMenuFlyoutPositionProvider(
 }
 
 @Stable
-private class SubMenuFlyoutPositionProvider(
+internal class SubMenuFlyoutPositionProvider(
     density: Density,
     initialPlacement: FlyoutPlacement,
     paddingToAnchor: PaddingValues,

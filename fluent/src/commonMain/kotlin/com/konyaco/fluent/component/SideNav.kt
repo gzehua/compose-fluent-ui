@@ -12,6 +12,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -222,6 +223,7 @@ fun SideNavItem(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalFluentApi
 @Composable
 fun SideNavItem(
@@ -249,170 +251,200 @@ fun SideNavItem(
         )
     },
     interactionSource: MutableInteractionSource? = null,
+    badge: (@Composable () -> Unit)? = null,
     text: @Composable RowScope.() -> Unit
 ) {
     val interaction = interactionSource ?: remember { MutableInteractionSource() }
 
     val color = colors.schemeFor(interaction.collectVisualState(!enabled))
 
-    Column(
-        modifier = modifier.indicatorRect(indicatorState, selected)
+    TooltipBox(
+        tooltip = {
+            Row(content = text)
+        },
+        enabled = !expand && enabled
     ) {
-        CompositionLocalProvider(
-            LocalNavigationLevel provides 0,
-            LocalNavigationExpand provides true
+        Column(
+            modifier = modifier.indicatorRect(indicatorState, selected)
         ) {
-            MenuFlyout(
-                visible = flyoutVisible,
-                onDismissRequest = { onFlyoutVisibleChanged(false) },
-                placement = FlyoutPlacement.End
+            CompositionLocalProvider(
+                LocalNavigationLevel provides 0,
+                LocalNavigationExpand provides true
             ) {
-                items?.invoke(
-                    rememberNavigationItemsFlyoutScope(flyoutVisible, onFlyoutVisibleChanged)
-                )
-            }
-        }
-        Box(
-            Modifier.height(40.dp)
-                .widthIn(48.dp)
-                .fillMaxWidth()
-                .padding(4.dp, 2.dp)
-        ) {
-            val navigationLevelPadding = 28.dp * LocalNavigationLevel.current
-            Layer(
-                modifier = Modifier.fillMaxWidth().height(36.dp),
-                shape = FluentTheme.shapes.control,
-                color = animateColorAsState(
-                    targetValue = color.fillColor,
-                    animationSpec = tween(
-                        durationMillis = FluentDuration.QuickDuration,
-                        easing = FluentEasing.FastInvokeEasing
-                    )
-                ).value,
-                contentColor = color.contentColor,
-                border = null,
-                backgroundSizing = BackgroundSizing.OuterBorderEdge
-            ) {
-                Box(
-                    modifier = Modifier
-                        .clickable(
-                            onClick = { onSelectedChanged(!selected) },
-                            interactionSource = interaction,
-                            indication = null,
-                            enabled = enabled
-                        )
-                        .padding(start = navigationLevelPadding),
-                    contentAlignment = Alignment.CenterStart
+                MenuFlyout(
+                    visible = flyoutVisible,
+                    onDismissRequest = { onFlyoutVisibleChanged(false) },
+                    placement = FlyoutPlacement.End
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        if (icon != null) {
-                            Box(
-                                modifier = Modifier.padding(start = 12.dp).size(16.dp),
-                                contentAlignment = Alignment.Center,
-                                content = { icon() }
-                            )
-                        }
-                        if (expand) {
-                            Row(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .wrapContentWidth(Alignment.Start)
-                                    .padding(start = 16.dp, end = 12.dp),
-                                horizontalArrangement = Arrangement.spacedBy(
-                                    space = 8.dp,
-                                    alignment = Alignment.CenterHorizontally
-                                ),
-                                verticalAlignment = Alignment.CenterVertically,
-                                content = text
-                            )
-                            if (items != null) {
-                                val rotation by animateFloatAsState(
-                                    targetValue = if (expandItems) {
-                                        180f
-                                    } else {
-                                        00f
-                                    },
-                                    animationSpec = tween(
-                                        durationMillis = FluentDuration.ShortDuration,
-                                        easing = FluentEasing.FastInvokeEasing
-                                    )
-                                )
-
-                                val fraction by animateFloatAsState(
-                                    targetValue = if (expand) 1f else 0f,
-                                    animationSpec = tween(
-                                        durationMillis = FluentDuration.ShortDuration,
-                                        easing = FluentEasing.FastInvokeEasing
-                                    )
-                                )
-                                FontIcon(
-                                    type = FontIconPrimitive.ChevronDown,
-                                    size = FontIconSize.Small,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(start = 2.dp, end = 14.dp)
-                                        .wrapContentWidth(Alignment.CenterHorizontally)
-                                        .graphicsLayer {
-                                            rotationZ = rotation
-                                            alpha = if (fraction == 1f) {
-                                                1f
-                                            } else {
-                                                0f
-                                            }
-                                        }
-                                )
-                            }
-                        }
-                    }
+                    items?.invoke(
+                        rememberNavigationItemsFlyoutScope(flyoutVisible, onFlyoutVisibleChanged)
+                    )
                 }
             }
             Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = navigationLevelPadding),
-                content = {
-                    SideNavigationIndicatorScope(indicatorState).indicator(color.indicatorColor)
-                }
-            )
-        }
-
-        if (items != null) {
-            AnimatedVisibility(
-                visible = expandItems && expand,
-                enter = fadeIn(
-                    animationSpec = tween(
-                        durationMillis = FluentDuration.ShortDuration,
-                        easing = FluentEasing.FastInvokeEasing
-                    )
-                ) + expandVertically(
-                    animationSpec = tween(
-                        durationMillis = FluentDuration.ShortDuration,
-                        easing = FluentEasing.FastInvokeEasing
-                    )
-                ),
-                exit = fadeOut(
-                    animationSpec = tween(
-                        durationMillis = FluentDuration.ShortDuration,
-                        easing = FluentEasing.FastInvokeEasing
-                    )
-                ) + shrinkVertically(
-                    animationSpec = tween(
-                        durationMillis = FluentDuration.ShortDuration,
-                        easing = FluentEasing.FastInvokeEasing
-                    )
-                ),
-                modifier = Modifier.fillMaxWidth()
+                Modifier.height(40.dp)
+                    .widthIn(48.dp)
+                    .fillMaxWidth()
+                    .padding(4.dp, 2.dp)
             ) {
-                CompositionLocalProvider(
-                    value = LocalNavigationLevel provides LocalNavigationLevel.current + 1,
-                    content = {
-                        Column(
-                            content = {
-                                items(FakeMenuFlyoutContainerScope)
-                            }
+                val navigationLevelPadding = 28.dp * LocalNavigationLevel.current
+                Layer(
+                    modifier = Modifier.fillMaxWidth().height(36.dp),
+                    shape = FluentTheme.shapes.control,
+                    color = animateColorAsState(
+                        targetValue = color.fillColor,
+                        animationSpec = tween(
+                            durationMillis = FluentDuration.QuickDuration,
+                            easing = FluentEasing.FastInvokeEasing
                         )
+                    ).value,
+                    contentColor = color.contentColor,
+                    border = null,
+                    backgroundSizing = BackgroundSizing.OuterBorderEdge
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clickable(
+                                onClick = { onSelectedChanged(!selected) },
+                                interactionSource = interaction,
+                                indication = null,
+                                enabled = enabled
+                            )
+                            .padding(start = navigationLevelPadding),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (icon != null) {
+                                Box(
+                                    modifier = Modifier.padding(start = 12.dp).size(16.dp),
+                                    contentAlignment = Alignment.Center,
+                                    content = { icon() }
+                                )
+                            }
+                            if (expand) {
+                                Row(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .wrapContentWidth(Alignment.Start)
+                                        .padding(start = 16.dp, end = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(
+                                        space = 8.dp,
+                                        alignment = Alignment.CenterHorizontally
+                                    ),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    content = text
+                                )
+                                if (badge != null) {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.padding(
+                                            end = if (items != null) {
+                                                4.dp
+                                            } else {
+                                                12.dp
+                                            }
+                                        )
+                                    ) {
+                                        badge()
+                                    }
+                                }
+                                if (items != null) {
+                                    val rotation by animateFloatAsState(
+                                        targetValue = if (expandItems) {
+                                            180f
+                                        } else {
+                                            00f
+                                        },
+                                        animationSpec = tween(
+                                            durationMillis = FluentDuration.ShortDuration,
+                                            easing = FluentEasing.FastInvokeEasing
+                                        )
+                                    )
+
+                                    val fraction by animateFloatAsState(
+                                        targetValue = if (expand) 1f else 0f,
+                                        animationSpec = tween(
+                                            durationMillis = FluentDuration.ShortDuration,
+                                            easing = FluentEasing.FastInvokeEasing
+                                        )
+                                    )
+                                    FontIcon(
+                                        type = FontIconPrimitive.ChevronDown,
+                                        size = FontIconSize.Small,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .padding(start = 2.dp, end = 14.dp)
+                                            .wrapContentWidth(Alignment.CenterHorizontally)
+                                            .graphicsLayer {
+                                                rotationZ = rotation
+                                                alpha = if (fraction == 1f) {
+                                                    1f
+                                                } else {
+                                                    0f
+                                                }
+                                            }
+                                    )
+                                }
+                            }
+                        }
+
+                if (badge != null && !expand) {
+                        Box(
+                            modifier = Modifier.align(Alignment.TopEnd)
+                                .padding(top = 2.dp, end = 2.dp)
+                        ) {
+                            badge()
+                        }
+                    }
+                }}
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = navigationLevelPadding),
+                    content = {
+                        SideNavigationIndicatorScope(indicatorState).indicator(color.indicatorColor)
                     }
                 )
+            }
+
+            if (items != null) {
+                AnimatedVisibility(
+                    visible = expandItems && expand,
+                    enter = fadeIn(
+                        animationSpec = tween(
+                            durationMillis = FluentDuration.ShortDuration,
+                            easing = FluentEasing.FastInvokeEasing
+                        )
+                    ) + expandVertically(
+                        animationSpec = tween(
+                            durationMillis = FluentDuration.ShortDuration,
+                            easing = FluentEasing.FastInvokeEasing
+                        )
+                    ),
+                    exit = fadeOut(
+                        animationSpec = tween(
+                            durationMillis = FluentDuration.ShortDuration,
+                            easing = FluentEasing.FastInvokeEasing
+                        )
+                    ) + shrinkVertically(
+                        animationSpec = tween(
+                            durationMillis = FluentDuration.ShortDuration,
+                            easing = FluentEasing.FastInvokeEasing
+                        )
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CompositionLocalProvider(
+                        value = LocalNavigationLevel provides LocalNavigationLevel.current + 1,
+                        content = {
+                            Column(
+                                content = {
+                                    items(FakeMenuFlyoutContainerScope)
+                                }
+                            )
+                        }
+                    )
+                }
             }
         }
     }
@@ -532,4 +564,12 @@ internal class NavigationAutoSuggestBoxScopeImpl(
 private object FakeMenuFlyoutContainerScope : MenuFlyoutContainerScope,
     MenuFlyoutScope by MenuFlyoutScopeImpl() {
     override var isFlyoutVisible: Boolean = false
+
+    override fun Modifier.flyoutAnchor(): Modifier {
+        return this
+    }
+
+    override fun Modifier.flyoutSize(matchAnchorWidth: Boolean): Modifier {
+        return this
+    }
 }

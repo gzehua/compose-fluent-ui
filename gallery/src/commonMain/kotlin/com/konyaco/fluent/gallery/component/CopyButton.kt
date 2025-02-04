@@ -1,6 +1,7 @@
 package com.konyaco.fluent.gallery.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,15 +11,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.component.Button
+import com.konyaco.fluent.component.ButtonColorScheme
+import com.konyaco.fluent.component.ButtonDefaults
+import com.konyaco.fluent.component.Text
+import com.konyaco.fluent.component.TooltipBox
 import com.konyaco.fluent.component.FontIcon
 import com.konyaco.fluent.component.FontIconPrimitive
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalFluentApi::class)
 @Composable
 fun CopyButton(
     copyData: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colors: ButtonColorScheme = ButtonDefaults.buttonColors(),
+    tooltip: String = "Copy to clipboard"
 ) {
     var isCopy by remember { mutableStateOf(false) }
     LaunchedEffect(isCopy) {
@@ -28,24 +37,29 @@ fun CopyButton(
         }
     }
     val clipboard = LocalClipboardManager.current
-    Button(
-        onClick = {
-            clipboard.setText(AnnotatedString(copyData))
-            isCopy = true
-        },
-        iconOnly = true,
-        content = {
-            AnimatedContent(isCopy) { target ->
-                FontIcon(
-                    type = if (target) {
-                        FontIconPrimitive.Accept
-                    } else {
-                        FontIconPrimitive.Copy
-                    },
-                    contentDescription = null
-                )
-            }
-        },
-        modifier = modifier
-    )
+    TooltipBox(
+        tooltip = { Text(tooltip) }
+    ){
+        Button(
+            onClick = {
+                clipboard.setText(AnnotatedString(copyData))
+                isCopy = true
+            },
+            iconOnly = true,
+            content = {
+                AnimatedContent(isCopy) { target ->
+                    FontIcon(
+                        type = if (target) {
+                            FontIconPrimitive.Accept
+                        } else {
+                            FontIconPrimitive.Copy
+                        },
+                        contentDescription = null
+                    )
+                }
+            },
+            buttonColors = colors,
+            modifier = modifier
+        )
+    }
 }
