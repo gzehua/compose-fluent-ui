@@ -308,4 +308,4 @@ internal class TooltipPopupPositionProvider(
     }
 }
 
-private val defaultMousePadding = 24.dp
+private val defaultMousePadding = 16.dp
