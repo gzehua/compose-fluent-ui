@@ -658,6 +658,7 @@ fun NavigationMenuScope.menuItem(
     onClick: (selected: Boolean) -> Unit,
     text: @Composable () -> Unit,
     icon: (@Composable () -> Unit)?,
+    badge: (@Composable () -> Unit)? = null,
     key: Any? = null,
     contentType: Any? = null,
     expandItems: Boolean = false,
@@ -676,7 +677,8 @@ fun NavigationMenuScope.menuItem(
             onExpandItemsChanged = onExpandItemsChanged,
             interactionSource = interactionSource,
             items = items,
-            enabled = enabled
+            enabled = enabled,
+            badge = badge
         )
     }
 }
@@ -692,10 +694,11 @@ fun NavigationMenuItemScope.MenuItem(
     indicatorState: IndicatorState? = LocalIndicatorState.current,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
-    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
-        NavigationDefaults.defaultTopItemColors()
-    } else {
-        NavigationDefaults.defaultSideItemColors()
+    colors: NavigationItemColorScheme = when {
+        displayMode == NavigationDisplayMode.Top && selected -> NavigationDefaults.selectedTopItemColors()
+        displayMode == NavigationDisplayMode.Top -> NavigationDefaults.defaultTopItemColors()
+        selected -> NavigationDefaults.selectedSideItemColors()
+        else -> NavigationDefaults.defaultSideItemColors()
     },
     indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
         { color ->
@@ -710,6 +713,7 @@ fun NavigationMenuItemScope.MenuItem(
                 modifier = Modifier.indicatorOffset { selected })
         }
     },
+    badge: (@Composable () -> Unit)? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
 
@@ -734,7 +738,8 @@ fun NavigationMenuItemScope.MenuItem(
                 enabled = enabled,
                 interactionSource = interactionSource,
                 colors = colors,
-                indicator = indicator
+                indicator = indicator,
+                badge = badge
             )
         }
     } else {
@@ -760,7 +765,8 @@ fun NavigationMenuItemScope.MenuItem(
             enabled = enabled,
             interactionSource = interactionSource,
             colors = colors,
-            indicator = indicator
+            indicator = indicator,
+            badge = badge
         )
     }
 }
@@ -778,10 +784,11 @@ fun NavigationMenuItemScope.MenuItem(
     indicatorState: IndicatorState? = LocalIndicatorState.current,
     onExpandItemsChanged: (Boolean) -> Unit = {},
     interactionSource: MutableInteractionSource? = null,
-    colors: NavigationItemColorScheme = if (displayMode == NavigationDisplayMode.Top) {
-        NavigationDefaults.defaultTopItemColors()
-    } else {
-        NavigationDefaults.defaultSideItemColors()
+    colors: NavigationItemColorScheme = when {
+        displayMode == NavigationDisplayMode.Top && selected -> NavigationDefaults.selectedTopItemColors()
+        displayMode == NavigationDisplayMode.Top -> NavigationDefaults.defaultTopItemColors()
+        selected -> NavigationDefaults.selectedSideItemColors()
+        else -> NavigationDefaults.defaultSideItemColors()
     },
     indicator: @Composable IndicatorScope.(color: Color) -> Unit = if (displayMode == NavigationDisplayMode.Top) {
         { color ->
@@ -796,6 +803,7 @@ fun NavigationMenuItemScope.MenuItem(
                 modifier = Modifier.indicatorOffset { selected })
         }
     },
+    badge: (@Composable () -> Unit)? = null,
     items: (@Composable MenuFlyoutContainerScope.() -> Unit)? = null
 ) {
     if (displayMode == NavigationDisplayMode.Top) {
@@ -813,7 +821,8 @@ fun NavigationMenuItemScope.MenuItem(
                 items = items,
                 indicatorState = indicatorState,
                 indicator = indicator,
-                colors = colors
+                colors = colors,
+                badge = badge
             )
             if (separatorVisible) {
                 MenuItemSeparator()
@@ -834,7 +843,8 @@ fun NavigationMenuItemScope.MenuItem(
                 interactionSource = interactionSource,
                 indicatorState = indicatorState,
                 indicator = indicator,
-                colors = colors
+                colors = colors,
+                badge = badge
             )
             if (separatorVisible) {
                 MenuItemSeparator()

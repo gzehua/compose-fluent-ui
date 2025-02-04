@@ -313,7 +313,7 @@ private class MenuFlyoutContainerScopeImpl(
 ) : MenuFlyoutContainerScope, FlyoutContainerScope by flyoutScope,
     MenuFlyoutScope by menuFlyoutScope
 
-private fun defaultMenuFlyoutEnterPlacementAnimation(
+internal fun defaultMenuFlyoutEnterPlacementAnimation(
     placement: FlyoutPlacement,
     paddingTop: Int
 ): EnterTransition {
@@ -348,7 +348,7 @@ private fun defaultMenuFlyoutEnterPlacementAnimation(
 }
 
 @Composable
-private fun rememberSubMenuFlyoutPositionProvider(
+internal fun rememberSubMenuFlyoutPositionProvider(
     initialPlacement: FlyoutPlacement = FlyoutPlacement.Auto,
     paddingToAnchor: PaddingValues = PaddingValues(vertical = flyoutDefaultPadding)
 ): SubMenuFlyoutPositionProvider {
@@ -359,7 +359,7 @@ private fun rememberSubMenuFlyoutPositionProvider(
 }
 
 @Stable
-private class SubMenuFlyoutPositionProvider(
+internal class SubMenuFlyoutPositionProvider(
     density: Density,
     initialPlacement: FlyoutPlacement,
     paddingToAnchor: PaddingValues,

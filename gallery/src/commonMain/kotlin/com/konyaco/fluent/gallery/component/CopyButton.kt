@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.component.Button
+import com.konyaco.fluent.component.ButtonColorScheme
+import com.konyaco.fluent.component.ButtonDefaults
 import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.TooltipBox
@@ -26,6 +28,7 @@ import kotlinx.coroutines.delay
 fun CopyButton(
     copyData: String,
     modifier: Modifier = Modifier,
+    colors: ButtonColorScheme = ButtonDefaults.buttonColors(),
     tooltip: String = "Copy to clipboard"
 ) {
     var isCopy by remember { mutableStateOf(false) }
@@ -54,6 +57,7 @@ fun CopyButton(
                     }
                 }
             },
+            buttonColors = colors,
             modifier = modifier
         )
     }

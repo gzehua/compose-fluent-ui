@@ -149,6 +149,7 @@ fun TopNavItem(
             color = it
         )
     },
+    badge: (@Composable () -> Unit)? = null,
     text: (@Composable () -> Unit)? = null
 ) {
     val iconOnly = icon != null && text == null
@@ -188,36 +189,47 @@ fun TopNavItem(
                     )
                 )
             }
-            HorizontalIndicatorContentLayout(
-                modifier = Modifier.height(40.dp).flyoutAnchor(),
-                text = text,
-                icon = icon,
-                trailing = items?.let {
-                    {
-                        val rotation by animateFloatAsState(
-                            if (flyoutVisible) {
-                                180f
-                            } else {
-                                00f
-                            }
-                        )
-                        FontIcon(
-                            glyph = '\uE972',
-                            iconSize = FontIconDefaults.fontSizeSmall,
-                            vector = Icons.Default.ChevronDown,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .graphicsLayer {
-                                    rotationZ = rotation
+            Box {
+                HorizontalIndicatorContentLayout(
+                    modifier = Modifier.height(40.dp),
+                    text = text,
+                    icon = icon,
+                    trailing = items?.let {
+                        {
+                            val rotation by animateFloatAsState(
+                                if (flyoutVisible) {
+                                    180f
+                                } else {
+                                    00f
                                 }
-                        )
+                            )
+                            FontIcon(
+                                glyph = '\uE972',
+                                iconSize = FontIconDefaults.fontSizeSmall,
+                                vector = Icons.Default.ChevronDown,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        rotationZ = rotation
+                                    }
+                            )
+                        }
+                    },
+                    indicator = {
+                        val scope = TopNavigationIndicatorScope(indicatorState = indicatorState)
+                        scope.indicator(currentColor.indicatorColor)
                     }
-                },
-                indicator = {
-                    val scope = TopNavigationIndicatorScope(indicatorState = indicatorState)
-                    scope.indicator(currentColor.indicatorColor)
+                )
+                if (badge != null) {
+                    Box(
+                        contentAlignment = Alignment.TopEnd,
+                        modifier = Modifier.matchParentSize()
+                            .padding(top = 4.dp, end = if (iconOnly) 2.dp else 0.dp)
+                    ) {
+                        badge()
+                    }
                 }
-            )
+            }
         }
     }
 
