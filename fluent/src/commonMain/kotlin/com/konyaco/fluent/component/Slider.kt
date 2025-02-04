@@ -311,7 +311,7 @@ class SliderState(
         this.isDragging = false
     }
 
-    private fun snapToNearestTickValue(value: Float): Float {
+    internal fun snapToNearestTickValue(value: Float): Float {
         return this.stepFractions
             .map { lerp(this.valueRange.start, this.valueRange.endInclusive, it) }
             .minBy { abs(it - value) }
@@ -473,7 +473,7 @@ object SliderDefaults {
     @Composable
     fun Thumb(
         state: SliderState,
-        label: @Composable (state: SliderState) -> Unit = { Text(state.value.toString()) },
+        label: @Composable (state: SliderState) -> Unit = { Tooltip(state) },
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -558,6 +558,14 @@ object SliderDefaults {
                 }
             }
         }
+    }
+
+    @Composable
+    fun Tooltip(state: SliderState, snap: Boolean = state.steps != 0) {
+        Text(
+            if (snap) state.snapToNearestTickValue(state.value).toString()
+            else state.value.toString()
+        )
     }
 }
 

@@ -148,7 +148,9 @@ fun ColorPicker(
             },
             track = { },
             thumb = { state ->
-                SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary)
+                SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary, label = {
+                    Text("Value ${(state.value * 100).roundToInt()}")
+                })
             }
         )
         if (alphaEnabled) {
@@ -163,7 +165,7 @@ fun ColorPicker(
                     Spacer(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(12.dp)
+                            .requiredHeight(12.dp)
                             .alphaBackground(CircleShape)
                             .background(
                                 Brush.horizontalGradient(
@@ -175,7 +177,9 @@ fun ColorPicker(
                 },
                 track = {},
                 thumb = { state ->
-                    SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary)
+                    SliderDefaults.Thumb(state, color = FluentTheme.colors.text.text.primary, label = {
+                        Text("${(state.value * 100).roundToInt()}% Opacity")
+                    })
                 }
             )
         }
