@@ -2,6 +2,7 @@ package com.konyaco.fluent.gallery.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,26 +40,27 @@ fun CopyButton(
         }
     }
     val clipboard = LocalClipboardManager.current
-    TooltipBox(
-        tooltip = { Text(tooltip) }
-    ){
-        Button(
-            onClick = {
-                clipboard.setText(AnnotatedString(copyData))
-                isCopy = true
-            },
-            iconOnly = true,
-            content = {
-                AnimatedContent(isCopy) { target ->
-                    if (target) {
-                        Icon(Icons.Default.Checkmark, contentDescription = null)
-                    } else {
-                        Icon(Icons.Default.Copy, contentDescription = null)
+    Box(modifier = modifier) {
+        TooltipBox(
+            tooltip = { Text(tooltip) }
+        ) {
+            Button(
+                onClick = {
+                    clipboard.setText(AnnotatedString(copyData))
+                    isCopy = true
+                },
+                iconOnly = true,
+                content = {
+                    AnimatedContent(isCopy) { target ->
+                        if (target) {
+                            Icon(Icons.Default.Checkmark, contentDescription = null)
+                        } else {
+                            Icon(Icons.Default.Copy, contentDescription = null)
+                        }
                     }
-                }
-            },
-            buttonColors = colors,
-            modifier = modifier
-        )
+                },
+                buttonColors = colors,
+            )
+        }
     }
 }
