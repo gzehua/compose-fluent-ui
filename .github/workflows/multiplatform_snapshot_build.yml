@@ -43,7 +43,8 @@ jobs:
             os: macos-latest
           - type: iOS
             iOS: ipa
-            os: macos-latest
+            # workaround runner version for iPhoneOS sdk 18.2
+            os: macos-15
           - type: WasmJs
             js: wasmJs
             os: windows-latest
