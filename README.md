@@ -150,7 +150,7 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 - [x] Info Bar
 - [x] Badge 
 - [ ] File Picker
-- [ ] Menu Bar
+- [x] Menu Bar (Simple)
 - [x] MenuFlyout (Simple)
 - [x] Expander
 - [x] Command Bar
