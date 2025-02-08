@@ -16,12 +16,10 @@ import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.ButtonColorScheme
 import com.konyaco.fluent.component.ButtonDefaults
-import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.TooltipBox
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Checkmark
-import com.konyaco.fluent.icons.regular.Copy
+import com.konyaco.fluent.component.FontIcon
+import com.konyaco.fluent.component.FontIconPrimitive
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalFluentApi::class)
@@ -40,27 +38,29 @@ fun CopyButton(
         }
     }
     val clipboard = LocalClipboardManager.current
-    Box(modifier = modifier) {
-        TooltipBox(
-            tooltip = { Text(tooltip) }
-        ) {
-            Button(
-                onClick = {
-                    clipboard.setText(AnnotatedString(copyData))
-                    isCopy = true
-                },
-                iconOnly = true,
-                content = {
-                    AnimatedContent(isCopy) { target ->
-                        if (target) {
-                            Icon(Icons.Default.Checkmark, contentDescription = null)
+    TooltipBox(
+        tooltip = { Text(tooltip) }
+    ){
+        Button(
+            onClick = {
+                clipboard.setText(AnnotatedString(copyData))
+                isCopy = true
+            },
+            iconOnly = true,
+            content = {
+                AnimatedContent(isCopy) { target ->
+                    FontIcon(
+                        type = if (target) {
+                            FontIconPrimitive.Accept
                         } else {
-                            Icon(Icons.Default.Copy, contentDescription = null)
-                        }
-                    }
-                },
-                buttonColors = colors,
-            )
-        }
+                            FontIconPrimitive.Copy
+                        },
+                        contentDescription = null
+                    )
+                }
+            },
+            buttonColors = colors,
+            modifier = modifier
+        )
     }
 }

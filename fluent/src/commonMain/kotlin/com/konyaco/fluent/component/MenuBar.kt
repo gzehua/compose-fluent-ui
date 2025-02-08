@@ -25,8 +25,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.MoreHorizontal
 import com.konyaco.fluent.layout.overflow.OverflowRow
 import com.konyaco.fluent.layout.overflow.OverflowRowScope
 import kotlin.jvm.JvmInline
@@ -210,11 +208,10 @@ fun OverflowMenuBar(
                     interaction = interactionSource,
                     content = {
                         FontIcon(
-                            glyph = '\uE712',
-                            vector = Icons.Default.MoreHorizontal,
+                            type = FontIconPrimitive.More,
                             contentDescription = null,
                         )
-                    }
+                    },
                 )
             }
         }

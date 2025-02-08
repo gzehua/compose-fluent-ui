@@ -19,6 +19,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -77,11 +79,9 @@ import com.konyaco.fluent.background.ElevationDefaults
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.background.MaterialContainer
 import com.konyaco.fluent.background.MaterialDefaults
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.ArrowLeft
-import com.konyaco.fluent.icons.regular.Navigation
 import com.konyaco.fluent.layout.overflow.OverflowRowScope
 import com.konyaco.fluent.scheme.PentaVisualScheme
+import com.konyaco.fluent.scheme.collectVisualState
 import kotlin.math.roundToInt
 
 internal val LocalNavigationExpand = compositionLocalOf { false }
@@ -1024,19 +1024,12 @@ object NavigationDefaults {
     @Composable
     fun ExpandedButton(
         onClick: () -> Unit,
-        icon: @Composable (() -> Unit) = {
-            FontIcon(
-                glyph = '\uE700',
-                vector = Icons.Default.Navigation,
-                contentDescription = "Expanded"
-            )
-        },
         modifier: Modifier = Modifier,
         disabled: Boolean = false,
         buttonColors: ButtonColorScheme = ButtonDefaults.subtleButtonColors(),
         interaction: MutableInteractionSource = remember { MutableInteractionSource() },
-        animationEnabled: Boolean = true,
         expanded: Boolean = LocalNavigationExpand.current,
+        icon: @Composable (() -> Unit) = { FontIconDefaults.NavigationIcon(interaction) },
     ) {
         TooltipBox(
             tooltip = {
@@ -1049,26 +1042,7 @@ object NavigationDefaults {
             Button(
                 onClick = onClick,
                 interaction = interaction,
-                icon = {
-                    if (animationEnabled) {
-                        val isPressed by interaction.collectIsPressedAsState()
-                        val scaleX = animateFloatAsState(
-                            targetValue = if (isPressed) 0.6f else 1f,
-                            animationSpec = tween(
-                                durationMillis = FluentDuration.ShortDuration,
-                                easing = FluentEasing.FastInvokeEasing
-                            )
-                        )
-                        Box(
-                            content = { icon() },
-                            modifier = Modifier.graphicsLayer {
-                                this.scaleX = scaleX.value
-                            }
-                        )
-                    } else {
-                        icon()
-                    }
-                },
+                icon = { icon() },
                 modifier = modifier,
                 disabled = disabled,
                 buttonColors = buttonColors
@@ -1101,18 +1075,11 @@ object NavigationDefaults {
     @Composable
     fun BackButton(
         onClick: () -> Unit,
-        icon: @Composable (() -> Unit) = {
-            FontIcon(
-                glyph = '\uE830',
-                vector = Icons.Default.ArrowLeft,
-                contentDescription = null,
-            )
-        },
         modifier: Modifier = Modifier,
         disabled: Boolean = false,
         buttonColors: ButtonColorScheme = ButtonDefaults.subtleButtonColors(),
         interaction: MutableInteractionSource = remember { MutableInteractionSource() },
-        animationEnabled: Boolean = true,
+        icon: @Composable (() -> Unit) = { FontIconDefaults.BackIcon(interaction, size = FontIconSize.Small) },
     ) {
         TooltipBox(
             tooltip = {
@@ -1124,27 +1091,7 @@ object NavigationDefaults {
                 onClick = onClick,
                 iconOnly = true,
                 interaction = interaction,
-                content = {
-                    if (animationEnabled) {
-                        val isPressed by interaction.collectIsPressedAsState()
-                        val scaleX = animateFloatAsState(
-                            targetValue = if (isPressed) 0.9f else 1f,
-                            animationSpec = tween(
-                                durationMillis = FluentDuration.ShortDuration,
-                                easing = FluentEasing.FastInvokeEasing
-                            )
-                        )
-                        Box(
-                            content = { icon() },
-                            modifier = Modifier.graphicsLayer {
-                                this.scaleX = scaleX.value
-                                translationX = (1f - scaleX.value) * 6.dp.toPx()
-                            }
-                        )
-                    } else {
-                        icon()
-                    }
-                },
+                content = { icon() },
                 modifier = modifier
                     .size(44.dp, 40.dp)
                     .padding(vertical = 2.dp)
