@@ -170,24 +170,24 @@ fun TopNavItem(
             )
     ) {
         FlyoutAnchorScope {
-            MenuFlyout(
-                visible = flyoutVisible && items != null,
-                onDismissRequest = {
-                    onFlyoutVisibleChanged(false)
-                },
-                placement = FlyoutPlacement.Bottom,
-                modifier = Modifier.flyoutSize()
-            ) {
-                items?.invoke(
-                    rememberNavigationItemsFlyoutScope(
-                        flyoutVisible,
-                        onFlyoutVisibleChanged
-                    )
-                )
-            }
             Box {
+                MenuFlyout(
+                    visible = flyoutVisible && items != null,
+                    onDismissRequest = {
+                        onFlyoutVisibleChanged(false)
+                    },
+                    placement = FlyoutPlacement.Bottom,
+                    modifier = Modifier.flyoutSize()
+                ) {
+                    items?.invoke(
+                        rememberNavigationItemsFlyoutScope(
+                            flyoutVisible,
+                            onFlyoutVisibleChanged
+                        )
+                    )
+                }
                 HorizontalIndicatorContentLayout(
-                    modifier = Modifier.height(40.dp),
+                    modifier = Modifier.height(40.dp).flyoutAnchor(),
                     text = text,
                     icon = icon,
                     trailing = items?.let {

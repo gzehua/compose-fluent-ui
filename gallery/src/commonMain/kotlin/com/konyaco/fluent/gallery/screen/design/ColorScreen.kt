@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -57,7 +56,8 @@ import com.konyaco.fluent.component.AccentButton
 import com.konyaco.fluent.component.Button
 import com.konyaco.fluent.component.ButtonColor
 import com.konyaco.fluent.component.ButtonColorScheme
-import com.konyaco.fluent.component.Icon
+import com.konyaco.fluent.component.InfoBar
+import com.konyaco.fluent.component.InfoBarSeverity
 import com.konyaco.fluent.component.Scrollbar
 import com.konyaco.fluent.component.ScrollbarContainer
 import com.konyaco.fluent.component.Slider
@@ -72,8 +72,6 @@ import com.konyaco.fluent.gallery.annotation.Component
 import com.konyaco.fluent.gallery.component.ComponentPagePath
 import com.konyaco.fluent.gallery.component.CopyButton
 import com.konyaco.fluent.gallery.component.GalleryPage
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.regular.Dismiss
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.source.generated.FluentSourceFile
 import com.konyaco.fluent.surface.Card
@@ -1340,51 +1338,11 @@ private fun SignalColorPage() {
         section = "System",
         description = "Used for accent fills on controls",
         sample = {
-            //TODO InfoBar
-            Layer(
-                color = FluentTheme.colors.system.criticalBackground,
-                backgroundSizing = BackgroundSizing.InnerBorderEdge
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .sizeIn(minHeight = 48.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(
-                                color = FluentTheme.colors.system.critical,
-                                shape = CircleShape
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Dismiss,
-                            contentDescription = null,
-                            tint = FluentTheme.colors.text.onAccent.primary,
-                            modifier = Modifier.size(12.dp)
-                        )
-                    }
-
-                    Text(
-                        text = "Title",
-                        style = FluentTheme.typography.bodyStrong,
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-
-                    Text(
-                        text = "This is body text. Windows 11 is faster and more intuitive."
-                    )
-
-                    Icon(
-                        imageVector = Icons.Default.Dismiss,
-                        contentDescription = null,
-                        modifier = Modifier.padding(start = 16.dp).size(16.dp)
-                    )
-                }
-            }
+            InfoBar(
+                title = { Text("Title") },
+                message = { Text("This is body text. Windows 11 is faster and more intuitive.") },
+                severity = InfoBarSeverity.Critical
+            )
         },
         groups = arrayOf(
             arrayOf(
