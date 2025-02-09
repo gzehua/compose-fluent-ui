@@ -14,7 +14,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -151,7 +150,7 @@ fun SideNav(
                         icon = {
                             FontIcon(type = FontIconPrimitive.Search, contentDescription = null)
                         },
-                        content = {}
+                        content = { Text("Click to search") }
                     )
                 }
             }
