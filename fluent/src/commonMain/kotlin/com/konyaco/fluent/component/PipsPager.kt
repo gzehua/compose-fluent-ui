@@ -40,9 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
@@ -50,11 +48,6 @@ import com.konyaco.fluent.LocalContentColor
 import com.konyaco.fluent.LocalTextStyle
 import com.konyaco.fluent.animation.FluentDuration
 import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.CaretDown
-import com.konyaco.fluent.icons.filled.CaretLeft
-import com.konyaco.fluent.icons.filled.CaretRight
-import com.konyaco.fluent.icons.filled.CaretUp
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualState
 import com.konyaco.fluent.scheme.VisualStateScheme
@@ -200,8 +193,7 @@ private fun PipsPager(
 
             PageButton(
                 colors = pipsColors,
-                vector = Icons.Filled.CaretUp,
-                glyph = '\uEDDB',
+                type = FontIconPrimitive.CaretUp,
                 onClick = { onSelectedIndexChange(selectedIndex - 1) },
                 enabled = enabled && selectedIndex > 0,
                 visible = pageButtonVisible,
@@ -226,8 +218,7 @@ private fun PipsPager(
             }
             PageButton(
                 colors = pipsColors,
-                vector = Icons.Filled.CaretDown,
-                glyph = '\uEDDC',
+                type = FontIconPrimitive.CaretDown,
                 onClick = { onSelectedIndexChange(selectedIndex + 1) },
                 enabled = enabled && selectedIndex < count - 1,
                 visible = pageButtonVisible,
@@ -239,8 +230,7 @@ private fun PipsPager(
 
             PageButton(
                 colors = pipsColors,
-                vector = Icons.Filled.CaretLeft,
-                glyph = '\uEDD9',
+                type = FontIconPrimitive.CaretLeft,
                 onClick = { onSelectedIndexChange(selectedIndex - 1) },
                 enabled = enabled && selectedIndex > 0,
                 visible = pageButtonVisible,
@@ -267,8 +257,7 @@ private fun PipsPager(
 
             PageButton(
                 colors = pipsColors,
-                vector = Icons.Filled.CaretRight,
-                glyph = '\uEDDA',
+                type = FontIconPrimitive.CaretRight,
                 onClick = { onSelectedIndexChange(selectedIndex + 1) },
                 enabled = enabled && selectedIndex < count - 1,
                 visible = pageButtonVisible,
@@ -384,9 +373,8 @@ private fun PageButton(
     modifier: Modifier = Modifier,
     enabled: Boolean,
     visible: Boolean = true,
+    type: FontIconPrimitive,
     onClick: () -> Unit,
-    glyph: Char = '\uEDDA',
-    vector: ImageVector = Icons.Filled.CaretRight,
 ) {
     if (visible) {
         val interactionSource = remember { MutableInteractionSource() }
@@ -417,12 +405,9 @@ private fun PageButton(
                         easing = FluentEasing.FastInvokeEasing
                     )
                 )
-                FontIcon(
-                    glyph = glyph,
-                    vector = vector,
+                FontIconSolid8(
                     contentDescription = null,
-                    iconSize = 8.sp,
-                    vectorSize = 14.dp,
+                    type = type,
                     modifier = Modifier
                         .graphicsLayer {
                             scaleX = scale.value

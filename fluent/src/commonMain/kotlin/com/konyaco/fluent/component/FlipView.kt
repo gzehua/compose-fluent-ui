@@ -33,12 +33,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.konyaco.fluent.ExperimentalFluentApi
 import com.konyaco.fluent.FluentTheme
 import com.konyaco.fluent.LocalContentAlpha
@@ -50,11 +48,6 @@ import com.konyaco.fluent.background.Material
 import com.konyaco.fluent.background.MaterialContainer
 import com.konyaco.fluent.background.MaterialContainerScope
 import com.konyaco.fluent.background.MaterialDefaults
-import com.konyaco.fluent.icons.Icons
-import com.konyaco.fluent.icons.filled.CaretDown
-import com.konyaco.fluent.icons.filled.CaretLeft
-import com.konyaco.fluent.icons.filled.CaretRight
-import com.konyaco.fluent.icons.filled.CaretUp
 import com.konyaco.fluent.scheme.PentaVisualScheme
 import com.konyaco.fluent.scheme.VisualStateScheme
 import com.konyaco.fluent.scheme.collectVisualState
@@ -269,8 +262,7 @@ private fun FlipViewContainer(
             PageButton(
                 colors = pageButtonColors,
                 isVertical = true,
-                vector = Icons.Filled.CaretDown,
-                glyph = '\uEDDC',
+                type = FontIconPrimitive.CaretDown,
                 onClick = onNextPageClick,
                 visible = nextPageVisible && isHovered.value,
                 modifier = Modifier
@@ -281,8 +273,7 @@ private fun FlipViewContainer(
             PageButton(
                 colors = pageButtonColors,
                 isVertical = true,
-                vector = Icons.Filled.CaretUp,
-                glyph = '\uEDDB',
+                type = FontIconPrimitive.CaretUp,
                 onClick = onPreviousPageClick,
                 visible = previousPageVisible && isHovered.value,
                 modifier = Modifier
@@ -294,8 +285,7 @@ private fun FlipViewContainer(
             PageButton(
                 colors = pageButtonColors,
                 isVertical = false,
-                vector = Icons.Filled.CaretRight,
-                glyph = '\uEDDA',
+                type = FontIconPrimitive.CaretRight,
                 onClick = onNextPageClick,
                 visible = nextPageVisible && isHovered.value,
                 modifier = Modifier
@@ -307,8 +297,7 @@ private fun FlipViewContainer(
             PageButton(
                 colors = pageButtonColors,
                 isVertical = false,
-                vector = Icons.Filled.CaretLeft,
-                glyph = '\uEDD9',
+                type = FontIconPrimitive.CaretLeft,
                 onClick = onPreviousPageClick,
                 visible = previousPageVisible && isHovered.value,
                 modifier = Modifier
@@ -328,8 +317,7 @@ private fun MaterialContainerScope.PageButton(
     isVertical: Boolean,
     visible: Boolean,
     onClick: () -> Unit,
-    glyph: Char = '\uEDDA',
-    vector: ImageVector = Icons.Filled.CaretRight,
+    type: FontIconPrimitive,
 ) {
     if (visible) {
         val interactionSource = remember { MutableInteractionSource() }
@@ -356,12 +344,9 @@ private fun MaterialContainerScope.PageButton(
                     targetValue = if (isPressed.value) { 7/8f } else 1f,
                     animationSpec = tween(FluentDuration.ShortDuration, easing = FluentEasing.FastInvokeEasing)
                 )
-                FontIcon(
-                    glyph = glyph,
-                    vector = vector,
+                FontIconSolid8(
+                    type = type,
                     contentDescription = null,
-                    iconSize = 8.sp,
-                    vectorSize = 14.dp,
                     modifier = Modifier
                         .graphicsLayer {
                             scaleX = scale.value
