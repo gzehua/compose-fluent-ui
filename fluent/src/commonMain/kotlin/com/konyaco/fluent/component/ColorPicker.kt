@@ -114,7 +114,7 @@ fun ColorPicker(
             ) {}
         }
         val (hug, saturation, _) = spectrumColor.value.hsv()
-        Slider(
+        BasicSlider(
             modifier = Modifier.padding(top = 21.dp).width(312.dp).height(32.dp),
             value = value,
             onValueChange = {
@@ -151,7 +151,7 @@ fun ColorPicker(
             }
         )
         if (alphaEnabled) {
-            Slider(
+            BasicSlider(
                 modifier = Modifier.width(312.dp),
                 value = alpha,
                 onValueChange = {

@@ -63,32 +63,77 @@ fun Slider(
     enabled: Boolean = true,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
+    snap: Boolean = steps != 0,
+    showTickMark: Boolean = steps != 0,
     onValueChangeFinished: ((Float) -> Unit)? = null,
+    tooltipContent: @Composable (SliderState) -> Unit = { SliderDefaults.Tooltip(it, snap = snap) },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-    Slider(
+    BasicSlider(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
         enabled = enabled,
         valueRange = valueRange,
         steps = steps,
+        snap = snap,
         onValueChangeFinished = onValueChangeFinished,
         interactionSource = interactionSource,
-        rail = { state -> SliderDefaults.Rail(state, enabled = enabled) },
-        track = { state -> SliderDefaults.Track(state, enabled = enabled) },
-        thumb = { state -> SliderDefaults.Thumb(state, enabled = enabled) }
+        rail = { state ->
+            SliderDefaults.Rail(
+                state = state,
+                enabled = enabled,
+                showTick = showTickMark
+            )
+        },
+        track = { state ->
+            SliderDefaults.Track(state, enabled = enabled)
+        },
+        thumb = { state ->
+            SliderDefaults.Thumb(state, enabled = enabled, label = tooltipContent)
+        }
     )
 }
 
 @Composable
 fun Slider(
+    state: SliderState,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    showTickMark: Boolean = state.steps != 0,
+    tooltipContent: @Composable (SliderState) -> Unit = { SliderDefaults.Tooltip(it, snap = state.snap) },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+) {
+    BasicSlider(
+        state = state,
+        modifier = modifier,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        rail = { state ->
+            SliderDefaults.Rail(
+                state = state,
+                enabled = enabled,
+                showTick = showTickMark
+            )
+        },
+        track = { state ->
+            SliderDefaults.Track(state, enabled = enabled)
+        },
+        thumb = { state ->
+            SliderDefaults.Thumb(state, enabled = enabled, label = tooltipContent)
+        }
+    )
+}
+
+@Composable
+fun BasicSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
+    snap: Boolean = steps != 0,
     onValueChangeFinished: ((Float) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     rail: @Composable (SliderState) -> Unit,
@@ -96,7 +141,7 @@ fun Slider(
     thumb: @Composable (SliderState) -> Unit,
 ) {
     val state =
-        remember(steps, valueRange) { SliderState(value, steps, onValueChangeFinished, valueRange) }
+        remember(steps, valueRange) { SliderState(value, steps, snap, onValueChangeFinished, valueRange) }
     state.value = value
     state.onValueChangeFinished = onValueChangeFinished
     state.onValueChange = onValueChange
@@ -113,25 +158,7 @@ fun Slider(
 }
 
 @Composable
-fun Slider(
-    state: SliderState,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
-) {
-    SliderImpl(
-        modifier = modifier,
-        state = state,
-        enabled = enabled,
-        interactionSource = interactionSource,
-        rail = { state -> SliderDefaults.Rail(state, enabled = enabled) },
-        track = { state -> SliderDefaults.Track(state, enabled = enabled) },
-        thumb = { state -> SliderDefaults.Thumb(state, enabled = enabled) }
-    )
-}
-
-@Composable
-fun Slider(
+fun BasicSlider(
     state: SliderState,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -233,6 +260,7 @@ private fun SliderImpl(
 class SliderState(
     value: Float = 0f,
     val steps: Int = 0,
+    val snap: Boolean = steps != 0,
     var onValueChangeFinished: ((Float) -> Unit)? = null,
     val valueRange: ClosedFloatingPointRange<Float>
 ) {
@@ -301,10 +329,15 @@ class SliderState(
             // Snap
             // TODO: Add snap animation, maybe we should use anchoredDraggable?
             val currentValue = this.value
-            val nearestValue = snapToNearestTickValue(currentValue)
-            val fraction = valueToFraction(nearestValue, this.valueRange)
-            this.value = nearestValue
-            setRawFraction(fraction, width, density)
+            if (this.snap) {
+                val nearestValue = snapToNearestTickValue(currentValue)
+                val fraction = valueToFraction(nearestValue, this.valueRange)
+                this.value = nearestValue
+                setRawFraction(fraction, width, density)
+            } else {
+                val fraction = valueToFraction(currentValue, this.valueRange)
+                setRawFraction(fraction, width, density)
+            }
         }
 
         this.onValueChangeFinished?.invoke(this.value)
@@ -312,6 +345,12 @@ class SliderState(
     }
 
     internal fun snapToNearestTickValue(value: Float): Float {
+        return this.stepFractions
+            .map { lerp(this.valueRange.start, this.valueRange.endInclusive, it) }
+            .minBy { abs(it - value) }
+    }
+
+    fun nearestValue(): Float {
         return this.stepFractions
             .map { lerp(this.valueRange.start, this.valueRange.endInclusive, it) }
             .minBy { abs(it - value) }
@@ -561,7 +600,7 @@ object SliderDefaults {
     }
 
     @Composable
-    fun Tooltip(state: SliderState, snap: Boolean = state.steps != 0) {
+    fun Tooltip(state: SliderState, snap: Boolean = state.snap) {
         Text(
             if (snap) state.snapToNearestTickValue(state.value).toString()
             else state.value.toString()
