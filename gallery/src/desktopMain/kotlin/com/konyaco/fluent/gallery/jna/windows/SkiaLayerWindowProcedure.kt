@@ -26,7 +26,7 @@ class SkiaLayerWindowProcedure(
 ): WindowProcedure {
 
     private val windowHandle = HWND(Pointer(skiaLayer.windowHandle))
-    private val contentHandle = HWND(skiaLayer.canvas.let(Native::getComponentPointer))
+    internal val contentHandle = HWND(skiaLayer.canvas.let(Native::getComponentPointer))
     private val defaultWindowProcedure = User32Extend.instance?.setWindowLong(contentHandle, WinUser.GWL_WNDPROC, this) ?: BaseTSD.LONG_PTR(-1)
 
     private var hitResult = 1

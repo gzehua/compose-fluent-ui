@@ -1,33 +1,60 @@
 package com.konyaco.fluent.gallery.jna.windows
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.awt.ComposeWindow
+import androidx.compose.ui.graphics.Color
+import com.konyaco.fluent.gallery.jna.windows.structure.MENUITEMINFO
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTBOTTOM
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTBOTTOMLEFT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTBOTTOMRIGHT
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTCAPTION
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTLEFT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTRIGHT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOP
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOPLEFT
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTOPRIGHT
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.MFT_STRING
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.MIIM_STATE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.SC_CLOSE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.SC_MOVE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.SC_RESTORE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.SC_SIZE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.TPM_RETURNCMD
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WA_INACTIVE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WINT_MAX
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_ACTIVATE
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCCALCSIZE
 import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCHITTEST
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCMOUSEMOVE
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCRBUTTONUP
+import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_SETTINGCHANGE
 import com.konyaco.fluent.gallery.jna.windows.structure.WindowMargins
+import com.konyaco.fluent.gallery.jna.windows.structure.isWindows11OrLater
 import com.mayakapps.compose.windowstyler.findSkiaLayer
 import com.sun.jna.Native
 import com.sun.jna.NativeLibrary
 import com.sun.jna.Pointer
+import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinDef.HWND
 import com.sun.jna.platform.win32.WinDef.UINT
 import com.sun.jna.platform.win32.WinDef.LPARAM
 import com.sun.jna.platform.win32.WinDef.WPARAM
 import com.sun.jna.platform.win32.WinDef.LRESULT
 import com.sun.jna.platform.win32.BaseTSD.LONG_PTR
+import com.sun.jna.platform.win32.WinDef.HMENU
+import com.sun.jna.platform.win32.WinNT
+import com.sun.jna.platform.win32.WinReg
 import com.sun.jna.platform.win32.WinUser
 import com.sun.jna.platform.win32.WinUser.WM_DESTROY
 import com.sun.jna.platform.win32.WinUser.WM_SIZE
 import com.sun.jna.platform.win32.WinUser.WS_CAPTION
 import com.sun.jna.platform.win32.WinUser.WS_SYSMENU
+import com.sun.jna.ptr.IntByReference
+import org.jetbrains.skiko.currentSystemTheme
 import java.awt.Window
 
 internal class ComposeWindowProcedure(
@@ -62,7 +89,15 @@ internal class ComposeWindowProcedure(
     private var edgeX = 0
     private var edgeY = 0
     private var padding = 0
-    private var isMaximized = User32Extend.instance?.isWindowInMaximized(windowHandle) ?: false
+    private var isMaximized = User32Extend.instance?.isWindowInMaximized(windowHandle) == true
+
+    var isWindowFrameAccentColorEnabled by mutableStateOf(isAccentColorWindowFrame())
+
+    var windowFrameColor by mutableStateOf(currentAccentColor())
+
+    var windowTheme by mutableStateOf(currentSystemTheme)
+
+    var isWindowActive by mutableStateOf(true)
 
     val skiaLayerProcedure = (window as? ComposeWindow)?.findSkiaLayer()?.let {
         SkiaLayerWindowProcedure(
@@ -160,10 +195,102 @@ internal class ComposeWindowProcedure(
                 User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
             }
 
+            WM_NCRBUTTONUP -> {
+                if (wParam.toInt() == HTCAPTION) {
+                    val user32 = User32Extend.instance ?: return LRESULT(0)
+                    val oldStyle = user32.GetWindowLong(hWnd, WinUser.GWL_STYLE)
+                    user32.SetWindowLong(hWnd, WinUser.GWL_STYLE, oldStyle or WS_SYSMENU)
+                    val menu = user32.GetSystemMenu(hWnd, false)
+                    user32.SetWindowLong(hWnd, WinUser.GWL_STYLE, oldStyle)
+                    isMaximized = user32.isWindowInMaximized(hWnd)
+                    if (menu != null) {
+                        // 更新菜单项状态
+                        val menuItemInfo = MENUITEMINFO().apply {
+                            cbSize = this.size()
+                            fMask = MIIM_STATE
+                            fType = MFT_STRING
+                        }
+
+                        updateMenuItemInfo(menu, menuItemInfo, SC_RESTORE, isMaximized)
+                        updateMenuItemInfo(menu, menuItemInfo, SC_MOVE, !isMaximized)
+                        updateMenuItemInfo(menu, menuItemInfo, SC_SIZE, !isMaximized)
+                        updateMenuItemInfo(menu, menuItemInfo, WinUser.SC_MINIMIZE, true)
+                        updateMenuItemInfo(menu, menuItemInfo, WinUser.SC_MAXIMIZE, !isMaximized)
+                        updateMenuItemInfo(menu, menuItemInfo, SC_CLOSE, true)
+
+                        // 设置默认菜单项
+                        user32.SetMenuDefaultItem(menu, WINT_MAX, false)
+
+                        // 获取鼠标位置
+                        val lParamValue = lParam.toInt()
+                        val x = lParamValue and 0xFFFF
+                        val y = (lParamValue shr 16) and 0xFFFF
+
+                        // 显示菜单并获取用户选择
+                        val ret = user32.TrackPopupMenu(menu, TPM_RETURNCMD, x, y, 0, hWnd, null)
+                        if (ret != 0) {
+                            // 发送系统命令
+                            user32.PostMessage(
+                                hWnd,
+                                WinUser.WM_SYSCOMMAND,
+                                WPARAM(ret.toLong()),
+                                LPARAM(0),
+                            )
+                        }
+                    }
+                }
+                User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
+            }
+
+            WM_SETTINGCHANGE -> {
+                val changedKey = Pointer(lParam.toLong()).getWideString(0)
+                // theme changed for color and darkTheme
+                if (changedKey == "ImmersiveColorSet") {
+                    windowTheme = currentSystemTheme
+                    windowFrameColor = currentAccentColor()
+                    isWindowFrameAccentColorEnabled = isAccentColorWindowFrame()
+                }
+                User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
+            }
+
             else -> {
+                if (uMsg == WM_ACTIVATE) {
+                    isWindowActive = wParam.toInt() != WA_INACTIVE
+                }
+                if (uMsg == WM_NCMOUSEMOVE) {
+                     skiaLayerProcedure?.let {
+                        User32Extend.instance?.PostMessage(it.contentHandle, uMsg, wParam, lParam)
+                    }
+                }
                 User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
             }
         }
+    }
+
+    private fun updateMenuItemInfo(menu: HMENU, menuItemInfo: MENUITEMINFO, item: Int, enabled: Boolean) {
+        menuItemInfo.fState = if (enabled) WinUserConst.MFS_ENABLED else WinUserConst.MFS_DISABLED
+        User32Extend.instance?.SetMenuItemInfo(menu, item, false, menuItemInfo)
+    }
+
+    fun currentAccentColor(): Color {
+        val value = Advapi32Util.registryGetIntValue(
+            WinReg.HKEY_CURRENT_USER,
+            "SOFTWARE\\Microsoft\\Windows\\DWM",
+            "AccentColor",
+        ).toLong()
+        val alpha = (value and 0xFF000000)
+        val green = (value and 0xFF).shl(16)
+        val blue = (value and 0xFF00)
+        val red = (value and 0xFF0000).shr(16)
+        return Color((alpha or green or blue or red).toInt())
+    }
+
+    fun isAccentColorWindowFrame(): Boolean {
+        return Advapi32Util.registryGetIntValue(
+            WinReg.HKEY_CURRENT_USER,
+            "SOFTWARE\\Microsoft\\Windows\\DWM",
+            "ColorPrevalence",
+        ) != 0
     }
 
     /**
@@ -190,6 +317,19 @@ internal class ComposeWindowProcedure(
             ?.onFailure { println("Could not enable window native decorations (border/shadow/rounded corners)") }
             ?.getOrNull()
             ?.invoke(arrayOf(windowHandle, margins))
+
+        if (isWindows11OrLater()) {
+            dwmApi?.getFunction("DwmSetWindowAttribute")?.apply {
+                invoke(
+                    WinNT.HRESULT::class.java,
+                    arrayOf(windowHandle, 35, IntByReference((0xFFFFFFFE).toInt()), 4)
+                )
+                invoke(
+                    WinNT.HRESULT::class.java,
+                    arrayOf(windowHandle, 38, IntByReference(2), 4)
+                )
+            }
+        }
     }
 
 
