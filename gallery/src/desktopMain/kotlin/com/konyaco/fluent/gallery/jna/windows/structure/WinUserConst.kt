@@ -18,6 +18,8 @@ object WinUserConst {
     val WM_NCLBUTTONDOWN = 0x00A1
     // non client area left mouse up message
     val WM_NCLBUTTONUP = 0x00A2
+    // non client area right mouse up message
+    val WM_NCRBUTTONUP: Int = 0x00A5
 
     /**
      * [WM_NCHITTEST] Mouse Position Codes
@@ -41,4 +43,31 @@ object WinUserConst {
     internal val HTBOTTOM = 15
     internal val HTBOTTOMLEFT = 16
     internal val HTBOTTOMRIGHT = 17
+
+    // setting changed message
+    const val WM_SETTINGCHANGE: Int = 0x001A
+
+    // window active event
+    const val WM_ACTIVATE: Int = 0x0006
+
+    // window is deactivated
+    const val WA_INACTIVE: Int = 0x00000000
+
+    const val SC_RESTORE: Int = 0x0000f120
+    const val SC_MOVE: Int = 0xF010
+    const val SC_SIZE: Int = 0xF000
+    const val SC_CLOSE: Int = 0xF060
+
+    const val WINT_MAX: Int = 0xFFFF
+
+    const val MIIM_STATE: Int = 0x00000001 // The `fState` member is valid.
+
+    const val MFT_STRING: Int = 0x00000000 // The item is a text string.b
+
+    const val TPM_RETURNCMD: Int =
+        0x0100 // Returns the menu item identifier of the user's selection instead of sending a message.
+
+    const val MFS_ENABLED: Int = 0x00000000 // The item is enabled.
+
+    const val MFS_DISABLED: Int = 0x00000003 // The item is disabled.
 }

@@ -24,9 +24,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,8 +40,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.platform.FontLoadResult
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -57,6 +60,7 @@ import com.konyaco.fluent.background.BackgroundSizing
 import com.konyaco.fluent.background.Layer
 import com.konyaco.fluent.component.FontIconDefaults
 import com.konyaco.fluent.component.FontIconSize
+import com.konyaco.fluent.component.Icon
 import com.konyaco.fluent.component.NavigationDefaults
 import com.konyaco.fluent.component.Text
 import com.konyaco.fluent.component.TooltipBox
@@ -80,8 +84,6 @@ import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef.HWND
 import com.sun.jna.platform.win32.WinUser
 import java.awt.Window
-import java.awt.event.WindowEvent
-import java.awt.event.WindowFocusListener
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -179,12 +181,15 @@ fun FrameWindowScope.WindowsWindowFrame(
             }
             Spacer(modifier = Modifier.weight(1f))
             window.CaptionButtonRow(
-                procedure.windowHandle,
-                state.placement == WindowPlacement.Maximized,
+                windowHandle = procedure.windowHandle,
+                isMaximize = state.placement == WindowPlacement.Maximized,
                 onCloseRequest = onCloseRequest,
                 onMaximizeButtonRectUpdate = {
                     maxButtonRect.value = it
                 },
+                accentColor = procedure.windowFrameColor,
+                frameColorEnabled = procedure.isWindowFrameAccentColorEnabled,
+                isActive = procedure.isWindowActive,
                 modifier = Modifier.align(Alignment.Top).onSizeChanged {
                     contentPaddingInset.insets = WindowInsets(right = it.width, top = it.height)
                 }
@@ -197,37 +202,30 @@ fun FrameWindowScope.WindowsWindowFrame(
 fun Window.CaptionButtonRow(
     windowHandle: HWND,
     isMaximize: Boolean,
+    isActive: Boolean,
+    accentColor: Color,
+    frameColorEnabled: Boolean,
     onCloseRequest: () -> Unit,
     modifier: Modifier = Modifier,
     onMaximizeButtonRectUpdate: (Rect) -> Unit
 ) {
-    val isActive = remember { mutableStateOf(false) }
-    DisposableEffect(this) {
-        val listener = object : WindowFocusListener {
-            override fun windowGainedFocus(e: WindowEvent?) {
-                isActive.value = true
-            }
-
-            override fun windowLostFocus(e: WindowEvent?) {
-                isActive.value = false
-            }
-        }
-        addWindowFocusListener(listener)
-        onDispose {
-            removeWindowFocusListener(listener)
-        }
-    }
     //Draw the caption button
     Row(
         modifier = modifier
             .zIndex(1f)
     ) {
+        val colors = if (frameColorEnabled && accentColor != Color.Unspecified) {
+            CaptionButtonDefaults.accentColors(accentColor)
+        } else {
+            CaptionButtonDefaults.defaultColors()
+        }
         CaptionButton(
             onClick = {
                 User32.INSTANCE.CloseWindow(windowHandle)
             },
             icon = CaptionButtonIcon.Minimize,
-            isActive = isActive.value
+            isActive = isActive,
+            colors = colors
         )
         CaptionButton(
             onClick = {
@@ -248,7 +246,8 @@ fun Window.CaptionButtonRow(
             } else {
                 CaptionButtonIcon.Maximize
             },
-            isActive = isActive.value,
+            isActive = isActive,
+            colors = colors,
             modifier = Modifier.onGloballyPositioned {
                 onMaximizeButtonRectUpdate(it.boundsInWindow())
             }
@@ -256,7 +255,7 @@ fun Window.CaptionButtonRow(
         CaptionButton(
             icon = CaptionButtonIcon.Close,
             onClick = onCloseRequest,
-            isActive = isActive.value,
+            isActive = isActive,
             colors = CaptionButtonDefaults.closeColors()
         )
     }
@@ -296,24 +295,48 @@ fun CaptionButton(
             ),
             shape = RectangleShape
         ) {
-            Text(
-                text = icon.glyph.toString(),
-                fontFamily = windowsFontFamily(),
-                textAlign = TextAlign.Center,
-                fontSize = 10.sp,
-                modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
-            )
+            val fontFamily by rememberFontIconFamily()
+            if (fontFamily != null) {
+                Text(
+                    text = icon.glyph.toString(),
+                    fontFamily = fontFamily,
+                    textAlign = TextAlign.Center,
+                    fontSize = 10.sp,
+                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+                )
+            } else {
+                Icon(
+                    imageVector = icon.imageVector,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center).size(13.dp),
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalTextApi::class)
-private fun windowsFontFamily(): FontFamily {
-    return if (!isWindows11OrLater()) {
-        FontFamily("Segoe MDL2 Assets")
-    } else {
-        FontFamily("Segoe Fluent Icons")
+@Composable
+private fun rememberFontIconFamily(): State<FontFamily?> {
+    val fontIconFamily = remember { mutableStateOf<FontFamily?>(null) }
+    // Get windows system font icon, if get failed fall back to fluent svg icon.
+    val fontFamilyResolver = LocalFontFamilyResolver.current
+    LaunchedEffect(fontFamilyResolver) {
+        fontIconFamily.value = sequenceOf("Segoe Fluent Icons", "Segoe MDL2 Assets")
+            .mapNotNull {
+                val fontFamily = FontFamily(it)
+                runCatching {
+                    val result = fontFamilyResolver.resolve(fontFamily).value as FontLoadResult
+                    if (result.typeface == null || result.typeface?.familyName != it) {
+                        null
+                    } else {
+                        fontFamily
+                    }
+                }.getOrNull()
+            }
+            .firstOrNull()
     }
+    return fontIconFamily
 }
 
 object CaptionButtonDefaults {
@@ -349,7 +372,8 @@ object CaptionButtonDefaults {
 
     @Composable
     @Stable
-    fun closeColors(
+    fun accentColors(
+        accentColor: Color,
         default: CaptionButtonColor = CaptionButtonColor(
             background = FluentTheme.colors.subtleFill.transparent,
             foreground = FluentTheme.colors.text.text.primary,
@@ -357,15 +381,15 @@ object CaptionButtonDefaults {
             inactiveForeground = FluentTheme.colors.text.text.disabled
         ),
         hovered: CaptionButtonColor = default.copy(
-            background = Color(0xFFC42B1C),
+            background = accentColor,
             foreground = Color.White,
-            inactiveBackground = Color(0xFFC42B1C),
+            inactiveBackground = accentColor,
             inactiveForeground = Color.White
         ),
         pressed: CaptionButtonColor = default.copy(
-            background = Color(0xFFC42B1C).copy(0.9f),
+            background = accentColor.copy(0.9f),
             foreground = Color.White.copy(0.7f),
-            inactiveBackground = Color(0xFFC42B1C).copy(0.9f),
+            inactiveBackground = accentColor.copy(0.9f),
             inactiveForeground = Color.White.copy(0.7f)
         ),
         disabled: CaptionButtonColor = default.copy(
@@ -377,6 +401,10 @@ object CaptionButtonDefaults {
         pressed = pressed,
         disabled = disabled
     )
+
+    @Composable
+    @Stable
+    fun closeColors() = accentColors(Color(0xFFC42B1C))
 }
 
 @Stable

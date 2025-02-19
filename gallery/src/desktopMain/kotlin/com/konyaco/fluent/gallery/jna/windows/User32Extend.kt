@@ -1,5 +1,6 @@
 package com.konyaco.fluent.gallery.jna.windows
 
+import com.konyaco.fluent.gallery.jna.windows.structure.MENUITEMINFO
 import com.sun.jna.Native
 import com.sun.jna.Platform
 import com.sun.jna.platform.win32.User32
@@ -9,7 +10,9 @@ import com.sun.jna.platform.win32.WinDef.LPARAM
 import com.sun.jna.platform.win32.WinDef.LRESULT
 import com.sun.jna.platform.win32.WinUser.WindowProc
 import com.sun.jna.platform.win32.BaseTSD.LONG_PTR
+import com.sun.jna.platform.win32.WinDef.HMENU
 import com.sun.jna.platform.win32.WinDef.POINT
+import com.sun.jna.platform.win32.WinDef.RECT
 import com.sun.jna.platform.win32.WinDef.UINT
 import com.sun.jna.platform.win32.WinUser
 import com.sun.jna.win32.W32APIOptions
@@ -34,6 +37,14 @@ internal interface User32Extend : User32 {
     fun GetDpiForWindow(hWnd: HWND): UINT
 
     fun ScreenToClient(hWnd: HWND, lpPoint: POINT): Boolean
+
+    fun GetSystemMenu(hWnd: HWND, bRevert: Boolean): HMENU?
+
+    fun SetMenuItemInfo(hMenu: HMENU, uItem: Int, fByPosition: Boolean, lpmii: MENUITEMINFO): Boolean
+
+    fun TrackPopupMenu(hMenu: HMENU, uFlags: Int, x: Int, y: Int, nReserved: Int, hWnd: HWND, prcRect: RECT?): Int
+
+    fun SetMenuDefaultItem(hMenu: HMENU, uItem: Int, fByPos: Boolean): Boolean
 
 
     companion object {
