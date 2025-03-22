@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery.screen.navigation
+package io.github.composefluent.gallery.screen.navigation
 
 import androidx.compose.runtime.Composable
 import com.konyaco.fluent.gallery.component.GalleryPageScope
