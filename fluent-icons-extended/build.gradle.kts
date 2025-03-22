@@ -1,4 +1,4 @@
-import com.konyaco.fluent.plugin.build.BuildConfig
+import io.github.composefluent.plugin.build.BuildConfig
 import io.github.composefluent.plugin.build.applyTargets
 
 plugins {

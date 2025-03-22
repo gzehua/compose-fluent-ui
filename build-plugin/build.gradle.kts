@@ -23,8 +23,8 @@ kotlin {
 gradlePlugin {
     plugins {
         create("BuildPlugin") {
-            id = "com.konyaco.fluent.plugin.build"
-            implementationClass = "com.konyaco.fluent.plugin.build.BuildPlugin"
+            id = "io.github.composefluent.plugin.build"
+            implementationClass = "io.github.composefluent.plugin.build.BuildPlugin"
         }
     }
 }
