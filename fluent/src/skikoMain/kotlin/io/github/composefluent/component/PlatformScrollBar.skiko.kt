@@ -1,4 +1,4 @@
-package com.konyaco.fluent.component
+package io.github.composefluent.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -29,8 +29,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import com.konyaco.fluent.animation.FluentDuration
-import com.konyaco.fluent.animation.FluentEasing
+import io.github.composefluent.animation.FluentDuration
+import io.github.composefluent.animation.FluentEasing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

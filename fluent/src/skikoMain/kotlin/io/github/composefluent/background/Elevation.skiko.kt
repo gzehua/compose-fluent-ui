@@ -1,4 +1,4 @@
-package com.konyaco.fluent.background
+package io.github.composefluent.background
 
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Paint
