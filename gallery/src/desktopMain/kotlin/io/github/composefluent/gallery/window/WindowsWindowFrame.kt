@@ -79,7 +79,6 @@ import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowStyle
-import com.mayakapps.compose.windowstyler.findSkiaLayer
 import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef.HWND
 import com.sun.jna.platform.win32.WinUser

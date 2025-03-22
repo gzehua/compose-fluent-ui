@@ -34,7 +34,6 @@ import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_NCR
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_SETTINGCHANGE
 import io.github.composefluent.gallery.jna.windows.structure.WindowMargins
 import io.github.composefluent.gallery.jna.windows.structure.isWindows11OrLater
-import com.mayakapps.compose.windowstyler.findSkiaLayer
 import com.sun.jna.Native
 import com.sun.jna.NativeLibrary
 import com.sun.jna.Pointer
@@ -54,6 +53,7 @@ import com.sun.jna.platform.win32.WinUser.WM_SIZE
 import com.sun.jna.platform.win32.WinUser.WS_CAPTION
 import com.sun.jna.platform.win32.WinUser.WS_SYSMENU
 import com.sun.jna.ptr.IntByReference
+import io.github.composefluent.gallery.window.findSkiaLayer
 import org.jetbrains.skiko.currentSystemTheme
 import java.awt.Window
 
