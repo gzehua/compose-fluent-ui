@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery
+package io.github.composefluent.gallery
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
@@ -7,8 +7,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.konyaco.fluent.gallery.component.rememberComponentNavigator
-import com.konyaco.fluent.gallery.window.WindowFrame
+import io.github.composefluent.gallery.component.rememberComponentNavigator
+import io.github.composefluent.gallery.window.WindowFrame
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource

@@ -1,15 +1,15 @@
-package com.konyaco.fluent.gallery.window
+package io.github.composefluent.gallery.window
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.WindowState
-import com.konyaco.fluent.component.NavigationDisplayMode
-import com.konyaco.fluent.gallery.GalleryTheme
-import com.konyaco.fluent.gallery.LocalStore
-import com.konyaco.fluent.gallery.jna.windows.structure.isWindows10OrLater
-import com.konyaco.fluent.gallery.jna.windows.structure.isWindows11OrLater
+import io.github.composefluent.component.NavigationDisplayMode
+import io.github.composefluent.gallery.GalleryTheme
+import io.github.composefluent.gallery.LocalStore
+import io.github.composefluent.gallery.jna.windows.structure.isWindows10OrLater
+import io.github.composefluent.gallery.jna.windows.structure.isWindows11OrLater
 import org.jetbrains.skiko.hostOs
 
 @Composable

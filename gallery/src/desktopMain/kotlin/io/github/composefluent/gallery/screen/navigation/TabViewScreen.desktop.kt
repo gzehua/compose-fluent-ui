@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery.screen.navigation
+package io.github.composefluent.gallery.screen.navigation
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,14 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
-import com.konyaco.fluent.ExperimentalFluentApi
-import com.konyaco.fluent.FluentTheme
-import com.konyaco.fluent.FluentThemeConfiguration
-import com.konyaco.fluent.component.Button
-import com.konyaco.fluent.component.Text
-import com.konyaco.fluent.gallery.LocalStore
-import com.konyaco.fluent.gallery.component.GalleryPageScope
-import com.konyaco.fluent.gallery.window.WindowFrame
+import io.github.composefluent.ExperimentalFluentApi
+import io.github.composefluent.FluentTheme
+import io.github.composefluent.FluentThemeConfiguration
+import io.github.composefluent.component.Button
+import io.github.composefluent.component.Text
+import io.github.composefluent.gallery.LocalStore
+import io.github.composefluent.gallery.component.GalleryPageScope
+import io.github.composefluent.gallery.window.WindowFrame
 import fluentdesign.gallery.generated.resources.Res
 import fluentdesign.gallery.generated.resources.icon
 import org.jetbrains.compose.resources.painterResource

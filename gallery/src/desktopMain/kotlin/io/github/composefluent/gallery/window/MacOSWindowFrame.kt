@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery.window
+package io.github.composefluent.gallery.window
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
-import com.konyaco.fluent.component.NavigationDefaults
+import io.github.composefluent.component.NavigationDefaults
 
 @Composable
 fun FrameWindowScope.MacOSWindowFrame(

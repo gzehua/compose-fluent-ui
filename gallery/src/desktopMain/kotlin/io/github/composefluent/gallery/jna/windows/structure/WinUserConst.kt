@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery.jna.windows.structure
+package io.github.composefluent.gallery.jna.windows.structure
 
 object WinUserConst {
 

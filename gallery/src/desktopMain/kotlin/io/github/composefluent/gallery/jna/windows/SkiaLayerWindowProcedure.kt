@@ -1,15 +1,15 @@
-package com.konyaco.fluent.gallery.jna.windows
+package io.github.composefluent.gallery.jna.windows
 
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTCLIENT
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTMAXBUTTON
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.HTTRANSPANRENT
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_LBUTTONDOWN
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_LBUTTONUP
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_MOUSEMOVE
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCHITTEST
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCLBUTTONDOWN
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCLBUTTONUP
-import com.konyaco.fluent.gallery.jna.windows.structure.WinUserConst.WM_NCMOUSEMOVE
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCLIENT
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTMAXBUTTON
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTTRANSPANRENT
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_LBUTTONDOWN
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_LBUTTONUP
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_MOUSEMOVE
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_NCHITTEST
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_NCLBUTTONDOWN
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_NCLBUTTONUP
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_NCMOUSEMOVE
 import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.BaseTSD
