@@ -1,4 +1,4 @@
-package com.konyaco.fluent.component
+package io.github.composefluent.component
 
 private val localeToFirstDayMap by lazy {
     mapOf(

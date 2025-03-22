@@ -1,4 +1,4 @@
-package com.konyaco.fluent.component
+package io.github.composefluent.component
 
 internal actual fun getLocalDayOfWeekNames(): List<String> {
     val jsFun: String = js(

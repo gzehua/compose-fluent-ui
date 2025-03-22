@@ -1,4 +1,4 @@
-package com.konyaco.fluent.component
+package io.github.composefluent.component
 
 @JsFun("""(style) => {
     var format = new Intl.DateTimeFormat(navigator.language, { weekday: style })

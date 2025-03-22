@@ -1,4 +1,4 @@
-package com.konyaco.fluent
+package io.github.composefluent
 
 import androidx.compose.runtime.Composable
 
