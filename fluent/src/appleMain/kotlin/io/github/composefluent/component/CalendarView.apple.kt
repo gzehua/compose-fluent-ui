@@ -1,4 +1,4 @@
-package com.konyaco.fluent.component
+package io.github.composefluent.component
 
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarIdentifierGregorian
