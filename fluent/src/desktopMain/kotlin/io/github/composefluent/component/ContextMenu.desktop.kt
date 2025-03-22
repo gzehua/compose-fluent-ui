@@ -1,4 +1,4 @@
-package com.konyaco.fluent.component
+package io.github.composefluent.component
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.sp
-import com.konyaco.fluent.animation.FluentDuration
-import com.konyaco.fluent.animation.FluentEasing
-import com.konyaco.fluent.component.FluentContextMenuItem.KeyData
+import io.github.composefluent.animation.FluentDuration
+import io.github.composefluent.animation.FluentEasing
+import io.github.composefluent.component.FluentContextMenuItem.KeyData
 import org.jetbrains.skiko.hostOs
 
 internal object FluentContextMenuRepresentation : ContextMenuRepresentation {
