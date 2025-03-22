@@ -4,7 +4,7 @@ import org.gradle.api.JavaVersion
 
 object BuildConfig {
 
-    const val group = "com.konyaco"
+    const val group = "io.github.composefluent"
 
     const val packageName = "$group.fluent"
 

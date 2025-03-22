@@ -72,14 +72,14 @@ class BuildPlugin : Plugin<Project> {
                     developer {
                         name.set("Kon Yaco")
                         email.set("atwzj233@gmail.com")
-                        url.set("https://github.com/Konyaco")
+                        url.set("https://github.com/compose-fluent")
                     }
                 }
 
                 scm {
-                    url.set("https://github.com/Konyaco/compose-fluent-ui")
-                    connection.set("scm:git:git://github.com/Konyaco/compose-fluent-ui.git")
-                    developerConnection.set("scm:git:ssh://github.com/Konyaco/compose-fluent-ui.git")
+                    url.set("https://github.com/compose-fluent/compose-fluent-ui")
+                    connection.set("scm:git:git://github.com/compose-fluent/compose-fluent-ui.git")
+                    developerConnection.set("scm:git:ssh://github.com/compose-fluent/compose-fluent-ui.git")
                 }
             }
         }
