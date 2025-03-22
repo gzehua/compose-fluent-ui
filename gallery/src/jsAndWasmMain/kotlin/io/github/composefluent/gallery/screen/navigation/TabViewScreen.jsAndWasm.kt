@@ -1,7 +1,7 @@
 package io.github.composefluent.gallery.screen.navigation
 
 import androidx.compose.runtime.Composable
-import com.konyaco.fluent.gallery.component.GalleryPageScope
+import io.github.composefluent.gallery.component.GalleryPageScope
 
 @Composable
 internal actual fun GalleryPageScope.PlatformTabViewSection() {}

@@ -49,6 +49,7 @@ import io.github.composefluent.component.Icon
 import io.github.composefluent.component.Scrollbar
 import io.github.composefluent.component.SubtleButton
 import io.github.composefluent.component.Text
+import io.github.composefluent.component.rememberScrollbarAdapter
 import io.github.composefluent.icons.Icons
 import io.github.composefluent.icons.regular.ChevronDown
 
@@ -192,7 +193,7 @@ fun GallerySection(
                                 Scrollbar(
                                     modifier = Modifier.fillMaxWidth(),
                                     isVertical = false,
-                                    adapter = com.konyaco.fluent.component.rememberScrollbarAdapter(
+                                    adapter = rememberScrollbarAdapter(
                                         scrollState
                                     )
                                 )

@@ -6,7 +6,7 @@ import io.github.composefluent.gallery.annotation.ComponentGroup
 
 object ComponentGroupInfo {
 
-    private const val screenPackage: String = "com.konyaco.fluent.gallery.screen"
+    private const val screenPackage: String = "io.github.composefluent.gallery.screen"
 
     @ComponentGroup("Ruler", index = 0, generateScreen = false, packageMap = "$screenPackage.design")
     const val DesignGuidance = "Design guidance"
