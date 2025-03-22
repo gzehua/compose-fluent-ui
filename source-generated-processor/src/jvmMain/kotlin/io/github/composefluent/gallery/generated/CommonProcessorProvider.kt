@@ -1,4 +1,4 @@
-package io.github.composefluent.generated
+package io.github.composefluent.gallery.generated
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor

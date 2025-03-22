@@ -6,7 +6,7 @@ object BuildConfig {
 
     const val group = "io.github.composefluent"
 
-    const val packageName = "$group.fluent"
+    const val packageName = "$group"
 
     internal const val snapshotLibraryVersion = "0.1.0-SNAPSHOT"
 
