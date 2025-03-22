@@ -1,5 +1,5 @@
 import com.konyaco.fluent.plugin.build.BuildConfig
-import com.konyaco.fluent.plugin.build.applyTargets
+import io.github.composefluent.plugin.build.applyTargets
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)

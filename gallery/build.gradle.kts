@@ -1,7 +1,7 @@
 import com.android.build.api.variant.impl.VariantOutputImpl
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.konyaco.fluent.plugin.build.BuildConfig
-import com.konyaco.fluent.plugin.build.applyTargets
+import io.github.composefluent.plugin.build.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 

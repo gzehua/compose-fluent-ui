@@ -1,4 +1,4 @@
-package com.konyaco.fluent.plugin.build
+package io.github.composefluent.plugin.build
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
