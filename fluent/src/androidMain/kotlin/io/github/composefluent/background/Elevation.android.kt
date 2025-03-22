@@ -1,4 +1,4 @@
-package com.konyaco.fluent.background
+package io.github.composefluent.background
 
 import android.graphics.BlurMaskFilter
 import android.os.Build
