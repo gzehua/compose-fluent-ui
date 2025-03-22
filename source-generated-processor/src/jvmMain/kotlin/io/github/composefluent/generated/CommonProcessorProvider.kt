@@ -1,4 +1,4 @@
-package com.konyaco.fluent.generated
+package io.github.composefluent.generated
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor

@@ -1,4 +1,4 @@
-package com.konyaco.fluent.generated
+package io.github.composefluent.generated
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
@@ -23,7 +23,7 @@ class IconSourceProcessor(environment: SymbolProcessorEnvironment) : IProcessor 
     private val iconSourceEnabled =
         environment.options["source.generated.icon.enabled"]?.toBooleanStrictOrNull() ?: false
 
-    private val packageName = "com.konyaco.fluent.source.generated"
+    private val packageName = "io.github.composefluent.source.generated"
     private val packagePath = packageName.replace(".", "/")
 
     private val logger = environment.logger
@@ -38,16 +38,16 @@ class IconSourceProcessor(environment: SymbolProcessorEnvironment) : IProcessor 
                 if (!declaration.modifiers.contains(Modifier.PUBLIC)) return@declaration
                 val declarationPackageName = declaration.packageName.asString()
 
-                if (declarationPackageName.startsWith("com.konyaco.fluent.icons") && declaration is KSPropertyDeclaration) {
+                if (declarationPackageName.startsWith("io.github.composefluent.icons") && declaration is KSPropertyDeclaration) {
                     val typeDeclaration = declaration.type.resolve().declaration
                     if (typeDeclaration.qualifiedName?.asString() == "androidx.compose.ui.graphics.vector.ImageVector") {
                         val receiverType = declaration.extensionReceiver ?: return@declaration
                         val receiverName = when(receiverType.toString()) {
-                            "Regular" -> "com.konyaco.fluent.icons.Icons.Regular"
-                            "Filled" -> "com.konyaco.fluent.icons.Icons.Filled"
+                            "Regular" -> "io.github.composefluent.icons.Icons.Regular"
+                            "Filled" -> "io.github.composefluent.icons.Icons.Filled"
                             else -> ""
                         }
-                        if (receiverName.startsWith("com.konyaco.fluent.icons.Icons")) {
+                        if (receiverName.startsWith("io.github.composefluent.icons.Icons")) {
                             if (rootPath.isEmpty()) {
                                 val projectFile = File(file.filePath.substringBefore("/src/"))
                                 rootPath = projectFile.parentFile.path
@@ -81,7 +81,7 @@ class IconSourceProcessor(environment: SymbolProcessorEnvironment) : IProcessor 
                     )
                 )
                 iconFile.addImport(vectorClass.packageName, vectorClass.simpleName)
-                iconFile.addImport("com.konyaco.fluent.icons", "Icons")
+                iconFile.addImport("io.github.composefluent.icons", "Icons")
 
                 val receiverPackage = receiver.substringBeforeLast(".Icons.")
                 val receiverName = receiver.substringAfter(receiverPackage).removePrefix(".")

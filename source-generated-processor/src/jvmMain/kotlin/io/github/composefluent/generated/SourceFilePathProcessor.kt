@@ -1,4 +1,4 @@
-package com.konyaco.fluent.generated
+package io.github.composefluent.generated
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
@@ -15,7 +15,7 @@ import java.util.Locale
 
 class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcessor {
 
-    private val packageName = "com.konyaco.fluent.source.generated"
+    private val packageName = "io.github.composefluent.source.generated"
     private val packagePath = packageName.replace(".", "/")
 
     private val componentName = environment.options["source.generated.module.name"] ?: ""

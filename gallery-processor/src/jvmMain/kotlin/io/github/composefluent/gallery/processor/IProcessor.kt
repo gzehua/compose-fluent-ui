@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery.processor
+package io.github.composefluent.gallery.processor
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor

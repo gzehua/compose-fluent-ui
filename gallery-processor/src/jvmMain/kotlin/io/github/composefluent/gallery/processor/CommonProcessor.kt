@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery.processor
+package io.github.composefluent.gallery.processor
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -35,7 +35,7 @@ class CommonProcessor(logger: KSPLogger, codeGenerator: CodeGenerator): SymbolPr
     }
 
     companion object {
-        const val annotationPackage = "com.konyaco.fluent.gallery.annotation"
+        const val annotationPackage = "io.github.composefluent.gallery.annotation"
     }
 }
 

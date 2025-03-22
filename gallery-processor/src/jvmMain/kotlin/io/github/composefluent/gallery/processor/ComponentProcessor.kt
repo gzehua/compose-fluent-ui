@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery.processor
+package io.github.composefluent.gallery.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -16,14 +16,14 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
     private val componentAnnotation = "Component"
     private val componentGroupAnnotation = "ComponentGroup"
 
-    private val iconImportPrefix = "com.konyaco.fluent.icons.regular"
-    private val iconPrefix = "com.konyaco.fluent.icons.Icons.Regular"
+    private val iconImportPrefix = "io.github.composefluent.icons.regular"
+    private val iconPrefix = "io.github.composefluent.icons.Icons.Regular"
 
     private val componentFunctions = mutableMapOf<String, MutableList<Pair<KSAnnotation, KSFunctionDeclaration>>>()
     private val componentGroups = mutableMapOf<String, Pair<KSAnnotation, KSPropertyDeclarationImpl>>()
     private val componentPackageMap = mutableMapOf<String, String>()
 
-    private val componentPackage = "com.konyaco.fluent.gallery.component"
+    private val componentPackage = "io.github.composefluent.gallery.component"
     private val componentItemClass = ClassName(componentPackage, "ComponentItem")
 
     private val componentNameList = mutableListOf<String>()
