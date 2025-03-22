@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery
+package io.github.composefluent.gallery
 
 import org.junit.Test
 

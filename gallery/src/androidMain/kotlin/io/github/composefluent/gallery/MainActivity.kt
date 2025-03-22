@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery
+package io.github.composefluent.gallery
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
-import com.konyaco.fluent.gallery.component.rememberComponentNavigator
+import io.github.composefluent.gallery.component.rememberComponentNavigator
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

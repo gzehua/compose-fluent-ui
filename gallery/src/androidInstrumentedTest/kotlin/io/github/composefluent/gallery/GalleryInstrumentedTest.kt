@@ -1,4 +1,4 @@
-package com.konyaco.fluent.gallery
+package io.github.composefluent.gallery
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
