@@ -13,7 +13,7 @@ import kotlin.math.max
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-actual fun rememberFlyoutCalculateMaxHeight(padding: Dp): (LayoutCoordinates) -> Int {
+actual fun rememberFlyoutCalculateMaxHeight(padding: Dp): (anchorCoordinates: LayoutCoordinates) -> Int {
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val verticalMarginInPx = with(LocalDensity.current) { padding.roundToPx() }

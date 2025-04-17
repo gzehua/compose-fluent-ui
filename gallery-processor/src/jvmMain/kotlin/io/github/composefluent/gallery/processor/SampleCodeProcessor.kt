@@ -1,12 +1,16 @@
 package io.github.composefluent.gallery.processor
 
-import com.google.devtools.ksp.processing.*
-import com.google.devtools.ksp.symbol.*
-import com.google.devtools.ksp.symbol.impl.kotlin.KSFunctionDeclarationImpl
+import com.google.devtools.ksp.impl.symbol.kotlin.KSFunctionDeclarationImpl
+import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
+import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
+import ksp.org.jetbrains.kotlin.psi.KtDeclarationWithBody
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
@@ -44,17 +48,19 @@ class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerat
                 functions.forEach { func ->
                     func.containingFile?.let { sourceFileList.add(it) }
                     if (func is KSFunctionDeclarationImpl) {
-                        val funcName = func.simpleName.asString()
-                        val bodyText = func.ktFunction.let {
-                            it.bodyExpression
-                                ?.text
-                                ?.removePrefix("{")
-                                ?.removeSuffix("}")
-                                ?.trimIndent() ?: it.bodyBlockExpression
-                                ?.statements
-                                ?.joinToString(System.lineSeparator()) { statement -> statement.text }
-                                ?.trimIndent() ?: it.text
+                        val bodyText = when (val psi = func.ktDeclarationSymbol.psi) {
+                            is KtDeclarationWithBody -> {
+                                psi.bodyBlockExpression?.text
+                                    ?.removePrefix("{")
+                                    ?.removeSuffix("}")
+                                    ?.trimIndent() ?: psi.bodyBlockExpression
+                                    ?.statements
+                                    ?.joinToString(System.lineSeparator()) { statement -> statement.text }
+                                    ?.trimIndent() ?: psi.text
+                            }
+                            else -> psi?.text ?: ""
                         }
+                        val funcName = func.simpleName.asString()
                         sourceFile.addProperty(
                             PropertySpec.builder(
                                 "sourceCodeOf${funcName.first().uppercase()}${funcName.substring(1)}",

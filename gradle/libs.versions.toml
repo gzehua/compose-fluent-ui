@@ -1,13 +1,13 @@
 [versions]
 activityCompose = "1.9.3"
 haze = "1.0.2"
-kotlin = "2.1.0"
-ksp = "2.1.0-1.0.29"
-compose = "1.7.0"
+kotlin = "2.1.20"
+ksp = "2.1.20-2.0.0"
+compose = "1.7.3"
 androidGradlePlugin = "8.3.2"
 androidBuildTools = "31.7.2"
 windowStyler = "0.3.3-SNAPSHOT"
-highlights = "0.9.3"
+highlights = "1.0.0"
 kotlinx-datetime = "0.6.1"
 jna = "5.13.0"
 buildKonfig = "0.15.2"
@@ -22,7 +22,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 ktor-client-java = "io.ktor:ktor-client-java:3.0.0"
 jsoup = "org.jsoup:jsoup:1.16.2"
 google-guava = "com.google.guava:guava:33.2.1-jre"
-squareup-kotlinpoet = "com.squareup:kotlinpoet:1.18.1"
+squareup-kotlinpoet = "com.squareup:kotlinpoet:2.1.0"
 android-tools-common = { module = "com.android.tools:common", version.ref = "androidBuildTools" }
 android-tools-sdk-common = { module = "com.android.tools:sdk-common", version.ref = "androidBuildTools" }
 window-styler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowStyler" }

@@ -3,10 +3,21 @@ package io.github.composefluent.gallery.processor
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.*
-import com.google.devtools.ksp.symbol.impl.kotlin.KSPropertyDeclarationImpl
-import com.squareup.kotlinpoet.*
+import com.google.devtools.ksp.impl.symbol.kotlin.KSPropertyDeclarationImpl
+import com.google.devtools.ksp.symbol.KSAnnotation
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSValueArgument
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.withIndent
+import ksp.org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.util.prefixIfNot
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
@@ -84,14 +95,16 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             it.isTargetAnnotation(componentGroupAnnotation)
         } ?: return
         if (property is KSPropertyDeclarationImpl) {
-            val groupName =
-                property.ktProperty.initializer?.text?.removePrefix("\"")?.removeSuffix("\"")?.prefixIfNot("/")
+            val psi = property.ktDeclarationSymbol.psi
+            if (psi is KtProperty) {
+                val groupName = psi.initializer?.text?.removePrefix("\"")?.removeSuffix("\"")?.prefixIfNot("/")
                     ?: return
-            componentGroups[groupName] = annotation to property
-            val packageNameValue =
-                annotation.arguments.firstOrNull { it.name?.asString() == "packageMap" }?.value as? String
-            val packageName = packageNameValue?.ifBlank { null } ?: return
-            componentPackageMap[packageName] = groupName
+                componentGroups[groupName] = annotation to property
+                val packageNameValue =
+                    annotation.arguments.firstOrNull { it.name?.asString() == "packageMap" }?.value as? String
+                val packageName = packageNameValue?.ifBlank { null } ?: return
+                componentPackageMap[packageName] = groupName
+            }
         }
     }
 

@@ -208,7 +208,6 @@ private class PaddingBackgroundShape(corner: Dp, private val padding: PaddingVal
                         )
                     )
                 })
-                else -> oldOutline
             }
         }
     }
