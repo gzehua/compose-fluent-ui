@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.LocalContentColor
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 @Composable
 fun Mica(modifier: Modifier, content: @Composable () -> Unit) {
@@ -35,11 +35,11 @@ fun Mica(
         val hazeState = remember { HazeState() }
         Box(
             propagateMinConstraints = true,
-            modifier = Modifier.matchParentSize().haze(state = hazeState)
+            modifier = Modifier.matchParentSize().hazeSource(state = hazeState)
         ) {
             background()
         }
-        Box(modifier = Modifier.fillMaxSize().hazeChild(state = hazeState, style = MaterialDefaults.mica().style)) {
+        Box(modifier = Modifier.fillMaxSize().hazeEffect(state = hazeState, style = MaterialDefaults.mica().style)) {
             CompositionLocalProvider(
                 LocalContentColor provides FluentTheme.colors.text.text.primary
             ) {
