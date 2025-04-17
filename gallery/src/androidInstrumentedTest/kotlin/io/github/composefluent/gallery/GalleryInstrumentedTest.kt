@@ -19,6 +19,6 @@ class GalleryInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.konyaco.fluent.gallery", appContext.packageName)
+        assertEquals("io.github.composefluent.gallery", appContext.packageName)
     }
 }

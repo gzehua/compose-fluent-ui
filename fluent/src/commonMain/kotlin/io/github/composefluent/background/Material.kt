@@ -19,8 +19,8 @@ import io.github.composefluent.FluentTheme
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import kotlin.jvm.JvmInline
 
 @ExperimentalFluentApi
@@ -60,13 +60,13 @@ private class MaterialContainerScopeImpl(boxScope: BoxScope) : MaterialContainer
     private val hazeState = HazeState()
 
     override fun Modifier.behindMaterial(): Modifier {
-        return then(Modifier.haze(state = hazeState))
+        return then(Modifier.hazeSource(state = hazeState))
     }
 
     override fun Modifier.materialOverlay(material: Material, enabled: () -> Boolean): Modifier {
         return when {
             !enabled() -> this
-            else -> hazeChild(
+            else -> hazeEffect(
                 state = hazeState,
                 style = material.style
             )

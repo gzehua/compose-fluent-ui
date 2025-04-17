@@ -15,7 +15,7 @@ kotlin {
             dependencies {
                 implementation(libs.squareup.kotlinpoet)
                 implementation("com.google.devtools.ksp:symbol-processing-api:${libs.versions.ksp.get()}")
-                implementation("com.google.devtools.ksp:symbol-processing:${libs.versions.ksp.get()}")
+                implementation("com.google.devtools.ksp:symbol-processing-aa-embeddable:${libs.versions.ksp.get()}")
                 implementation(kotlin("compiler"))
             }
         }

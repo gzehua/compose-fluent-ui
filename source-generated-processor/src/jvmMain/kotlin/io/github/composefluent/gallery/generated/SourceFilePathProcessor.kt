@@ -19,7 +19,7 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
     private val packagePath = packageName.replace(".", "/")
 
     private val componentName = environment.options["source.generated.module.name"] ?: ""
-    private val enabled = environment.options["source.generated.module.enabled"]?.toBooleanStrictOrNull() ?: true
+    private val enabled = environment.options["source.generated.module.enabled"]?.toBooleanStrictOrNull() != false
 
     private val objectName = "${componentName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}SourceFile"
     private val sourceFileSpecBuilder = TypeSpec.objectBuilder(objectName)

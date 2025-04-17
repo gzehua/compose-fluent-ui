@@ -4,7 +4,7 @@ import io.github.composefluent.build.BuildKonfig
 
 object ProjectUrl {
 
-    const val ROOT = "https://github.com/Konyaco/compose-fluent-ui"
+    const val ROOT = "https://github.com/compose-fluent/compose-fluent-ui"
 
     const val FRAMEWORK = "https://developer.android.com/develop/ui/compose"
 
