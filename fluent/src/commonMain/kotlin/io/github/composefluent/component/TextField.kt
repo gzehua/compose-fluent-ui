@@ -1,6 +1,7 @@
 package io.github.composefluent.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -13,9 +14,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicSecureTextField
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.KeyboardActionHandler
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextObfuscationMode
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -34,8 +45,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.LocalContentAlpha
@@ -209,6 +223,118 @@ fun TextField(
     }
 }
 
+@Composable
+fun TextField(
+    state: TextFieldState,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onKeyboardAction: KeyboardActionHandler? = null,
+    inputTransformation: InputTransformation? = null,
+    outputTransformation: OutputTransformation? = null,
+    lineLimits: TextFieldLineLimits = TextFieldLineLimits.Default,
+    header: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailing: (@Composable RowScope.() -> Unit)? = null,
+    placeholder: (@Composable () -> Unit)? = null,
+    isClearable: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    colors: TextFieldColorScheme = TextFieldDefaults.defaultTextFieldColors(),
+    onTextLayout: (Density.(getResult: () -> TextLayoutResult?) -> Unit)? = null,
+    scrollState: ScrollState = rememberScrollState(),
+    shape: Shape = FluentTheme.shapes.control
+) {
+    val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
+    HeaderContainer(header = header, modifier = modifier) {
+        BasicTextField(
+            modifier = modifier.textFieldModifier(shape),
+            state = state,
+            textStyle = LocalTextStyle.current.copy(color = color.contentColor),
+            enabled = enabled,
+            readOnly = readOnly,
+            onTextLayout = onTextLayout,
+            lineLimits = lineLimits,
+            onKeyboardAction = onKeyboardAction,
+            inputTransformation = inputTransformation,
+            outputTransformation = outputTransformation,
+            scrollState = scrollState,
+            cursorBrush = color.cursorBrush,
+            keyboardOptions = keyboardOptions,
+            interactionSource = interactionSource,
+            decorator = { innerTextField ->
+                TextFieldDefaults.DecorationBox(
+                    state = state,
+                    color = color,
+                    interactionSource = interactionSource,
+                    innerTextField = innerTextField,
+                    enabled = enabled,
+                    placeholder = placeholder,
+                    leadingIcon = leadingIcon,
+                    isClearable = isClearable,
+                    outputTransformation = outputTransformation,
+                    trailing = trailing,
+                    shape = shape
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun SecureTextField(
+    state: TextFieldState,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    keyboardOptions: KeyboardOptions = SecureTextFieldKeyboardOptions,
+    onKeyboardAction: KeyboardActionHandler? = null,
+    inputTransformation: InputTransformation? = null,
+    textObfuscationMode: TextObfuscationMode = TextObfuscationMode.RevealLastTyped,
+    textObfuscationCharacter: Char = DefaultObfuscationCharacter,
+    header: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailing: (@Composable RowScope.() -> Unit)? = null,
+    placeholder: (@Composable () -> Unit)? = null,
+    isClearable: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    colors: TextFieldColorScheme = TextFieldDefaults.defaultTextFieldColors(),
+    onTextLayout: (Density.(getResult: () -> TextLayoutResult?) -> Unit)? = null,
+    shape: Shape = FluentTheme.shapes.control
+) {
+    val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
+    HeaderContainer(header = header, modifier = modifier) {
+        BasicSecureTextField(
+            modifier = modifier.textFieldModifier(shape),
+            state = state,
+            textStyle = LocalTextStyle.current.copy(color = color.contentColor),
+            enabled = enabled,
+            onTextLayout = onTextLayout,
+            onKeyboardAction = onKeyboardAction,
+            inputTransformation = inputTransformation,
+            textObfuscationMode = textObfuscationMode,
+            textObfuscationCharacter = textObfuscationCharacter,
+            cursorBrush = color.cursorBrush,
+            keyboardOptions = keyboardOptions,
+            interactionSource = interactionSource,
+            decorator = { innerTextField ->
+                TextFieldDefaults.DecorationBox(
+                    state = state,
+                    color = color,
+                    interactionSource = interactionSource,
+                    innerTextField = innerTextField,
+                    enabled = enabled,
+                    placeholder = placeholder,
+                    leadingIcon = leadingIcon,
+                    isClearable = isClearable,
+                    outputTransformation = null,
+                    trailing = trailing,
+                    shape = shape
+                )
+            }
+        )
+    }
+}
+
 /**
  * Contains the default values used for [TextField].
  */
@@ -304,8 +430,78 @@ object TextFieldDefaults {
      * This function wraps the inner text field with a styled layer, including optional
      * leading and trailing icons, a clear button, and placeholder text. It also handles
      * the visual states of the text field, such as hover, focus, and enabled/disabled.
+     * This overload is specifically for use with [TextFieldState].
      *
-     * @param value The current text value of the text field.
+     * @param state The [TextFieldState] managing the text and selection of the text field.
+     * @param isClearable Determines if a clear button should be shown when the text field is focused and not empty.
+     * @param outputTransformation An optional [OutputTransformation] to modify the visual representation of the text.
+     * @param interactionSource The [MutableInteractionSource] representing the stream of
+     *   interactions for this text field. You can create and pass in your own remembered
+     *   [MutableInteractionSource] if you want to observe interactions and customize the
+     *   decoration based on them.
+     * @param enabled Controls the enabled state of the text field. When `false`, the text field
+     *   will be visually disabled and will not respond to input.
+     * @param color The color scheme for the text field, including colors for the background, text,
+     *   placeholder, and border.
+     * @param modifier Optional [Modifier] to be applied to the outer layer of the text field.
+     *   By default, it includes the bottom line drawing.
+     * @param shape The [Shape] of the text field's background layer.
+     * @param placeholder Optional composable that will be displayed when the text field is empty
+     *   and not focused.
+     * @param leadingIcon Optional composable that will be displayed at the start of the text field.
+     * @param trailing Optional composable that will be displayed at the end of the text field, such as an action button.
+     * @param innerTextField The composable that renders the actual text field content.
+     */
+    @Composable
+    fun DecorationBox(
+        state: TextFieldState,
+        isClearable: Boolean,
+        outputTransformation: OutputTransformation?,
+        interactionSource: MutableInteractionSource,
+        enabled: Boolean,
+        color: TextFieldColor,
+        modifier: Modifier = Modifier.drawBottomLine(enabled, color, interactionSource),
+        shape: Shape,
+        placeholder: (@Composable () -> Unit)?,
+        leadingIcon: (@Composable () -> Unit)?,
+        trailing: (@Composable RowScope.() -> Unit)?,
+        innerTextField: @Composable () -> Unit,
+    ) {
+        val visualText = if (outputTransformation == null) state.text
+        else {
+            lateinit var buffer: TextFieldBuffer
+            state.edit { buffer = this }
+            with(outputTransformation) { buffer.transformOutput() }
+            buffer.asCharSequence()
+        }
+        DecorationBox(
+            color = color,
+            interactionSource = interactionSource,
+            innerTextField = innerTextField,
+            value = visualText,
+            enabled = enabled,
+            placeholder = placeholder,
+            leadingIcon = leadingIcon,
+            onClearClick = if (isClearable) {
+                { state.clearText() }
+            } else {
+                null
+            },
+            trailing = trailing,
+            shape = shape,
+            modifier = modifier
+        )
+    }
+
+    /**
+     * Composable function that provides the visual decoration for a text field.
+     *
+     * This function wraps the inner text field with a styled layer, including optional
+     * leading and trailing icons, a clear button, and placeholder text. It also handles
+     * the visual states of the text field, such as hover, focus, and enabled/disabled.
+     *
+     * @param value The current text value of the text field. This could be the direct input or
+     *  the result of an [OutputTransformation].
      * @param interactionSource The [MutableInteractionSource] representing the stream of
      *   interactions for this text field. You can create and pass in your own remembered
      *   [MutableInteractionSource] if you want to observe interactions and customize the
@@ -322,12 +518,12 @@ object TextFieldDefaults {
      * @param placeholder Optional composable that will be displayed when the text field is empty
      *   and not focused.
      * @param leadingIcon Optional composable that will be displayed at the start of the text field.
-     * @param trailing Optional composable that will be displayed at the end of the text field, such as action button.
+     * @param trailing Optional composable that will be displayed at the end of the text field, such as an action button.
      * @param innerTextField The composable that renders the actual text field content.
      */
     @Composable
     fun DecorationBox(
-        value: String,
+        value: CharSequence,
         interactionSource: MutableInteractionSource,
         enabled: Boolean,
         color: TextFieldColor,
@@ -463,3 +659,8 @@ internal fun Modifier.textFieldModifier(shape: Shape) =
     defaultMinSize(64.dp, 32.dp).clip(shape)
 
 private val TextFieldContentArrangement = Arrangement.alignLast(Arrangement.Start, Alignment.End)
+
+private val SecureTextFieldKeyboardOptions =
+    KeyboardOptions(autoCorrectEnabled = false, keyboardType = KeyboardType.Password)
+
+private const val DefaultObfuscationCharacter: Char = '\u2022'
