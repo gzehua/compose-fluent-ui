@@ -5,6 +5,7 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.impl.symbol.kotlin.KSPropertyDeclarationImpl
 import com.google.devtools.ksp.symbol.KSAnnotation
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSValueArgument
@@ -33,6 +34,8 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
     private val componentFunctions = mutableMapOf<String, MutableList<Pair<KSAnnotation, KSFunctionDeclaration>>>()
     private val componentGroups = mutableMapOf<String, Pair<KSAnnotation, KSPropertyDeclarationImpl>>()
     private val componentPackageMap = mutableMapOf<String, String>()
+    private val componentPackageProperty = mutableSetOf<KSFile>()
+    private val componentScreenFile = mutableSetOf<KSFile>()
 
     private val componentPackage = "io.github.composefluent.gallery.component"
     private val componentItemClass = ClassName(componentPackage, "ComponentItem")
@@ -52,19 +55,12 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
     private fun arrangeComponentGroup() {
         val mapPackage = componentFunctions.remove("/_Auto") ?: emptyList()
         mapPackage.forEach { pair ->
-            val group = componentPackageMap[pair.second.packageName.asString()]
-            if (!group.isNullOrEmpty()) {
-                val list =
-                    componentFunctions[group] ?: mutableListOf<Pair<KSAnnotation, KSFunctionDeclaration>>().apply {
-                        componentFunctions[group] = this
-                    }
-                list.add(pair)
-            } else {
-                val list = componentFunctions["/"] ?: mutableListOf<Pair<KSAnnotation, KSFunctionDeclaration>>().apply {
-                    componentFunctions["/"] = this
-                }
-                list.add(pair)
+            val group = componentPackageMap[pair.second.packageName.asString()].let {
+                if (it.isNullOrEmpty()) "/" else it
             }
+            componentFunctions
+                .getOrPut(group) { mutableListOf() }
+                .add(pair)
         }
     }
 
@@ -79,11 +75,10 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                     }
                 }
                 val group = (groupArg?.value as? String)?.prefixIfNot("/") ?: return@forEach
-                val list =
-                    componentFunctions[group] ?: mutableListOf<Pair<KSAnnotation, KSFunctionDeclaration>>().apply {
-                        componentFunctions[group] = this
-                    }
-                list.add(annotation to function)
+                componentFunctions
+                    .getOrPut(group) { mutableListOf() }
+                    .add(annotation to function)
+                componentScreenFile.add(function.containingFile ?: return)
                 return
             }
         }
@@ -99,6 +94,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             if (psi is KtProperty) {
                 val groupName = psi.initializer?.text?.removePrefix("\"")?.removeSuffix("\"")?.prefixIfNot("/")
                     ?: return
+                property.containingFile?.let { componentPackageProperty.add(it) }
                 componentGroups[groupName] = annotation to property
                 val packageNameValue =
                     annotation.arguments.firstOrNull { it.name?.asString() == "packageMap" }?.value as? String
@@ -200,7 +196,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
                 .build()
         )
         val file = codeGenerator.createNewFile(
-            Dependencies(true),
+            Dependencies(aggregating = true, sources = componentPackageProperty.toTypedArray()),
             fileSpecBuilder.packageName,
             fileSpecBuilder.name
         )
@@ -208,7 +204,7 @@ class ComponentProcessor(private val logger: KSPLogger, private val codeGenerato
             componentPackage, "ComponentPagePath"
         ).addType(componentPagePathType.build()).build()
         val pathFile = codeGenerator.createNewFile(
-            Dependencies(true),
+            Dependencies(true, sources = componentScreenFile.toTypedArray()),
             componentPackage,
             pathFileSpec.name
         )

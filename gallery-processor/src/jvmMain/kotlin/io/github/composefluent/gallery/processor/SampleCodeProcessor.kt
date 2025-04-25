@@ -24,11 +24,9 @@ class SampleCodeProcessor(private val logger: KSPLogger, private val codeGenerat
         super.onFunctionVisit(function)
         function.annotations.forEach {
             if (it.isTargetAnnotation(sampleAnnotation)) {
-                val list = sampleCodeFunctions[function.packageName.asString()]
-                    ?: mutableListOf<KSFunctionDeclaration>().apply {
-                        sampleCodeFunctions[function.packageName.asString()] = this
-                    }
-                list.add(function)
+                sampleCodeFunctions
+                    .getOrPut(function.packageName.asString()) { mutableListOf() }
+                    .add(function)
             }
             return
         }
