@@ -9,9 +9,17 @@ import androidx.compose.runtime.setValue
 import io.github.composefluent.ExperimentalFluentApi
 
 /**
- * A calendar view lets a user view and interact with a calendar that they can navigate by month, year, or decade. A user can select a single date or a range of dates. It doesn't have a picker surface and the calendar is always visible.
+ * A calendar date picker that allows the user to select a single date from a calendar view within a flyout.
  *
- * The calendar date picker is a drop down control that's optimized for picking a single date from a calendar view where contextual information like the day of the week or fullness of the calendar is important. The calendar date picker has an internal CalendarView for picking a date.
+ * This composable provides a button that, when clicked, opens a flyout containing a [CalendarViewLayout].
+ * The user can navigate through months, years, and decades within the calendar to select a specific date.
+ *
+ * Once a date is selected, the flyout closes, the selected date is displayed on the button, and the `onChoose` callback is invoked.
+ *
+ * The date displayed in the button will be shown in the format: "year/month/day".
+ *
+ * @param onChoose Callback invoked when a date is selected by the user. Receives the selected [CalendarDatePickerState.Day].
+ * @param state The state of the calendar date picker, allowing customization of the displayed calendar.
  */
 @Composable
 @ExperimentalFluentApi

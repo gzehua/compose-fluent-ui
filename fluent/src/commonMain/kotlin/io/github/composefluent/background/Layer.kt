@@ -79,6 +79,18 @@ fun Layer(
     )
 }
 
+/**
+ * A composable that provides a layered background with customizable shape, color, border, and elevation.
+ *
+ * @param modifier The [Modifier] to be applied to the layer.
+ * @param shape The [Shape] of the layer's background. Defaults to [FluentTheme.shapes.control].
+ * @param color The background [Color] of the layer. Defaults to [FluentTheme.colors.background.layer.default].
+ * @param contentColor The preferred [Color] for content inside this layer. Defaults to [FluentTheme.colors.text.text.primary].
+ * @param border The [BorderStroke] to draw around the layer. If null, no border will be drawn. Defaults to a 1.dp border with [FluentTheme.colors.stroke.card.default].
+ * @param backgroundSizing Specifies how the background extends in relation to the border. See [BackgroundSizing] for options. Defaults to [BackgroundSizing.OuterBorderEdge].
+ * @param elevation The elevation of the layer, which affects the shadow. Defaults to 0.dp.
+ * @param content The composable content to be placed inside the layer.
+ */
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,
@@ -103,6 +115,19 @@ fun Layer(
     )
 }
 
+/**
+ * A composable that provides a background layer with customizable shape, color, border, and elevation.
+ *
+ * @param modifier The [Modifier] to be applied to the layer.
+ * @param shape The [Shape] of the layer's background. Defaults to `FluentTheme.shapes.control`.
+ * @param color The background [Color] of the layer. Defaults to `FluentTheme.colors.background.layer.default`.
+ * @param contentColor The default color for the content inside the layer. Defaults to `FluentTheme.colors.text.text.primary`.
+ * @param border An optional [BorderStroke] to be drawn around the layer's background. Defaults to a 1.dp solid border using `FluentTheme.colors.stroke.card.default`.
+ * @param backgroundSizing Determines how the background extends in relation to the border. Defaults to [BackgroundSizing.OuterBorderEdge].
+ * @param clipContent If `true`, the content will be clipped to the layer's shape. Defaults to `false`.
+ * @param elevation The elevation of the layer, used for shadow effects. Defaults to `0.dp`.
+ * @param content The content to be displayed within the layer.
+ */
 @Composable
 fun Layer(
     modifier: Modifier = Modifier,

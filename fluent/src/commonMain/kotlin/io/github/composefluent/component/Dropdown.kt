@@ -45,6 +45,25 @@ import io.github.composefluent.background.BackgroundSizing
 import io.github.composefluent.background.ElevationDefaults
 import io.github.composefluent.background.Layer
 
+/**
+ * A dropdown menu.
+ *
+ * A dropdown menu displays a list of actions. It is typically used in conjunction with a button
+ * or other control that triggers its display.
+ *
+ * @param expanded Whether the menu is currently expanded and visible.
+ * @param onDismissRequest Called when the user requests to dismiss the menu, such as by clicking
+ * outside the menu's bounds.
+ * @param modifier The modifier to be applied to the menu.
+ * @param focusable Whether the menu should be focusable. This affects whether the menu can be
+ * navigated using the keyboard.
+ * @param onPreviewKeyEvent Called when a key event is received by the menu, before it is dispatched
+ * to the focusable content. Return true to consume the event.
+ * @param onKeyEvent Called when a key event is received by the menu, after it is dispatched to
+ * the focusable content. Return true to consume the event.
+ * @param offset The offset of the menu relative to the element that triggered its display.
+ * @param content The content of the menu, typically a [Column] of [DropdownMenuItem]s.
+ */
 @Composable
 fun DropdownMenu(
     expanded: Boolean,
@@ -158,6 +177,13 @@ internal fun DropdownMenuContent(
     }
 }
 
+/**
+ * A single item within a [DropdownMenu].
+ *
+ * @param onClick The callback to be invoked when this menu item is clicked.
+ * @param content The content of this menu item. This is a composable lambda that
+ *  will be rendered inside a [Row].
+ */
 @Composable
 fun DropdownMenuItem(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
     SubtleButton(modifier = Modifier.defaultMinSize(minWidth = 100.dp), onClick = onClick, iconOnly = true, content = {

@@ -27,6 +27,21 @@ import io.github.composefluent.CompactMode
 import io.github.composefluent.ExperimentalFluentApi
 import io.github.composefluent.FluentTheme
 
+/**
+ * A composable that provides an auto-suggestion box functionality.
+ *
+ * This composable acts as a container for an input field (e.g., a TextField) and a flyout that displays
+ * suggestions or other relevant content. The flyout's visibility is controlled by the `expanded` parameter,
+ * and changes to the expanded state are communicated through the `onExpandedChange` callback.
+ *
+ * @param expanded Indicates whether the suggestion flyout should be visible.
+ * @param onExpandedChange Callback that is invoked when the expanded state of the flyout changes.
+ *   The lambda parameter is `true` if the flyout should be expanded and `false` if it should be collapsed.
+ * @param modifier Modifier to be applied to the root container of the auto-suggestion box.
+ * @param content The composable content of the auto-suggestion box.
+ *   It must use [FlyoutAnchorScope.flyoutAnchor] to set the anchor for the flyout.
+ *   [FlyoutAnchorScope.flyoutSize] can also be used to determine the flyout's size.
+ */
 @OptIn(ExperimentalFluentApi::class)
 @Composable
 fun AutoSuggestionBox(
@@ -52,8 +67,21 @@ fun AutoSuggestionBox(
     }
 }
 
+/**
+ * Contains the default values used for [AutoSuggestionBox].
+ */
 object AutoSuggestBoxDefaults {
 
+    /**
+     * Provides the shape for the text field in the AutoSuggestBox.
+     *
+     * When the suggestion flyout is expanded, the text field will have rounded corners
+     * on the top edges. When the flyout is not expanded, the text field will use the
+     * default control shape defined in [FluentTheme.shapes.control].
+     *
+     * @param expanded Whether the suggestion flyout is currently expanded.
+     * @return The [Shape] to be used for the text field.
+     */
     @Composable
     @Stable
     fun textFieldShape(expanded: Boolean): Shape {
@@ -63,6 +91,15 @@ object AutoSuggestBoxDefaults {
         ) else FluentTheme.shapes.control
     }
 
+    /**
+     * A composable function that displays a flyout for suggestions.
+     *
+     * @param expanded Whether the flyout should be visible.
+     * @param onDismissRequest Callback invoked when the user requests to dismiss the flyout.
+     * @param modifier Modifier for the flyout.
+     * @param contentPadding The padding to be applied to the content of the flyout.
+     * @param content The composable content to be displayed within the flyout.
+     */
     @Composable
     fun suggestFlyout(
         expanded: Boolean,
@@ -92,6 +129,18 @@ object AutoSuggestBoxDefaults {
         )
     }
 
+    /**
+     * Displays a flyout that can contain a list of suggested items.
+     *
+     * @param expanded Whether the flyout is currently expanded.
+     * @param onDismissRequest Callback invoked when the flyout should be dismissed.
+     * @param modifier Modifier for the flyout.
+     * @param state The `LazyListState` to be used for the underlying `LazyColumn`.
+     * @param contentPadding The padding to be applied to the content inside the `LazyColumn`.
+     * @param compactMode Whether to display the flyout in compact mode.
+     * @param itemsContent The content of the list items within the flyout. This is a `LazyListScope`
+     *  that allows for defining the list items using `item` and `items` composables.
+     */
     @Composable
     fun suggestFlyout(
         expanded: Boolean,

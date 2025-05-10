@@ -20,6 +20,26 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.composefluent.FluentTheme
 
+/**
+ * Applies an elevation effect to the composable.
+ *
+ * This function provides a way to add depth and visual hierarchy to UI elements.
+ * It uses different approaches based on the elevation value.
+ *
+ * When the elevation is less than 1dp, no elevation is applied.
+ * When the elevation is between 1dp and 3dp, a border with a color from the theme is applied.
+ * - If the elevation is between 1dp and 2dp, a `SolidColor` is used for the border.
+ * - If the elevation is between 2dp and 3dp, a provided [strokeShadow] brush is used for the border.
+ * For elevation of 3dp or more, a more complex shadow effect using [platformElevation] is applied.
+ *
+ * @param elevation The desired elevation (depth) of the composable.
+ * @param shape The shape of the composable, which affects how the shadow is drawn.
+ * @param strokeShadow The brush to use for the border when elevation is between 2dp and 3dp.
+ * It defaults to `FluentTheme.colors.borders.circle` if shape is [CircleShape] otherwise `FluentTheme.colors.borders.control`.
+ * @param isDarkTheme A boolean indicating if dark mode is active, which influences the shadow color.
+ * Defaults to `FluentTheme.colors.darkMode`.
+ * @return A [Modifier] that applies the elevation effect.
+ */
 @Composable
 fun Modifier.elevation(
     elevation: Dp,
@@ -132,6 +152,23 @@ internal fun Modifier.platformElevation(
     }
 }
 
+/**
+ * Default elevation values for different UI components.
+ *
+ * These values represent the recommended elevation levels for various elements
+ * in a Fluent Design system. Elevation is used to create a sense of depth and
+ * hierarchy in the UI.
+ *
+ * The higher the elevation, the more prominent the element appears to be,
+ * as if it's closer to the user's eye.
+ *
+ * - `layer`: Elevation for a basic background layer. Represents no elevation.
+ * - `control`: Elevation for interactive controls like buttons and toggles.
+ * - `cardRest`: Elevation for resting cards.
+ * - `tooltip`: Elevation for tooltips.
+ * - `flyout`: Elevation for flyout menus.
+ * - `dialog`: Elevation for modal dialogs, representing the highest level of prominence.
+ */
 object ElevationDefaults {
     val layer: Dp = 0.dp
     val control: Dp = 2.dp

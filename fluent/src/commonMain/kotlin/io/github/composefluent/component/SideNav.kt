@@ -56,6 +56,17 @@ import io.github.composefluent.scheme.collectVisualState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * A composable function that renders a side navigation view.
+ *
+ * @param expanded Whether the side navigation is expanded.
+ * @param onExpandStateChange A callback that is invoked when the expand state changes.
+ * @param modifier The modifier to be applied to the side navigation.
+ * @param title A composable that renders the title of the side navigation. Defaults to an empty composable.
+ * @param autoSuggestionBox A composable that renders the auto-suggestion box. Defaults to null.
+ * @param footer A composable that renders the footer of the side navigation. Defaults to null.
+ * @param content A composable that renders the main content of the side navigation.
+ */
 @OptIn(ExperimentalFluentApi::class)
 @Composable
 fun SideNav(
@@ -89,6 +100,23 @@ fun SideNav(
     )
 }
 
+/**
+ * A composable function that represents a side navigation panel.
+ *
+ * This composable provides a flexible side navigation area that can be expanded or collapsed.
+ * It supports a header, footer, optional auto-suggestion box, and a main content area.
+ *
+ * @param indicatorState The state for managing the navigation indicator.
+ * @param expanded Controls whether the navigation is expanded or collapsed.
+ * @param onExpandStateChange Callback to notify when the expanded state changes.
+ * @param modifier Modifier for the root Column of the side navigation.
+ * @param autoSuggestionBox Optional composable to display a search or auto-suggestion box.
+ * The scope of this lambda is [NavigationAutoSuggestBoxScope].
+ * @param header Optional composable for the header area of the navigation.
+ * @param flex Optional composable placed between the header and the main content.
+ * @param footer Optional composable for the footer area of the navigation.
+ * @param content Composable for the main content area of the navigation.
+ */
 @ExperimentalFluentApi
 @Composable
 fun SideNav(
@@ -178,6 +206,28 @@ fun SideNav(
     }
 }
 
+/**
+ * A single item within a [SideNav].
+ *
+ * @param selected `true` if this item is the currently selected item.
+ * @param onClick A callback that is invoked when the item is clicked. It provides the new
+ *     selected state as a parameter.
+ * @param modifier Optional [Modifier] for styling.
+ * @param expand Whether the SideNav is currently expanded. Defaults to the current value of
+ *     [LocalNavigationExpand].
+ * @param expandItems `true` to expand the nested items if [items] are provided.
+ * @param onExpandItemsChanged A callback that is invoked when the expanded state of nested items
+ *     changes.
+ * @param colors [NavigationItemColorScheme] to customize the colors of the item. Defaults to the
+ *     selected or default colors based on [selected].
+ * @param icon An optional icon to be displayed alongside the text.
+ * @param items Optional nested menu items. If provided, the item will show an expand/collapse
+ *     indicator.
+ * @param enabled `true` if the item is enabled and can be clicked.
+ * @param indicator A composable that is drawn as an indicator when the item is selected. Defaults
+ *     to [NavigationDefaults.VerticalIndicator].
+ * @param content The main text content to display for the item.
+ */
 @OptIn(ExperimentalFluentApi::class)
 @Composable
 fun SideNavItem(
@@ -222,6 +272,27 @@ fun SideNavItem(
     )
 }
 
+/**
+ * A composable function that represents a single item in a side navigation menu.
+ *
+ * @param selected Whether the item is currently selected.
+ * @param onSelectedChanged Callback invoked when the selection state of the item changes.
+ * @param indicatorState The state of the indicator for this navigation item.
+ * @param modifier Modifier for styling and layout adjustments of the navigation item.
+ * @param expand Whether the navigation is in expanded mode. Defaults to the current state from [LocalNavigationExpand].
+ * @param expandItems Whether to show the expanded sub-items.
+ * @param onExpandItemsChanged Callback invoked when the expanded state of the sub-items changes.
+ * @param flyoutVisible Whether the flyout menu for this item is visible. Default is true when `expandItems` is true and `expand` is false.
+ * @param onFlyoutVisibleChanged Callback invoked when the visibility of the flyout menu changes. Defaults to [onExpandItemsChanged].
+ * @param colors Color scheme for the navigation item, changes based on whether it is selected. Defaults to [NavigationDefaults.selectedSideItemColors] when selected, otherwise [NavigationDefaults.defaultSideItemColors].
+ * @param icon Optional icon to display on the navigation item.
+ * @param items Optional composable function to display a flyout of sub-items when this item is expanded.
+ * @param enabled Whether the navigation item is enabled.
+ * @param indicator Composable function to draw the selection indicator. Defaults to [NavigationDefaults.VerticalIndicator].
+ * @param interactionSource Optional [MutableInteractionSource] to handle user interactions.
+ * @param badge Optional composable function to display a badge next to the navigation item.
+ * @param text Composable function to display the text label for the navigation item.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @ExperimentalFluentApi
 @Composable
@@ -450,6 +521,16 @@ fun SideNavItem(
 
 }
 
+/**
+ * Composable function for rendering the header of a side navigation panel.
+ *
+ * This function displays a header within a side navigation panel, typically used for titles or important information.
+ * It only renders its content when the side navigation is expanded.
+ *
+ * @param modifier The [Modifier] to be applied to the header's container.
+ * @param visible Determines if the header should be visible. Defaults to [LocalNavigationExpand.current].
+ * @param content The composable content to be displayed within the header.
+ */
 @Composable
 fun SideNavHeader(
     modifier: Modifier = Modifier,
@@ -472,6 +553,21 @@ fun SideNavHeader(
     }
 }
 
+/**
+ * Composable function that renders the header area of a side navigation component.
+ *
+ * This function arranges the title, back button, and expand button in the header
+ * based on the current [NavigationDisplayMode] and the expansion state.
+ *
+ * @param title The composable content for the header's title.
+ * @param backButton The composable content for the back button.
+ * @param expandButton The composable content for the expand/collapse button.
+ * @param modifier The [Modifier] to be applied to the header area.
+ * @param expand A boolean indicating whether the side navigation is expanded.
+ *   Defaults to the value of [LocalNavigationExpand.current].
+ * @param displayMode The [NavigationDisplayMode] determining how the header
+ *   content is arranged. Defaults to [NavigationDisplayMode.Left].
+ */
 @Composable
 fun SideNavHeaderArea(
     title: @Composable () -> Unit,

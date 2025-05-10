@@ -83,6 +83,25 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+/**
+ * A composable function that creates a row of tabs with a dynamic underline indicator.
+ *
+ * This function provides a layout for a row of tabs with the following features:
+ * - **Selected Tab Underline:** Displays a dynamic underline that moves and resizes to match the currently selected tab.
+ * - **Scrolling:** Supports horizontal scrolling of tabs when they exceed the available space.
+ * - **Header and Footer:** Allows for adding custom composable content before and after the tab list.
+ * - **Scroll Actions:** Includes scroll action buttons (left/right arrows) to navigate the tabs when scrolling is needed.
+ * - **Customization:** Offers options to customize the border color and the visual style of the scroll action buttons.
+ *
+ * @param selectedKey A lambda that returns the key of the currently selected tab. This key should uniquely identify each tab item.
+ * @param modifier The [Modifier] to be applied to the root container of the TabRow.
+ * @param state The [LazyListState] for the underlying [LazyRow] used to display the tabs, allowing control over the scroll state. Defaults to a new [rememberLazyListState].
+ * @param header A composable function that provides the header content to be placed before the tab list. Defaults to an empty composable.
+ * @param footer A composable function that provides the footer content to be placed after the tab list. Defaults to an empty composable.
+ * @param borderColor The color of the underline indicator displayed beneath the selected tab. Defaults to [TabViewDefaults.defaultBorderColor].
+ * @param scrollActionButtonColors A [VisualStateScheme] that defines the colors of the scroll action buttons in different interaction states. Defaults to [TabViewDefaults.scrollActionColors].
+ * @param content A [LazyListScope] lambda that defines the content of the tab items within the [LazyRow].
+ */
 @Composable
 fun TabRow(
     selectedKey: () -> Any,
@@ -167,6 +186,30 @@ fun TabRow(
     }
 }
 
+/**
+ * A composable function that represents a single item within a tab view.
+ *
+ * This function provides a customizable tab item with text, icon, and trailing content,
+ * along with visual feedback for selection and interaction states.
+ *
+ * @param selected Indicates whether the tab item is currently selected.
+ * @param onSelectedChanged A callback function triggered when the selection state of the tab item changes.
+ *                          It receives the new selection state as a boolean parameter.
+ * @param text A composable lambda that defines the text content to be displayed in the tab item.
+ * @param modifier A [Modifier] to customize the layout and appearance of the tab item.
+ * @param endDividerVisible Indicates whether a divider should be displayed at the end of the tab item.
+ *                          Defaults to `true` when the item is not selected.
+ * @param interactionSource An optional [MutableInteractionSource] to observe and control the interactions
+ *                          with the tab item.
+ * @param colors A [VisualStateScheme] that defines the colors to be used for different states of the tab item
+ *               (e.g., selected, unselected, hovered).
+ *               Defaults to `TabViewDefaults.selectedItemColors()` when the item is selected,
+ *               and `TabViewDefaults.defaultItemColors()` otherwise.
+ * @param icon A composable lambda that defines the icon content to be displayed in the tab item.
+ *             Defaults to an empty composable.
+ * @param trailing A composable lambda that defines the trailing content to be displayed in the tab item.
+ *                 Defaults to an empty composable.
+ */
 @Composable
 fun TabItem(
     selected: Boolean,
@@ -203,6 +246,17 @@ fun TabItem(
     )
 }
 
+/**
+ * A single item within a [TabRow].
+ *
+ * @param selected Whether this item is currently selected.
+ * @param onSelectedChanged Called when the selected state of this item changes.
+ * @param modifier Modifier to be applied to the item.
+ * @param endDividerVisible Whether the divider on the end of the item should be visible. Defaults to `false` if `selected` is `true`, `true` otherwise.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [androidx.compose.foundation.interaction.Interaction]s for this item.
+ * @param colors The [VisualStateScheme] that defines the colors used for different interaction states. Defaults to [TabViewDefaults.selectedItemColors] when `selected` is true, [TabViewDefaults.defaultItemColors] otherwise.
+ * @param content The composable content of this item.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabItem(
@@ -296,6 +350,15 @@ fun TabItem(
 
 }
 
+/**
+ * Represents the color scheme for a tab view item.
+ *
+ * @property borderColor The color of the border around the tab item.
+ * @property fillColor The fill color of the tab item's background.
+ * @property contentColor The color of the content (text, icons) within the tab item.
+ * @property endDividerColor The color of the divider displayed at the end of the tab item.
+ * Defaults to [Color.Transparent].
+ */
 @Stable
 data class TabViewItemColor(
     val borderColor: Color,
@@ -304,12 +367,28 @@ data class TabViewItemColor(
     val endDividerColor: Color = Color.Transparent
 )
 
+/**
+ * Contains the default values used for [TabItem] and [TabRow].
+ */
 object TabViewDefaults {
 
+    /**
+     * The default border color used for the tab row and tab items.
+     * This color is derived from the Fluent theme's card stroke color.
+     */
     val defaultBorderColor: Color
         @Composable
         get() = FluentTheme.colors.stroke.card.default
 
+    /**
+     * Creates a [VisualStateScheme] for the default colors of a [TabItem].
+     *
+     * @param default The default [TabViewItemColor] to use when the [TabItem] is in its default state.
+     * @param hovered The [TabViewItemColor] to use when the [TabItem] is hovered.
+     * @param pressed The [TabViewItemColor] to use when the [TabItem] is pressed.
+     * @param disabled The [TabViewItemColor] to use when the [TabItem] is disabled.
+     * @return A [VisualStateScheme] that defines the color scheme for the [TabItem] in different states.
+     */
     @Stable
     @Composable
     fun defaultItemColors(
@@ -336,6 +415,15 @@ object TabViewDefaults {
         disabled = disabled
     )
 
+    /**
+     * Creates a [VisualStateScheme] for the colors of a selected [TabItem].
+     *
+     * @param default The default color scheme for a selected tab item.
+     * @param hovered The color scheme for a selected tab item when hovered.
+     * @param pressed The color scheme for a selected tab item when pressed.
+     * @param disabled The color scheme for a selected tab item when disabled.
+     * @return A [VisualStateScheme] representing the color states of a selected tab item.
+     */
     @Stable
     @Composable
     fun selectedItemColors(
@@ -355,6 +443,16 @@ object TabViewDefaults {
         disabled = disabled
     )
 
+    /**
+     * Creates a [VisualStateScheme] for the colors of a [TabItem] in a title bar style, where the item
+     * appears on a layered background.
+     *
+     * @param default The default [TabViewItemColor] for the item.
+     * @param hovered The [TabViewItemColor] for the item when it is hovered.
+     * @param pressed The [TabViewItemColor] for the item when it is pressed.
+     * @param disabled The [TabViewItemColor] for the item when it is disabled.
+     * @return A [VisualStateScheme] containing the specified colors for different interaction states.
+     */
     @Stable
     @Composable
     fun defaultItemTitleBarColors(
@@ -381,6 +479,18 @@ object TabViewDefaults {
         disabled = disabled
     )
 
+    /**
+     * Creates a [VisualStateScheme] for the colors of a selected TabView item in the title bar style.
+     *
+     * This function defines the visual appearance of a selected tab item when it is part of a title bar,
+     * providing different colors for default, hovered, pressed, and disabled states.
+     *
+     * @param default The default [TabViewItemColor] to use.
+     * @param hovered The [TabViewItemColor] to use when the tab is hovered over.
+     * @param pressed The [TabViewItemColor] to use when the tab is pressed.
+     * @param disabled The [TabViewItemColor] to use when the tab is disabled.
+     * @return A [VisualStateScheme] containing the colors for each visual state.
+     */
     @Stable
     @Composable
     fun selectedItemTitleBarColors(
@@ -400,6 +510,11 @@ object TabViewDefaults {
         disabled = disabled
     )
 
+    /**
+     * The default colors used for the scroll action buttons in a [TabRow].
+     *
+     * @return A [VisualStateScheme] containing the default [ButtonColor] for the scroll action buttons.
+     */
     @Stable
     @Composable
     fun scrollActionColors() = ButtonDefaults.subtleButtonColors(
@@ -410,6 +525,16 @@ object TabViewDefaults {
         )
     )
 
+    /**
+     * A button designed for closing tabs, typically used within a [TabRow].
+     *
+     * @param onClick The callback to be invoked when the button is clicked.
+     * @param modifier Optional [Modifier] for styling the button.
+     * @param padding The padding to apply around the button.
+     * @param enabled Controls the enabled state of the button. If false, the button will be disabled and not interactable.
+     * @param colors The [VisualStateScheme] that defines the colors for the button in its various interaction states.
+     * Defaults to [ButtonDefaults.subtleButtonColors].
+     */
     @Composable
     fun TabCloseButton(
         onClick: () -> Unit,
@@ -434,6 +559,15 @@ object TabViewDefaults {
         )
     }
 
+    /**
+     * A button that adds a new tab.
+     *
+     * @param onClick The callback to be invoked when this button is clicked.
+     * @param modifier The [Modifier] to be applied to this button.
+     * @param padding The padding to be applied around the button. Defaults to a start padding of 4.dp.
+     * @param enabled Controls the enabled state of the button. When `false`, this button will not be clickable and will appear in a disabled state.
+     * @param colors The color scheme for this button, by default [ButtonDefaults.subtleButtonColors].
+     */
     @Composable
     fun TabAddButton(
         onClick: () -> Unit,
@@ -460,6 +594,16 @@ object TabViewDefaults {
 
 }
 
+/**
+ * Remembers and returns a [TabItemEndDividerController] instance.
+ *
+ * This controller is responsible for managing the visibility of the end dividers in a tab row.
+ * It tracks hovered items and the selected item to determine which dividers should be hidden.
+ *
+ * @param state The [LazyListState] of the tab row.
+ * @param selectedKey A lambda that returns the key of the currently selected tab item.
+ * @return A [TabItemEndDividerController] instance.
+ */
 @ExperimentalFluentApi
 @Composable
 fun rememberTabItemEndDividerController(
@@ -473,6 +617,17 @@ fun rememberTabItemEndDividerController(
     return controller
 }
 
+/**
+ * [TabItemEndDividerController] is a controller that manages the visibility of end dividers
+ * for tab items in a [LazyRow].
+ *
+ * It observes the hovered state of tab items and the currently selected tab item to determine
+ * which end dividers should be hidden. Specifically, it hides the end divider of the tab item
+ * immediately preceding a hovered item or the selected item.
+ *
+ * @param state The [LazyListState] of the [LazyRow] containing the tab items.
+ * @param selectedKey A lambda that returns the key of the currently selected tab item.
+ */
 @ExperimentalFluentApi
 class TabItemEndDividerController(
     private val state: LazyListState,
@@ -504,6 +659,20 @@ class TabItemEndDividerController(
         }
     }
 
+    /**
+     * Attaches a key and an [InteractionSource] to this controller to manage the visibility of the end divider for the item.
+     *
+     * This function does the following:
+     * 1. **Tracks Hover State:** It monitors the hover state of the provided [interactionSource].
+     * 2. **Updates `hoveredItems`:** When the item is hovered, it adds the `key` to the `hoveredItems` map. When the item is no longer hovered, it removes the `key`.
+     * 3. **Cleans Up on Dispose:** When the composable is disposed, it ensures the `key` is removed from `hoveredItems` to prevent leaks.
+     * 4. **Determines Divider Visibility:** It checks whether the `key` is present in the `hideDividerItems` set, and returns `true` if the divider should be visible (i.e., the key is NOT in the set), and `false` otherwise.
+     * 5. **Reacts to `hideDividerItems` changes:** When `hideDividerItems` is updated, it updates the `state` ,and then the result of the function will change.
+     *
+     * @param key The unique key associated with the item.
+     * @param interactionSource The [InteractionSource] that provides interaction state information (like hover).
+     * @return `true` if the end divider should be visible for this item, `false` otherwise.
+     */
     @Composable
     fun attach(key: Any, interactionSource: InteractionSource): Boolean {
         val isHovered = interactionSource.collectIsHoveredAsState()

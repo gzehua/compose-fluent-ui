@@ -23,6 +23,15 @@ import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
 
+/**
+ * A composable function that represents a selector bar.
+ *
+ * The SelectorBar is a horizontal row that can be used to display and manage a list of selectable items.
+ * It is typically used as a navigation element or to filter content.
+ *
+ * @param modifier The [Modifier] to be applied to this selector bar.
+ * @param content The content lambda to render within the selector bar.
+ */
 @Composable
 inline fun SelectorBar(
     modifier: Modifier = Modifier,
@@ -36,6 +45,19 @@ inline fun SelectorBar(
     )
 }
 
+/**
+ * A single item within a [SelectorBar].
+ *
+ * @param selected Whether this item is currently selected.
+ * @param onSelectedChange The callback to be invoked when this item's selection state is changed.
+ * @param text The text content of this item. If null, only the [icon] will be displayed.
+ * @param modifier Modifier to be applied to the item.
+ * @param icon The icon content of this item. If null, only the [text] will be displayed.
+ * @param colors [VisualStateScheme] that provides the colors used for this item.
+ * @param enabled Whether this item is enabled.
+ * @param indicator The composable that indicates whether this item is selected.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [Interaction]s for this item.
+ */
 @Composable
 fun SelectorBarItem(
     selected: Boolean,
@@ -81,8 +103,20 @@ fun SelectorBarItem(
     }
 }
 
+/**
+ * Contains the default values used for [SelectorBarItem].
+ */
 object SelectorBarDefaults {
 
+    /**
+     * Creates a [SelectorBarItemColorScheme] with the default colors for a [SelectorBarItem].
+     *
+     * @param default The color scheme for the default state.
+     * @param hovered The color scheme for the hovered state.
+     * @param pressed The color scheme for the pressed state.
+     * @param disabled The color scheme for the disabled state.
+     * @return A [SelectorBarItemColorScheme] with the specified colors.
+     */
     @Composable
     @Stable
     fun defaultItemColors(
@@ -113,6 +147,15 @@ object SelectorBarDefaults {
         disabled = disabled
     )
     
+    /**
+     * Creates a [SelectorBarItemColorScheme] with specified colors for different states of a selected item.
+     *
+     * @param default The color scheme for the default state.
+     * @param hovered The color scheme for the hovered state.
+     * @param pressed The color scheme for the pressed state.
+     * @param disabled The color scheme for the disabled state.
+     * @return A [SelectorBarItemColorScheme] with the specified colors.
+     */
     @Composable
     @Stable
     fun selectedItemColors(
@@ -144,6 +187,13 @@ object SelectorBarDefaults {
     )
 }
 
+/**
+ * Represents the color scheme for a single item in a [SelectorBar].
+ *
+ * @property fillColor The background fill color of the item.
+ * @property contentColor The color of the text and icons within the item.
+ * @property indicatorColor The color of the indicator (e.g., a horizontal line) displayed when the item is selected.
+ */
 @Immutable
 data class SelectorBarItemColor(
     val fillColor: Color,

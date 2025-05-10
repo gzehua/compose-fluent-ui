@@ -55,6 +55,28 @@ import io.github.composefluent.background.Layer
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/**
+ * A composable that displays a slider, allowing the user to select a value from a continuous range.
+ *
+ * This slider provides visual feedback through a rail, track, and thumb, and can also display tick marks
+ * for discrete steps. It supports snapping to these steps and displaying a tooltip with the selected
+ * value.
+ *
+ * @param value The current value of the slider.
+ * @param onValueChange Called when the value is changed by the user.
+ * @param modifier Modifier for the slider.
+ * @param enabled Whether the slider is enabled for user interaction.
+ * @param valueRange The range of values the slider can take.
+ * @param steps The number of discrete steps between the start and end of the value range.
+ *              If 0, the slider is continuous.
+ * @param snap Whether the slider should snap to the nearest step value. Defaults to true if steps > 0.
+ * @param showTickMark Whether to display tick marks along the rail. Defaults to true if steps > 0.
+ * @param onValueChangeFinished Called when the user finishes interacting with the slider.
+ *                              It will receive the value of the slider when interaction ended.
+ * @param tooltipContent A composable function that provides the content for the tooltip.
+ *                       It receives a [SliderState] as a parameter.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for this Slider.
+ */
 @Composable
 fun Slider(
     value: Float,
@@ -95,6 +117,17 @@ fun Slider(
     )
 }
 
+/**
+ * A composable function that displays a slider with a customizable state.
+ *
+ * @param state The state of the slider, including the current value, steps, snap behavior, and value range.
+ * @param modifier Modifier to be applied to the slider.
+ * @param enabled Whether the slider is enabled or disabled.
+ * @param showTickMark Whether to show tick marks along the slider rail. Defaults to true if steps are greater than 0.
+ * @param tooltipContent A composable function that defines the content of the tooltip that appears when dragging the thumb.
+ * It receives the current [SliderState] as a parameter. Defaults to a basic tooltip showing the current value.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [Interaction]s for this slider.
+ */
 @Composable
 fun Slider(
     state: SliderState,
@@ -125,6 +158,26 @@ fun Slider(
     )
 }
 
+/**
+ * A basic slider component that allows users to select a value from a range.
+ *
+ * This slider provides a foundation for creating custom sliders with different styles and behaviors.
+ * It handles the core logic of value selection, snapping, and interaction, while allowing you to
+ * define the visual appearance of the slider rail, track, and thumb.
+ *
+ * @param value The current value of the slider.
+ * @param onValueChange Callback that is triggered when the slider's value changes.
+ * @param modifier Modifier for styling and layout customization of the slider.
+ * @param enabled Controls whether the slider is enabled or disabled.
+ * @param valueRange The range of values the slider can represent.
+ * @param steps The number of discrete steps in the slider's value range. A value of 0 means continuous range.
+ * @param snap Whether the slider should snap to the nearest step value when released.
+ * @param onValueChangeFinished Callback that is triggered when the user finishes interacting with the slider.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of interactions for the slider.
+ * @param rail Composable function to draw the slider's rail.
+ * @param track Composable function to draw the slider's track (the portion indicating the selected value).
+ * @param thumb Composable function to draw the slider's thumb (the draggable element).
+ */
 @Composable
 fun BasicSlider(
     value: Float,
@@ -157,6 +210,24 @@ fun BasicSlider(
     )
 }
 
+/**
+ * A basic slider without any default styling.
+ *
+ * This composable provides a foundational slider implementation, allowing for full customization
+ * of the rail, track, and thumb components. It is intended for cases where the default
+ * [Slider] does not meet specific design or functionality requirements.
+ *
+ * @param state The current state of the slider, which manages the value, steps, snapping, and
+ *              drag behavior.
+ * @param modifier Modifier for the slider layout.
+ * @param enabled Whether the slider is enabled for interaction.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of Interactions
+ *                          for this slider. You will usually create and pass in your own
+ *                          remembered instance.
+ * @param rail A composable function to render the slider's rail. It receives the [SliderState] as a parameter.
+ * @param track A composable function to render the slider's track (the filled portion). It receives the [SliderState] as a parameter.
+ * @param thumb A composable function to render the slider's thumb (the draggable element). It receives the [SliderState] as a parameter.
+ */
 @Composable
 fun BasicSlider(
     state: SliderState,
@@ -257,6 +328,16 @@ private fun SliderImpl(
     )
 }
 
+/**
+ * [SliderState] holds the state of the [Slider] composable.
+ *
+ * @param value The initial value of the slider.
+ * @param steps The number of discrete steps in the slider. If 0, the slider is continuous.
+ * @param snap Whether the slider should snap to the nearest step when released. Defaults to `true` if `steps > 0`, `false` otherwise.
+ * @param onValueChangeFinished A callback to be invoked when the user finishes interacting with the slider.
+ *   The callback receives the final value of the slider.
+ * @param valueRange The range of values that the slider can represent.
+ */
 class SliderState(
     value: Float = 0f,
     val steps: Int = 0,
@@ -264,11 +345,22 @@ class SliderState(
     var onValueChangeFinished: ((Float) -> Unit)? = null,
     val valueRange: ClosedFloatingPointRange<Float>
 ) {
+    /**
+     * An array of fractions representing the positions of each step along the slider's track.
+     * The array includes the start (0.0f) and end (1.0f) positions, as well as the intermediate step positions.
+     * Used for snapping the slider's thumb to discrete values when steps are enabled.
+     */
     val stepFractions = getStepFractions(steps)
 
     private var valueState by mutableFloatStateOf(value)
     internal var onValueChange: ((Float) -> Unit)? = null
 
+    /**
+     * The current value of the slider. If the new value is outside of [valueRange], it will be
+     * coerced to the closest value inside the range.
+     *
+     * @throws IllegalArgumentException if the [valueRange] is empty.
+     */
     var value: Float
         set(newVal) {
             val coercedValue = newVal.coerceIn(valueRange.start, valueRange.endInclusive)
@@ -284,14 +376,25 @@ class SliderState(
         }
         get() = valueState
 
+    /**
+     * Whether the slider is currently being dragged.
+     */
     var isDragging by mutableStateOf(false)
         private set
 
-    // Relating to component size, for accumulating offset delta
+    /**
+     * The raw offset of the slider thumb, relative to the start of the slider track.
+     * This offset is used to accumulate the delta during dragging, it's not converted to user space yet.
+     * Relating to component size, for accumulating offset delta
+     */
     var rawOffset by mutableStateOf(Offset.Zero)
         private set
 
-    // Without relating to component size
+    /**
+     * The current fraction of the slider's progress, without any scaling or consideration of
+     * the component's size. This is a value between 0.0 and 1.0, representing the relative
+     * position of the thumb along the track, regardless of the track's actual length.
+     */
     var rawFraction by mutableStateOf(valueToFraction(value, valueRange))
         private set
 
@@ -350,6 +453,15 @@ class SliderState(
             .minBy { abs(it - value) }
     }
 
+    /**
+     * Calculates the nearest value to the current [value] from the predefined step fractions.
+     *
+     * This function iterates through the [stepFractions], linearly interpolates the values within
+     * the [valueRange] based on these fractions, and then determines which of these interpolated
+     * values is closest to the current [value].
+     *
+     * @return The nearest value to the current [value] based on the defined step fractions.
+     */
     fun nearestValue(): Float {
         return this.stepFractions
             .map { lerp(this.valueRange.start, this.valueRange.endInclusive, it) }
@@ -391,8 +503,21 @@ private fun calcThumbOffset(
     return (maxWidth - thumbSize) * fraction - padding
 }
 
+/**
+ * Contains the default values used for the [Slider] and its components.
+ */
 object SliderDefaults {
 
+    /**
+     * The track of the slider, which displays the progress of the slider.
+     *
+     * @param state The state of the slider.
+     * @param modifier The modifier to apply to this layout.
+     * @param enabled Controls the enabled state of the track. When `false`, the track will be displayed in a disabled state.
+     * @param color The color of the track when enabled.
+     * @param disabledColor The color of the track when disabled.
+     * @param shape The shape of the track.
+     */
     @Composable
     fun Track(
         state: SliderState,
@@ -439,6 +564,20 @@ object SliderDefaults {
     private val TickY = 22.dp
     private val TopTickY = 6.dp
 
+    /**
+     * The rail of the slider, can be use alone, normally include tick mark on top of it.
+     *
+     * @param state the state of the slider.
+     * @param modifier the [Modifier] to be applied to this rail.
+     * @param enabled controls the enabled state of the slider. When `false`, this rail will
+     * be appear disabled, it won't respond to user input.
+     * @param showTick if true will show tick mark, default true when [SliderState.steps] > 0.
+     * @param showTopTick if true will show tick mark on the top, default true.
+     * @param color the color of this rail, default `controlStrong.default`.
+     * @param disabledColor the color of this rail when disabled, default `controlStrong.default`.
+     * @param border the border of this rail, default `controlStrong.default` in dark mode and light mode.
+     * @param shape the shape of this rail, default `CircleShape`.
+     */
     @Composable
     fun Rail(
         state: SliderState,
@@ -475,6 +614,14 @@ object SliderDefaults {
         }
     }
 
+    /**
+     * Draws tick marks on the slider rail.
+     *
+     * @param modifier The modifier to be applied to the tick marks.
+     * @param color The color of the tick marks.
+     * @param state The [SliderState] that holds the state of the slider.
+     * @param showTopTick Whether to show the ticks on the top side of the rail.
+     */
     @Composable
     fun Tick(modifier: Modifier, color: Color, state: SliderState, showTopTick: Boolean) {
         Canvas(modifier) {
@@ -508,6 +655,25 @@ object SliderDefaults {
         }
     }
 
+    /**
+     * The thumb used in [Slider].
+     *
+     * @param state The [SliderState] of the slider.
+     * @param label The composable lambda to render the label of the thumb, it is visible when thumb is dragging.
+     * @param modifier The [Modifier] to be applied to the thumb.
+     * @param enabled Controls the enabled state of the thumb. When `false`, this thumb will not respond to user input,
+     *   and it will appear visually disabled.
+     * @param interactionSource The [MutableInteractionSource] representing the stream of [Interaction]s
+     *   for this thumb. You can create and pass in your own remembered [MutableInteractionSource] if
+     *   you want to observe [Interaction]s and customize the appearance / behavior of this thumb in
+     *   different [Interaction]s.
+     * @param shape The [Shape] of the thumb.
+     * @param border The [BorderStroke] of the thumb. If `null`, no border will be drawn.
+     * @param ringColor The color of the thumb's outer ring.
+     * @param color The default color of the inner thumb.
+     * @param draggingColor The color of the inner thumb when it is being dragged.
+     * @param disabledColor The color of the inner thumb when it is disabled.
+     */
     @OptIn(ExperimentalFluentApi::class, ExperimentalFoundationApi::class)
     @Composable
     fun Thumb(
@@ -599,6 +765,13 @@ object SliderDefaults {
         }
     }
 
+    /**
+     * A composable function that displays a tooltip for a slider.
+     *
+     * @param state The [SliderState] object that holds the current state of the slider.
+     * @param snap Whether to snap the tooltip value to the nearest tick mark. If true, the tooltip
+     * will display the snapped value. Otherwise, it will display the current value. Defaults to the `snap` value in the [SliderState].
+     */
     @Composable
     fun Tooltip(state: SliderState, snap: Boolean = state.snap) {
         Text(

@@ -66,6 +66,21 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+/**
+ * A composable function that provides a color picker UI.
+ *
+ * @param color The initial color selected in the picker. Defaults to [Color.White].
+ * @param onSelectedColorChanged A callback function that is invoked when the selected color changes.
+ *  It provides the new selected [Color].
+ * @param modifier Modifier for styling and layout of the ColorPicker.
+ * @param dot A composable lambda that defines the visual appearance of the color selector dot.
+ *  Defaults to [ColorPickerDefaults.dot].
+ * @param label A composable lambda that defines the label for the color.
+ *  Defaults to [ColorPickerDefaults.label].
+ * @param colorSpectrum The type of color spectrum to display. Defaults to [ColorSpectrum.Square].
+ * @param alphaEnabled Whether to enable alpha/opacity selection. Defaults to false.
+ * @param moreButtonVisible Whether to show a "More" button to expand advanced color settings. Defaults to false.
+ */
 @Composable
 fun ColorPicker(
     color: Color = Color.White,
@@ -486,8 +501,21 @@ private fun Modifier.alphaBackground(shape: Shape = RectangleShape, enabled: Boo
     }
 
 
+/**
+ * Contains the default values used by [ColorPicker].
+ */
 object ColorPickerDefaults {
 
+    /**
+     * A composable function that renders a small circular dot, indicating the currently selected color.
+     *
+     * The dot's size is fixed at 16.dp, and it has a border of 2.dp thickness.
+     * The border color is determined by the current [LocalContentColor], which will typically be
+     * either black or white, contrasting with the color it's indicating.
+     *
+     * This is often used as a visual indicator or marker within a UI to show the currently selected
+     * color on a color spectrum.
+     */
     @Composable
     fun dot() {
         Spacer(
@@ -496,6 +524,13 @@ object ColorPickerDefaults {
         )
     }
 
+    /**
+     * Creates a tooltip label for a given [color].
+     *
+     * The tooltip displays the hexadecimal representation of the color.
+     *
+     * @param color The color for which to display the tooltip label.
+     */
     @OptIn(ExperimentalFluentApi::class, ExperimentalStdlibApi::class)
     @Composable
     fun label(color: Color) {
@@ -516,6 +551,15 @@ object ColorPickerDefaults {
     }
 }
 
+/**
+ * A composable function that displays a square color spectrum.
+ *
+ * @param color The currently selected color.
+ * @param onSelectedColorChanged A callback function that is invoked when the user selects a new color.
+ * @param modifier The modifier to apply to this layout.
+ * @param dot The composable to draw as the indicator of the selected color. Defaults to [ColorPickerDefaults.dot].
+ * @param label The composable to draw as the label of the selected color. Defaults to [ColorPickerDefaults.label].
+ */
 @Composable
 fun SquareColorSpectrum(
     color: Color,
@@ -533,6 +577,18 @@ fun SquareColorSpectrum(
     )
 }
 
+/**
+ * A composable function that displays a round color spectrum.
+ *
+ * @param color The currently selected color.
+ * @param onSelectedColorChanged A callback function that is invoked when the selected color changes.
+ *   It receives the new color as a parameter.
+ * @param modifier Modifier for the round color spectrum.
+ * @param dot A composable function to display the indicator dot on the color spectrum.
+ *   Defaults to [ColorPickerDefaults.dot].
+ * @param label A composable function to display the label of the selected color.
+ *   Defaults to [ColorPickerDefaults.label].
+ */
 @Composable
 fun RoundColorSpectrum(
     color: Color,

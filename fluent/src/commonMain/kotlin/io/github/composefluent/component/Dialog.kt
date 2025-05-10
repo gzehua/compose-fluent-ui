@@ -55,6 +55,18 @@ import kotlin.coroutines.resume
 
 internal expect val DialogPopupPositionProvider: PopupPositionProvider
 
+/**
+ * Represents the size constraints for a dialog.
+ *
+ * @property min The minimum width of the dialog.
+ * @property max The maximum width of the dialog.
+ *
+ * @constructor Creates a [DialogSize] with the specified minimum and maximum widths.
+ *
+ * @sample io.github.composefluent.component.DialogSize.Max
+ * @sample io.github.composefluent.component.DialogSize.Standard
+ * @sample io.github.composefluent.component.DialogSize.Min
+ */
 @Stable
 class DialogSize(
     val min: Dp,
@@ -67,6 +79,14 @@ class DialogSize(
     }
 }
 
+/**
+ * A dialog composable that displays content in a popup.
+ *
+ * @param visible Controls the visibility of the dialog. When `true`, the dialog is shown; otherwise, it's hidden.
+ * @param size The size of the dialog, defining its minimum and maximum width. Defaults to [DialogSize.Standard].
+ * @param properties Additional properties for the dialog's popup, such as focusability. Defaults to non-focusable.
+ * @param content The composable content to display within the dialog.
+ */
 @Composable
 fun FluentDialog(
     visible: Boolean,
@@ -121,10 +141,29 @@ fun FluentDialog(
     }
 }
 
+/**
+ * Represents the possible buttons in a [ContentDialog].
+ *
+ * - **Primary:** The primary action button, usually represents the main or positive action.
+ * - **Secondary:** An optional secondary action button, often represents a less important or alternative action.
+ * - **Close:** An optional button to simply dismiss or close the dialog.
+ */
 enum class ContentDialogButton {
     Primary, Secondary, Close
 }
 
+/**
+ * A dialog that displays content and provides buttons for user interaction.
+ *
+ * @param title The title of the dialog.
+ * @param visible Whether the dialog is currently visible.
+ * @param content The composable content to display within the dialog.
+ * @param primaryButtonText The text for the primary button.
+ * @param secondaryButtonText The text for the secondary button, or null if no secondary button is needed.
+ * @param closeButtonText The text for the close button, or null if no close button is needed.
+ * @param onButtonClick A callback invoked when any of the buttons is clicked, providing the [ContentDialogButton] that was pressed.
+ * @param size The [DialogSize] to determine the size constraints of the dialog.
+ */
 @Composable
 fun ContentDialog(
     title: String,
@@ -180,6 +219,17 @@ fun ContentDialog(
     }
 }
 
+/**
+ * A composable function that hosts a [ContentDialog] based on the state provided by [ContentDialogHostState].
+ *
+ * It observes the [ContentDialogHostState] and displays a [ContentDialog] when the `currentData` is not null.
+ * The dialog's visibility, content, buttons, and actions are managed through the `data` provided by the state.
+ *
+ * @param state The [ContentDialogHostState] that holds the data for the current dialog to be displayed.
+ *
+ * @see ContentDialogHostState
+ * @see ContentDialog
+ */
 @Composable
 fun ContentDialogHost(state: ContentDialogHostState) {
     val data = state.currentData
@@ -207,12 +257,34 @@ fun ContentDialogHost(state: ContentDialogHostState) {
 
 val LocalContentDialog = staticCompositionLocalOf<ContentDialogHostState> { error("Not provided") }
 
+/**
+ * A state holder for managing the display of content dialogs.
+ *
+ * This class provides a mechanism to show and manage a content dialog with a title, content text,
+ * and optional primary, secondary, and close buttons. It ensures that only one dialog is displayed
+ * at a time using a mutex, and provides a suspending function to await the user's interaction with the dialog.
+ *
+ * The [show] function returns a [ContentDialogButton] representing which button was pressed by the user.
+ */
 class ContentDialogHostState {
     private val mutex = Mutex()
 
     internal var currentData by mutableStateOf<DialogData?>(null)
         private set
 
+    /**
+     * Shows a content dialog with the specified parameters.
+     *
+     * This function suspends until the dialog is dismissed and returns the button that was clicked.
+     *
+     * @param title The title of the dialog.
+     * @param contentText The main content text of the dialog.
+     * @param primaryButtonText The text of the primary action button.
+     * @param secondaryButtonText The text of the secondary action button, or null if no secondary button is needed.
+     * @param closeButtonText The text of the close button, or null if no close button is needed.
+     * @param size The size of the dialog. Defaults to [DialogSize.Standard].
+     * @return The [ContentDialogButton] that was clicked to dismiss the dialog.
+     */
     suspend fun show(
         title: String,
         contentText: String,

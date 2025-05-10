@@ -39,6 +39,20 @@ import io.github.composefluent.layout.overflow.OverflowRow
 import io.github.composefluent.layout.overflow.OverflowRowScope
 import io.github.composefluent.layout.overflow.rememberOverflowRowState
 
+/**
+ * A standard command bar that can be expanded to show more options.
+ *
+ * @param expanded Whether the command bar is expanded.
+ * @param onExpandedChanged Callback to be invoked when the expanded state changes.
+ * @param modifier Modifier for the command bar.
+ * @param color The background color of the command bar. When not expanded, this color is transparent.
+ * @param border The border of the command bar. When not expanded, this is null.
+ * @param placement The placement of the expanded flyout relative to the command bar.
+ * @param secondary The secondary content of the expanded flyout. This is typically used for overflow actions.
+ *  It receives a [MenuFlyoutScope] and a boolean indicating whether there are overflow items.
+ * @param spacing The spacing between items in the command bar.
+ * @param content The content of the command bar, using the [OverflowRowScope].
+ */
 @Composable
 fun CommandBar(
     expanded: Boolean,
@@ -73,6 +87,20 @@ fun CommandBar(
     )
 }
 
+/**
+ * A large command bar that can be expanded to show more options, typically used when more vertical space is available.
+ *
+ * @param expanded Whether the command bar is expanded.
+ * @param onExpandedChanged Callback to be invoked when the expanded state changes.
+ * @param modifier Modifier for the command bar.
+ * @param color The background color of the command bar. When not expanded, this color is transparent.
+ * @param border The border of the command bar. When not expanded, this is null.
+ * @param placement The placement of the expanded flyout relative to the command bar.
+ * @param secondary The secondary content of the expanded flyout. This is typically used for overflow actions.
+ *  It receives a [MenuFlyoutScope] and a boolean indicating whether there are overflow items.
+ * @param spacing The spacing between items in the command bar.
+ * @param content The content of the command bar, using the [OverflowRowScope].
+ */
 @Composable
 fun LargeCommandBar(
     expanded: Boolean,
@@ -181,6 +209,20 @@ private fun BasicCommandBar(
 
 }
 
+/**
+ * A button within a command bar.
+ *
+ * @param onClick The callback to be invoked when the button is clicked.
+ * @param modifier Modifier for the button.
+ * @param buttonColors The colors to use for the button.
+ * @param outsideBorder Whether the button should have a border that extends beyond the button's bounds.
+ * @param enabled Whether the button is enabled.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [Interaction]s
+ * for this button. You can create and pass in your own remembered [MutableInteractionSource] if
+ * you want to observe [Interaction]s and customize the appearance / behavior of this button in
+ * different [Interaction]s.
+ * @param content The content of the button. Typically this is text and/or an icon.
+ */
 @Composable
 fun CommandBarButton(
     onClick: () -> Unit,
@@ -241,6 +283,11 @@ internal fun CommandBarMoreButton(isLarge: Boolean, onClick: () -> Unit) {
     }
 }
 
+/**
+ * A vertical separator for use in a [CommandBar].
+ *
+ * @param modifier Modifier for the separator.
+ */
 @Composable
 fun CommandBarSeparator(modifier: Modifier = Modifier) {
     Spacer(
@@ -252,6 +299,14 @@ fun CommandBarSeparator(modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * Applies the default size constraints for an icon button within a command bar.
+ *
+ * This modifier sets the minimum height and width for the icon button
+ * to match the standard dimensions defined by `CommandBarDefaults`.
+ *
+ * @return A [Modifier] with the size constraints applied.
+ */
 fun Modifier.commandBarIconButtonSize() = then(
     Modifier.sizeIn(
         minHeight = CommandBarDefaults.CommandBarButtonHeight,
@@ -259,6 +314,16 @@ fun Modifier.commandBarIconButtonSize() = then(
     )
 )
 
+/**
+ * Applies the default size constraints for a standard command bar button.
+ *
+ * This modifier sets the minimum height and width of the button according to the
+ * [CommandBarDefaults.CommandBarButtonHeight] and [CommandBarDefaults.CommandBarButtonWidth]
+ * values.
+ *
+ * @see CommandBarDefaults.CommandBarButtonHeight
+ * @see CommandBarDefaults.CommandBarButtonWidth
+ */
 fun Modifier.commandBarButtonSize() = then(
     Modifier.sizeIn(
         minHeight = CommandBarDefaults.CommandBarButtonHeight,
@@ -266,16 +331,34 @@ fun Modifier.commandBarButtonSize() = then(
     )
 )
 
+/**
+ * Default values for the [CommandBar] and [LargeCommandBar].
+ */
 object CommandBarDefaults {
+    /**
+     * The default width for an icon-only button in the command bar.
+     */
     val CommandBarIconButtonWidth = 36.dp
+    /**
+     * The default width for a standard command bar button.
+     */
     val CommandBarButtonWidth = 64.dp
+    /**
+     * The height of a large button in the command bar.
+     */
     val CommandBarLargeButtonHeight = 52.dp
+    /**
+     * The default height for a standard command bar button.
+     */
     val CommandBarButtonHeight = 36.dp
 
+    /**
+     * The standard height of the command bar.
+     */
     val CommandBarStandardHeight = 48.dp
 
-    /*
-    Container height for icon above button.
+    /**
+     * Container height for large command bars, intended for use with icon and text label combinations.
      */
     val CommandBarLargeHeight = 64.dp
 }

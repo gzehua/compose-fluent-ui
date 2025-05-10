@@ -40,6 +40,27 @@ import kotlinx.coroutines.delay
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+/**
+ * A container for a menu flyout that displays a flyout next to the content, allowing for
+ * interactive menu-like behavior.
+ *
+ * @param flyout The composable content to be displayed within the flyout. This content is
+ *   scoped to a [MenuFlyoutContainerScope] for menu-specific features.
+ * @param modifier The modifier to be applied to the container.
+ * @param initialVisible Determines if the flyout is visible initially. Defaults to `false`.
+ * @param placement Specifies the desired placement of the flyout relative to its anchor.
+ *   Defaults to `FlyoutPlacement.Auto`.
+ * @param adaptivePlacement If true, the placement of the flyout will be adjusted to fit within
+ *   the available space. Defaults to `false`.
+ * @param onKeyEvent An optional callback for handling key events within the flyout. If not
+ *   null, this callback will be invoked for key events, and if it returns `true`, the event
+ *   will be considered consumed.
+ * @param onPreviewKeyEvent An optional callback for previewing key events within the flyout.
+ *   If not null, this callback will be invoked before the key event is dispatched, and if it
+ *   returns `true`, the event will be considered consumed.
+ * @param content The composable content that acts as the anchor for the flyout. This content
+ *   is scoped to a [FlyoutContainerScope].
+ */
 @Composable
 fun MenuFlyoutContainer(
     flyout: @Composable MenuFlyoutContainerScope.() -> Unit,
@@ -74,6 +95,24 @@ fun MenuFlyoutContainer(
     )
 }
 
+/**
+ * A composable function that creates a menu flyout.
+ *
+ * A menu flyout is a transient UI that can be used to display a list of commands or options.
+ *
+ * @param visible Whether the menu flyout is visible.
+ * @param onDismissRequest Called when the user attempts to dismiss the menu flyout.
+ * @param modifier The [Modifier] to be applied to the menu flyout.
+ * @param placement The preferred placement of the menu flyout relative to its anchor. Defaults to [FlyoutPlacement.Auto].
+ * @param adaptivePlacement Whether the placement of the flyout should be adapted to fit within the available space.
+ *   Defaults to false.
+ * @param shape The shape of the menu flyout. Defaults to [FluentTheme.shapes.overlay].
+ * @param onKeyEvent Optional callback invoked when a key event is received by this flyout.
+ *   Returns true if the event was handled, false otherwise.
+ * @param onPreviewKeyEvent Optional callback invoked when a key event is received by this flyout, before it is dispatched to
+ *   children. Returns true if the event was handled, false otherwise.
+ * @param content The content of the menu flyout.
+ */
 @Composable
 fun MenuFlyout(
     visible: Boolean,
@@ -140,11 +179,40 @@ internal fun MenuFlyout(
     }
 }
 
+/**
+ * A separator for a [MenuFlyout].
+ *
+ * Separators help group related menu items, making the menu easier to scan.
+ *
+ * @param modifier The [Modifier] to be applied to this separator.
+ */
 @Composable
 fun MenuFlyoutSeparator(modifier: Modifier = Modifier) {
     ListItemSeparator(modifier)
 }
 
+/**
+ * Creates a selectable item within a [MenuFlyout].
+ *
+ * This composable represents a single item in the menu that can be selected.
+ * It allows for customization of the item's appearance, including text, icon,
+ * trailing content, colors, and interaction behavior.
+ *
+ * @param selected Indicates whether the item is currently selected.
+ * @param onSelectedChanged Callback invoked when the selected state of the item changes.
+ *   It receives the new selected state as a parameter.
+ * @param text The content of the menu item, typically a text label.
+ * @param modifier Modifier to be applied to the menu item.
+ * @param icon Optional icon to display alongside the text.
+ * @param trailing Optional content to display at the end of the item, after the text.
+ * @param interaction Optional [MutableInteractionSource] to observe and control the item's interactions.
+ * @param enabled Controls whether the item is enabled or disabled.
+ * @param selectionType The type of selection behavior for the item.
+ *   See [ListItemSelectionType] for available options.
+ * @param colors The colors used to represent the different states of the item.
+ *   Defaults to [ListItemDefaults.selectedListItemColors] when selected,
+ *   or [ListItemDefaults.defaultListItemColors] otherwise.
+ */
 @Composable
 fun MenuFlyoutScope.MenuFlyoutItem(
     selected: Boolean,
@@ -178,6 +246,18 @@ fun MenuFlyoutScope.MenuFlyoutItem(
     )
 }
 
+/**
+ * Represents an item within a [MenuFlyout].
+ *
+ * @param onClick The callback to be invoked when the item is clicked.
+ * @param text The composable function that provides the text content of the item.
+ * @param modifier The modifier to be applied to the item.
+ * @param icon The composable function that provides the leading icon of the item.
+ * @param trailing The composable function that provides the trailing content of the item.
+ * @param interaction The [MutableInteractionSource] representing the stream of interactions for this item.
+ * @param enabled Whether the item is enabled or not.
+ * @param colors The color scheme for this item, default is [ListItemDefaults.defaultListItemColors].
+ */
 @Composable
 fun MenuFlyoutScope.MenuFlyoutItem(
     onClick: () -> Unit,
@@ -203,6 +283,17 @@ fun MenuFlyoutScope.MenuFlyoutItem(
     )
 }
 
+/**
+ * A menu flyout item that can expand to show a sub-menu.
+ *
+ * @param items The content of the sub-menu.
+ * @param text The text content of the menu item.
+ * @param modifier The modifier to apply to the menu item.
+ * @param icon The icon to display in the menu item.
+ * @param interaction The interaction source for the menu item.
+ * @param enabled Whether the menu item is enabled.
+ * @param colors The colors to use for the menu item.
+ */
 @Composable
 fun MenuFlyoutScope.MenuFlyoutItem(
     items: @Composable MenuFlyoutScope.() -> Unit,
@@ -296,8 +387,25 @@ typealias MenuColors = ListItemColorScheme
 )
 typealias MenuColor = ListItemColor
 
+/**
+ * Scope for the content of a [MenuFlyout].
+ *
+ * This scope provides functions to register menu items that need to track their hover state,
+ * which is useful for managing the display of submenus or highlighting items.
+ */
 interface MenuFlyoutScope {
 
+    /**
+     * Registers a menu item to track its hovered state with a delay.
+     *
+     * This function uses a [MutableInteractionSource] to monitor the hovered state of a menu item.
+     * It introduces a delay before considering the item as truly hovered to avoid flickering
+     * when the user's mouse briefly passes over the item.
+     *
+     * @param interaction The [MutableInteractionSource] associated with the menu item to track.
+     * @param onDelayedHoveredChanged A callback that is invoked when the delayed hovered state of the item changes.
+     *        The `hovered` parameter indicates whether the item is considered hovered after the delay.
+     */
     @Composable
     fun registerHoveredMenuItem(
         interaction: MutableInteractionSource,
@@ -305,6 +413,12 @@ interface MenuFlyoutScope {
     )
 }
 
+/**
+ * Scope for the content of a [MenuFlyoutContainer].
+ *
+ * Inherits from [MenuFlyoutScope] and [FlyoutContainerScope], providing functionalities
+ * for both menu items and container-level flyout operations.
+ */
 interface MenuFlyoutContainerScope : MenuFlyoutScope, FlyoutContainerScope
 
 private class MenuFlyoutContainerScopeImpl(

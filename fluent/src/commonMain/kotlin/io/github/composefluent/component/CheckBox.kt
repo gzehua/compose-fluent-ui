@@ -34,6 +34,16 @@ import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
 
+/**
+ * A composable function that renders a CheckBox with an optional label.
+ *
+ * @param checked Whether the checkbox is checked or not.
+ * @param label The optional label to display next to the checkbox.
+ * @param modifier Modifier to be applied to the row containing the checkbox and label.
+ * @param enabled Whether the checkbox is enabled or not.
+ * @param colors The color scheme to use for the checkbox. Defaults to `selectedCheckBoxColors` when checked, and `defaultCheckBoxColors` otherwise.
+ * @param onCheckStateChange Callback to be invoked when the checked state of the checkbox changes.
+ */
 @Composable
 fun CheckBox(
     checked: Boolean,
@@ -105,6 +115,14 @@ fun CheckBox(
 
 typealias CheckBoxColorScheme = PentaVisualScheme<CheckBoxColor>
 
+/**
+ * Represents the color scheme for a [CheckBox] in different states.
+ *
+ * @property fillColor The background color of the checkbox.
+ * @property contentColor The color of the content (like the checkmark) inside the checkbox.
+ * @property borderColor The color of the border around the checkbox.
+ * @property labelTextColor The color of the text label associated with the checkbox.
+ */
 @Immutable
 data class CheckBoxColor(
     val fillColor: Color,
@@ -113,8 +131,20 @@ data class CheckBoxColor(
     val labelTextColor: Color
 )
 
+/**
+ * Contains the default values used for [CheckBox].
+ */
 object CheckBoxDefaults {
 
+    /**
+     * Creates a [CheckBoxColorScheme] with the default colors for a standard checkbox.
+     *
+     * @param default The default colors for a selected checkbox.
+     * @param hovered The colors for a selected checkbox when it is hovered.
+     * @param pressed The colors for a selected checkbox when it is pressed.
+     * @param disabled The colors for a selected checkbox when it is disabled.
+     * @return A [CheckBoxColorScheme] containing the specified colors for the checkbox states.
+     */
     @Stable
     @Composable
     fun defaultCheckBoxColors(
@@ -144,6 +174,14 @@ object CheckBoxDefaults {
         disabled = disabled
     )
 
+    /**
+     * Creates a [CheckBoxColorScheme] for a selected [CheckBox].
+     *
+     * @param default The default colors for a selected checkbox.
+     * @param hovered The colors for a selected checkbox when it is hovered.
+     * @param pressed The colors for a selected checkbox when it is pressed.
+     * @param disabled The colors for a selected checkbox when it is disabled.
+     */
     @Stable
     @Composable
     fun selectedCheckBoxColors(

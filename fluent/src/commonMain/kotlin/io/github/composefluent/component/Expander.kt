@@ -43,6 +43,21 @@ import io.github.composefluent.scheme.collectVisualState
 import io.github.composefluent.surface.Card
 import io.github.composefluent.surface.CardColor
 
+/**
+ * An expander is a component that allows the user to show and hide a region of content.
+ *
+ * @param expanded Whether the expander is expanded.
+ * @param onExpandedChanged The callback that is triggered when the expander's expanded state changes.
+ * @param heading The content displayed in the header of the expander.
+ * @param modifier Modifier for the expander.
+ * @param enabled Whether the expander is enabled.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [androidx.compose.foundation.interaction.Interaction]s for this Expander.
+ * @param shape The shape of the expander's container.
+ * @param icon The icon displayed in the header of the expander.
+ * @param caption The caption displayed below the heading in the header.
+ * @param trailing The content displayed at the trailing edge of the header.
+ * @param expandContent The content that is shown when the expander is expanded.
+ */
 @Composable
 fun Expander(
     expanded: Boolean,
@@ -117,6 +132,17 @@ fun Expander(
     }
 }
 
+/**
+ * A composable function that creates a single item within an expander component.
+ *
+ * @param heading The content to be displayed as the heading of the item.
+ * @param modifier Modifier for styling and layout of the item.
+ * @param color The background color of the item. Defaults to [FluentTheme.colors.background.card.secondary].
+ * @param icon The optional icon to be displayed at the start of the item. If null, no icon is displayed.
+ * @param caption The optional caption content to be displayed below the heading. If null, no caption is displayed.
+ * @param trailing The optional content to be displayed at the end of the item. If null, no trailing content is displayed.
+ * @param dropdown The optional content to be displayed in a dropdown section at the end of the item, commonly used for expansion indicators or actions. If null, no dropdown is displayed.
+ */
 @Composable
 fun ExpanderItem(
     heading: @Composable () -> Unit,
@@ -137,6 +163,22 @@ fun ExpanderItem(
     )
 }
 
+/**
+ * A card-like item for an expander list.
+ *
+ * @param onClick The callback to be invoked when this item is clicked.
+ * @param heading The content to be displayed as the item's heading.
+ * @param modifier The [Modifier] to be applied to this item.
+ * @param shape The shape of the card.
+ * @param enabled Controls the enabled state of the item. When `false`, this item will not be clickable and will appear visually disabled.
+ * @param colors The color scheme to use for the item's background and content based on its visual state.
+ * @param captionColors The color scheme to use for the item's caption based on its visual state.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [Interaction]s for this item.
+ * @param icon An optional icon to be displayed at the leading edge of the item.
+ * @param caption Optional supporting text to be displayed below the heading.
+ * @param trailing Optional content to be displayed at the trailing edge of the item.
+ * @param dropdown Optional content to be displayed as a dropdown indicator at the trailing edge.
+ */
 @Composable
 fun CardExpanderItem(
     onClick: () -> Unit,
@@ -179,6 +221,22 @@ fun CardExpanderItem(
     }
 }
 
+/**
+ * A card-like item for an expander list.
+ * This item provides a visually distinct header for an expander section, allowing for
+ * customization of the heading, optional icon, caption, trailing content, and dropdown.
+ *
+ * @param heading The composable function that renders the primary heading text or content.
+ * @param modifier Modifier to be applied to the underlying Layer.
+ * @param shape The shape of the card. Defaults to [FluentTheme.shapes.control].
+ * @param color The background color of the card. Defaults to [FluentTheme.colors.background.card.default].
+ * @param contentColor The preferred content color for text and icons within the card. Defaults to [FluentTheme.colors.text.text.primary].
+ * @param captionTextColor The color of the caption text. Defaults to [FluentTheme.colors.text.text.secondary].
+ * @param icon An optional composable function that renders an icon. If not provided, no icon is displayed.
+ * @param caption A composable function that renders a caption. If not provided, no caption is displayed.
+ * @param trailing A composable function that renders content to the right of the heading and caption, such as a button or indicator.
+ * @param dropdown An optional composable function to render a dropdown or expand/collapse indicator.
+ */
 @Composable
 fun CardExpanderItem(
     heading: @Composable () -> Unit,
@@ -211,6 +269,12 @@ fun CardExpanderItem(
     }
 }
 
+/**
+ * A separator line for [Expander] items.
+ *
+ * @param modifier Modifier to be applied to the separator.
+ * @param color The color of the separator line. Defaults to `FluentTheme.colors.stroke.divider.default`.
+ */
 @Composable
 fun ExpanderItemSeparator(
     modifier: Modifier = Modifier,
@@ -221,8 +285,21 @@ fun ExpanderItemSeparator(
     )
 }
 
+/**
+ * Contains the default values used by [CardExpanderItem].
+ */
 object ExpanderDefaults {
 
+    /**
+     * Creates a [PentaVisualScheme] for the colors of a card expander item.
+     *
+     * @param default The default colors of the card expander item.
+     * @param hovered The colors of the card expander item when hovered.
+     * @param pressed The colors of the card expander item when pressed.
+     * @param disabled The colors of the card expander item when disabled.
+     *
+     * @return A [PentaVisualScheme] containing the specified colors for the different states.
+     */
     @Stable
     @Composable
     fun cardExpanderItemColors(
