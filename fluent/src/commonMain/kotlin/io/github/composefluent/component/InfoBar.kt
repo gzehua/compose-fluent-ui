@@ -11,8 +11,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.IntrinsicMeasurable
 import androidx.compose.ui.layout.IntrinsicMeasureScope
+import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
@@ -491,7 +493,6 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
 
                 contentPlaceables?.let { placeable ->
                     placeable.placeRelative(offset, alignment.align(placeable.height, layoutHeight))
-                    offset += placeable.width + messageSpacing
                 }
 
                 offset = 0
@@ -566,24 +567,26 @@ private class InfoBarLayoutMeasurePolicy : MultiContentMeasurePolicy {
                 )
                 layout(layoutWidth, layoutHeight) {
                     val alignment = Alignment.CenterVertically
-                    var iconY = 0
                     iconPlaceable?.let { placeable ->
-                        iconY = alignment.align(placeable.height, constraints.minHeight)
+                        val iconY = alignment.align(placeable.height, constraints.minHeight)
                         placeable.placeRelative(
                             0,
                             iconY
                         )
                     }
-                    var closeActionY = 0
                     closeActionPlaceable?.let { placeable ->
-                        closeActionY = alignment.align(placeable.height, constraints.minHeight)
+                        val closeActionY = alignment.align(placeable.height, constraints.minHeight)
                         placeable.placeRelative(
                             layoutWidth - placeable.width - closeActionSpacing,
                             closeActionY
                         )
                     }
                     val startOffset = iconWidthWithSpacing
-                    var offsetAcc = topPadding
+                    var offsetAcc = titlePlaceable?.let {
+                        val firstBaseline = it[FirstBaseline]
+                        val lastBaseline = it[LastBaseline]
+                        alignment.align(it.height + firstBaseline - lastBaseline, constraints.minHeight)
+                    } ?: topPadding
                     titlePlaceable?.let { placeable ->
                         placeable.placeRelative(startOffset, offsetAcc)
                         offsetAcc += placeable.height
