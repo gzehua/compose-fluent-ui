@@ -56,6 +56,7 @@ import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.collectVisualState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
@@ -516,6 +517,8 @@ private fun Item(
  * selecting year/month/day, going to previous/next year/month,
  * and computing the header text.
  *
+ * @param initialInstant The initial [Instant] to represent, defaults to the current system time.
+ * @param timeZone The [TimeZone] to use for date calculations, defaults to the current system default.
  * @property currentChooseType The current choose type (YEAR, MONTH, DAY).
  * @property viewHeaderText The header text to display in the view.
  * @property dayOfWeekNames The names of the days of the week based on locale.
@@ -528,7 +531,10 @@ private fun Item(
  * @property candidateDays The list of candidate days to display.
  * @property localeStartDayOfWeek The first day of the week based on locale. Sunday(1), Monday(2), ..., Saturday(7)
  */
-class CalendarDatePickerState {
+class CalendarDatePickerState(
+    initialInstant: Instant = Clock.System.now(),
+    timeZone: TimeZone = TimeZone.currentSystemDefault()
+) {
 
     val currentChooseType = mutableStateOf<ChooseType>(ChooseType.DAY)
     val viewHeaderText = mutableStateOf("")
@@ -572,8 +578,7 @@ class CalendarDatePickerState {
 //    val localeStartDayOfWeek = 2
 
     init {
-        val now = Clock.System.now()
-        val dateTime = now.toLocalDateTime(TimeZone.currentSystemDefault())
+        val dateTime = initialInstant.toLocalDateTime(timeZone)
         val year = dateTime.year
         val monthValue = dateTime.monthNumber - 1
         val day = dateTime.dayOfMonth
