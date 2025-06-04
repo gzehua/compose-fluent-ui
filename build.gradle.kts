@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.build.konfig) apply false
+    alias(libs.plugins.maven.publish) apply false
     id("io.github.composefluent.plugin.build")
 }
 

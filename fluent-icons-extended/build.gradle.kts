@@ -7,8 +7,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
-    id("maven-publish")
-    signing
+    alias(libs.plugins.maven.publish)
 }
 
 group = BuildConfig.group

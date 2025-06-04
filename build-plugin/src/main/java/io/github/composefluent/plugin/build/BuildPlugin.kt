@@ -1,5 +1,7 @@
 package io.github.composefluent.plugin.build
 
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import com.vanniktech.maven.publish.SonatypeHost
 import io.github.composefluent.plugin.build.BuildConfig.branch
 import io.github.composefluent.plugin.build.BuildConfig.integerVersionName
 import io.github.composefluent.plugin.build.BuildConfig.isRelease
@@ -9,12 +11,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.withType
-import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 
 class BuildPlugin : Plugin<Project> {
@@ -25,7 +25,10 @@ class BuildPlugin : Plugin<Project> {
         target.allprojects.forEach { project ->
             project.afterEvaluate {
 
-                project.extensions.findByType<PublishingExtension>()?.apply {
+                project.extensions.findByType<MavenPublishBaseExtension>()?.apply {
+                    setupMavenPortalPublishing(project)
+                }
+                /*project.extensions.findByType<PublishingExtension>()?.apply {
                     setupMavenPublishing(project)
                     project.extensions.findByType<SigningExtension>()?.let { signing ->
                         signing.setupSigning(this)
@@ -36,7 +39,44 @@ class BuildPlugin : Plugin<Project> {
                             mustRunAfter(signingTask)
                         }
                     }
+                }*/
+            }
+        }
+    }
+
+    private fun MavenPublishBaseExtension.setupMavenPortalPublishing(target: Project) {
+        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+        signAllPublications()
+        coordinates(target.group.toString(), "fluent", target.version.toString())
+
+        pom {
+            name.set("Compose Fluent UI")
+            description.set("A Fluent Design UI library for Compose Multiplatform.")
+            inceptionYear.set("2025")
+            url.set("https://github.com/compose-fluent/compose-fluent-ui")
+            licenses {
+                license {
+                    name.set("The Apache License, Version 2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    distribution.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                 }
+            }
+            developers {
+                developer {
+                    id.set("konyaco")
+                    name.set("Yaco")
+                    url.set("https://github.com/konyaco")
+                }
+                developer {
+                    id.set("sanlorng")
+                    name.set("Sanlorng")
+                    url.set("https://github.com/sanlorng")
+                }
+            }
+            scm {
+                url.set("https://github.com/compose-fluent/compose-fluent-ui")
+                connection.set("scm:git:git://github.com/compose-fluent/compose-fluent-ui.git")
+                developerConnection.set("scm:git:ssh://github.com/compose-fluent/compose-fluent-ui.git")
             }
         }
     }
@@ -50,6 +90,7 @@ class BuildPlugin : Plugin<Project> {
         sign(publishing.publications)
     }
 
+    @Deprecated("use setupMavenPortalPublishing instead")
     private fun PublishingExtension.setupMavenPublishing(target: Project) {
         val javadocJar = target.tasks.findByName("javadocJar") ?: target.tasks.create("javadocJar", Jar::class) {
             archiveClassifier.set("javadoc")
@@ -85,7 +126,7 @@ class BuildPlugin : Plugin<Project> {
         }
         repositories {
             maven {
-                val snapshotsUrl ="https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                val snapshotsUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
                 val releasesUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
                 name = "OSSRH"
                 url = target.uri(
@@ -101,13 +142,12 @@ class BuildPlugin : Plugin<Project> {
     }
 
 
-
     private fun setupLibraryVersion(target: Project) {
         val providers = target.providers
 
         providers.exec {
-                commandLine("git", "branch", "--show-current")
-                isIgnoreExitValue = true
+            commandLine("git", "branch", "--show-current")
+            isIgnoreExitValue = true
         }.standardOutput
             .asText
             .orNull

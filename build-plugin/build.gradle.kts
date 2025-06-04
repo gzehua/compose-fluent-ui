@@ -9,7 +9,13 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
+
     implementation(kotlin("gradle-plugin", libs.versions.kotlin.get()))
+    implementation(
+        "com.vanniktech.maven.publish",
+        "com.vanniktech.maven.publish.gradle.plugin",
+        libs.versions.mavenPublish.get()
+    )
 }
 
 kotlin {

@@ -11,6 +11,7 @@ highlights = "1.0.0"
 kotlinx-datetime = "0.6.1"
 jna = "5.13.0"
 buildKonfig = "0.15.2"
+mavenPublish = "0.32.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -27,8 +28,8 @@ android-tools-common = { module = "com.android.tools:common", version.ref = "and
 android-tools-sdk-common = { module = "com.android.tools:sdk-common", version.ref = "androidBuildTools" }
 window-styler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowStyler" }
 highlights = { module = "dev.snipme:highlights", version.ref = "highlights" }
-jna-platform = { module = "net.java.dev.jna:jna-platform-jpms",  version.ref = "jna" }
-jna = { module = "net.java.dev.jna:jna-jpms",  version.ref = "jna" }
+jna-platform = { module = "net.java.dev.jna:jna-platform-jpms", version.ref = "jna" }
+jna = { module = "net.java.dev.jna:jna-jpms", version.ref = "jna" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -42,3 +43,4 @@ android-application = { id = "com.android.application", version.ref = "androidGr
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 
 build-konfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }

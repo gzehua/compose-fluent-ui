@@ -4,9 +4,9 @@ import org.gradle.api.JavaVersion
 
 object BuildConfig {
 
-    const val group = "io.github.composefluent"
+    const val group = "io.github.compose-fluent"
 
-    const val packageName = "$group"
+    const val packageName = "io.github.composefluent"
 
     internal const val snapshotLibraryVersion = "0.1.0-SNAPSHOT"
 
