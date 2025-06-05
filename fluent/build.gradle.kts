@@ -1,5 +1,5 @@
-import com.konyaco.fluent.plugin.build.BuildConfig
-import com.konyaco.fluent.plugin.build.applyTargets
+import io.github.composefluent.plugin.build.BuildConfig
+import io.github.composefluent.plugin.build.applyTargets
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -7,8 +7,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
-    id("maven-publish")
-    signing
+    alias(libs.plugins.maven.publish)
 }
 
 group = BuildConfig.group

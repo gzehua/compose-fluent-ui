@@ -1,4 +1,4 @@
-import com.konyaco.fluent.plugin.build.BuildConfig
+import io.github.composefluent.plugin.build.BuildConfig
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
@@ -8,7 +8,8 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.build.konfig) apply false
-    id("com.konyaco.fluent.plugin.build")
+    alias(libs.plugins.maven.publish) apply false
+    id("io.github.composefluent.plugin.build")
 }
 
 group = BuildConfig.group
