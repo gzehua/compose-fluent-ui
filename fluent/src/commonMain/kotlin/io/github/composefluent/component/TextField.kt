@@ -47,6 +47,28 @@ import io.github.composefluent.layout.alignLast
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.collectVisualState
 
+/**
+ * A composable function that creates a text field for user input.
+ *
+ * @param value The current value of the text field.
+ * @param onValueChange A callback function that is invoked when the text field's value changes.
+ * @param modifier Modifier to apply to the text field.
+ * @param enabled Controls the enabled state of the text field. When `false`, the text field will be neither editable nor focusable.
+ * @param readOnly Controls the editability of the text field. When `true`, the text field can not be modified, however, a user can copy text from it.
+ * @param singleLine When `true`, the text field will be limited to a single line.
+ * @param visualTransformation Transforms the visual representation of the input.
+ * @param keyboardOptions Software keyboard options that should be provided to the text field.
+ * @param keyboardActions When the input service emits an IME action, the corresponding callback is called.
+ * @param maxLines The maximum number of lines that the text field can display.
+ * @param header An optional composable lambda that will be displayed above the text field as a header.
+ * @param leadingIcon An optional composable lambda that will be displayed at the start of the text field.
+ * @param trailing An optional composable lambda that will be displayed at the end of the text field.
+ * @param placeholder An optional composable lambda that will be displayed when the text field is empty.
+ * @param isClearable When true, a clear icon will be displayed when the text field is focused and not empty. Clicking it will clear the content.
+ * @param interactionSource The MutableInteractionSource representing the stream of Interactions for this text field.
+ * @param colors Color scheme to use for the text field.
+ * @param shape The shape of the text field.
+ */
 @Composable
 fun TextField(
     value: TextFieldValue,
@@ -106,6 +128,28 @@ fun TextField(
     }
 }
 
+/**
+ * A composable function that creates a text field for user input.
+ *
+ * @param value The current text value of the text field.
+ * @param onValueChange The callback that is triggered when the input text changes.
+ * @param modifier The [Modifier] to be applied to the text field.
+ * @param enabled Controls the enabled state of the text field. When `false`, the text field is not interactive.
+ * @param readOnly Controls the read-only state of the text field. When `true`, the user cannot edit the text.
+ * @param singleLine When `true`, the text field will be limited to a single line.
+ * @param visualTransformation The visual transformation that is applied to the text field.
+ * @param keyboardOptions The keyboard options to configure the type of keyboard that is shown.
+ * @param keyboardActions The keyboard actions that define the behavior of the keyboard actions.
+ * @param maxLines The maximum number of lines the text field can occupy.
+ * @param header An optional composable lambda that is placed above the text field.
+ * @param leadingIcon An optional composable lambda for a leading icon within the text field.
+ * @param trailing An optional composable lambda for trailing content within the text field.
+ * @param placeholder An optional composable lambda that is displayed when the text field is empty.
+ * @param isClearable When `true`, a clear button is shown when the text field is focused and has content.
+ * @param interactionSource The [MutableInteractionSource] for observing interactions with the text field.
+ * @param colors The [TextFieldColorScheme] that defines the colors of the text field.
+ * @param shape The [Shape] of the text field's background.
+ */
 @Composable
 fun TextField(
     value: String,
@@ -165,8 +209,22 @@ fun TextField(
     }
 }
 
+/**
+ * Contains the default values used for [TextField].
+ */
 object TextFieldDefaults {
 
+    /**
+     * Creates a [TextFieldColorScheme] with the default colors for a text field.
+     *
+     * @param default The colors used when the text field is in its default state.
+     * @param focused The colors used when the text field is focused.
+     * @param hovered The colors used when the text field is hovered over.
+     * @param pressed The colors used when the text field is pressed.
+     * @param disabled The colors used when the text field is disabled.
+     *
+     * @return A [TextFieldColorScheme] with the specified colors.
+     */
     @Stable
     @Composable
     fun defaultTextFieldColors(
@@ -240,6 +298,33 @@ object TextFieldDefaults {
         shape = FluentTheme.shapes.control
     )
 
+    /**
+     * Composable function that provides the visual decoration for a text field.
+     *
+     * This function wraps the inner text field with a styled layer, including optional
+     * leading and trailing icons, a clear button, and placeholder text. It also handles
+     * the visual states of the text field, such as hover, focus, and enabled/disabled.
+     *
+     * @param value The current text value of the text field.
+     * @param interactionSource The [MutableInteractionSource] representing the stream of
+     *   interactions for this text field. You can create and pass in your own remembered
+     *   [MutableInteractionSource] if you want to observe interactions and customize the
+     *   decoration based on them.
+     * @param enabled Controls the enabled state of the text field. When `false`, the text field
+     *   will be visually disabled and will not respond to input.
+     * @param color The color scheme for the text field, including colors for the background, text,
+     *   placeholder, and border.
+     * @param modifier Optional [Modifier] to be applied to the outer layer of the text field.
+     *   By default, it includes the bottom line drawing.
+     * @param shape The [Shape] of the text field's background layer.
+     * @param onClearClick Optional callback that will be invoked when the clear button is clicked.
+     *   If null, no clear button will be shown.
+     * @param placeholder Optional composable that will be displayed when the text field is empty
+     *   and not focused.
+     * @param leadingIcon Optional composable that will be displayed at the start of the text field.
+     * @param trailing Optional composable that will be displayed at the end of the text field, such as action button.
+     * @param innerTextField The composable that renders the actual text field content.
+     */
     @Composable
     fun DecorationBox(
         value: String,
@@ -309,6 +394,16 @@ object TextFieldDefaults {
 
 typealias TextFieldColorScheme = PentaVisualScheme<TextFieldColor>
 
+/**
+ * Represents the color scheme for a TextField.
+ *
+ * @property fillColor The background fill color of the text field.
+ * @property contentColor The color of the text content within the text field.
+ * @property placeholderColor The color of the placeholder text when the text field is empty.
+ * @property bottomLineFillColor The color of the bottom line of the text field.
+ * @property borderBrush The brush used to draw the border around the text field.
+ * @property cursorBrush The brush used to draw the cursor within the text field.
+ */
 @Immutable
 data class TextFieldColor(
     val fillColor: Color,

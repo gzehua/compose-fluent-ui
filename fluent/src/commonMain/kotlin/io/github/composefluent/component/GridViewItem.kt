@@ -30,6 +30,25 @@ import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
 import kotlin.jvm.JvmInline
 
+/**
+ * A composable that represents an item in a grid view with multi-selection capabilities.
+ *
+ * This item can be selected or deselected, and it displays a checkbox overlay to indicate its selection state.
+ *
+ * @param selected Whether this item is currently selected.
+ * @param onSelectedChange A callback that is invoked when the selection state of the item changes.
+ *  It receives the new selection state (`true` for selected, `false` for deselected).
+ * @param modifier The modifier to be applied to the item.
+ * @param enabled Controls the enabled state of the item. When `false`, the item is not selectable and visually appears disabled.
+ * @param colors The [VisualStateScheme] that defines the colors for the grid view item in different interaction states (default, hovered, pressed, disabled).
+ *  Defaults to [GridViewItemDefaults.selectedColors] if selected, otherwise [GridViewItemDefaults.defaultColors].
+ * @param checkBoxColorScheme The [VisualStateScheme] that defines the colors for the checkbox overlay in different interaction states.
+ *  Defaults to [GridViewItemDefaults.selectedCheckBoxColors] if selected, otherwise [GridViewItemDefaults.defaultCheckBoxColors].
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [androidx.compose.foundation.interaction.Interaction]s
+ *  for this item. You can create and pass in your own remembered [MutableInteractionSource] if you want to observe
+ *  [androidx.compose.foundation.interaction.Interaction]s and customize the item's appearance in different [androidx.compose.foundation.interaction.Interaction]s.
+ * @param content The content to be displayed within the grid view item.
+ */
 @Composable
 fun MultiSelectGridViewItem(
     selected: Boolean,
@@ -71,6 +90,26 @@ fun MultiSelectGridViewItem(
     )
 }
 
+/**
+ * A composable that represents an item in a grid view.
+ *
+ * This composable provides a selectable item that can be used in a grid layout.
+ * It supports different states (default, hovered, pressed, disabled) and can be customized
+ * with different colors and interaction behaviors.
+ *
+ * @param selected `true` if the item is currently selected, `false` otherwise.
+ * @param onSelectedChange Callback function that is invoked when the selected state of the item changes.
+ *   It receives the new selected state as a boolean parameter.
+ * @param modifier Modifier to apply to this item.
+ * @param enabled `true` if the item is enabled and interactive, `false` otherwise.
+ * @param interactionSource Optional [MutableInteractionSource] that will be used to dispatch
+ *   [Interaction]s to indicate the item's state. If not provided, a [remembered][remember]
+ *   instance will be used internally.
+ * @param colors [VisualStateScheme] that provides the colors for different states of the item.
+ *   Defaults to [GridViewItemDefaults.selectedColors] when `selected` is true and
+ *   [GridViewItemDefaults.defaultColors] otherwise.
+ * @param content The content to be displayed inside the grid view item.
+ */
 @Composable
 fun GridViewItem(
     selected: Boolean,
@@ -97,6 +136,12 @@ fun GridViewItem(
     )
 }
 
+/**
+ * Represents the colors of a grid view item.
+ *
+ * @property borderColor The color of the border around the item.
+ * @property backgroundColor The background color of the item.
+ */
 @Stable
 data class GridViewItemColor(
     val borderColor: Color,
@@ -105,10 +150,33 @@ data class GridViewItemColor(
 
 typealias GridViewItemColorScheme = PentaVisualScheme<GridViewItemColor>
 
+/**
+ * Contains the default values used for [GridViewItem].
+ */
 object GridViewItemDefaults {
 
+    /**
+     * The default spacing used for padding within the `GridViewItem` container.
+     * This spacing is applied around the content and between the content and the border,
+     * effectively creating a visual margin.
+     */
     val spacing = 4.dp
 
+    /**
+     * Creates a [GridViewItemColorScheme] with the default colors for a [GridViewItem].
+     *
+     * @param default The default colors for the GridViewItem.
+     *      * `borderColor`: The color of the border when the item is in its default state. Defaults to transparent.
+     *      * `backgroundColor`: The background color when the item is in its default state. Defaults to `subtleFill.transparent` from [FluentTheme.colors].
+     * @param hovered The colors for the GridViewItem when hovered.
+     *      * `borderColor`: The border color when the item is hovered. Defaults to `stroke.control.onAccentTertiary` from [FluentTheme.colors].
+     *      * `backgroundColor`: The background color when the item is hovered. Defaults to `subtleFill.secondary` from [FluentTheme.colors].
+     * @param pressed The colors for the GridViewItem when pressed.
+     *      * `borderColor`: The border color when the item is pressed. Defaults to transparent.
+     *      * `backgroundColor`: The background color when the item is pressed. Defaults to `subtleFill.tertiary` from [FluentTheme.colors].
+     * @param disabled The colors for the GridViewItem when disabled. Defaults to the same as `default`.
+     * @return A [GridViewItemColorScheme] containing the specified colors.
+     */
     @Stable
     @Composable
     fun defaultColors(
@@ -132,6 +200,19 @@ object GridViewItemDefaults {
         disabled = disabled
     )
 
+    /**
+     * Creates a [GridViewItemColorScheme] with colors for a selected [GridViewItem] in different states.
+     *
+     * @param default The colors used when the [GridViewItem] is in its default selected state.
+     * By default, it uses a [FluentTheme.colors.fillAccent.default] border and a [FluentTheme.colors.subtleFill.tertiary] background.
+     * @param hovered The colors used when the [GridViewItem] is selected and hovered over.
+     * By default, it uses a [FluentTheme.colors.fillAccent.secondary] border and a [FluentTheme.colors.subtleFill.secondary] background.
+     * @param pressed The colors used when the [GridViewItem] is selected and pressed.
+     * By default, it uses a [FluentTheme.colors.fillAccent.tertiary] border and a [FluentTheme.colors.subtleFill.tertiary] background.
+     * @param disabled The colors used when the [GridViewItem] is selected and disabled.
+     * By default, it uses a [FluentTheme.colors.fillAccent.disabled] border and a [FluentTheme.colors.subtleFill.secondary] background.
+     * @return A [GridViewItemColorScheme] that defines the colors for a selected [GridViewItem] in various states.
+     */
     @Stable
     @Composable
     fun selectedColors(

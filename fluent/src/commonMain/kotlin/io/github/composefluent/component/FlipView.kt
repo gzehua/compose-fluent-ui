@@ -53,6 +53,28 @@ import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
 import kotlinx.coroutines.launch
 
+/**
+ * A composable function that creates a horizontal flip view, allowing users to navigate through pages
+ * horizontally. It provides controls for moving to the next and previous pages, as well as customization
+ * options for styling and behavior.
+ *
+ * @param state The state object to be used to control or observe the list's state.
+ * @param modifier Modifier to be applied to the layout.
+ * @param enabled Whether the flip view is enabled or not.
+ * @param pageButtonColors Colors for the next and previous page buttons.
+ * @param contentPadding The padding to be applied to the page content.
+ * @param pageSize The size of the pages.
+ * @param beyondViewportPageCount The number of pages to be kept beyond the viewport.
+ * @param pageSpacing The spacing between pages.
+ * @param verticalAlignment The vertical alignment of pages within the viewport.
+ * @param flingBehavior The fling behavior for the page scrolling.
+ * @param userScrollEnabled Whether user scrolling is enabled.
+ * @param reverseLayout Whether to reverse the layout of the pages.
+ * @param key A factory of stable and unique keys representing the item.
+ * @param pageNestedScrollConnection A [NestedScrollConnection] that receives nested scroll events from the pages.
+ * @param snapPosition The snap position for the page.
+ * @param pageContent The content to be displayed on each page.
+ */
 @OptIn(ExperimentalFluentApi::class)
 @Composable
 fun HorizontalFlipView(
@@ -119,6 +141,29 @@ fun HorizontalFlipView(
     }
 }
 
+/**
+ * A composable function that creates a horizontal flip view, allowing users to navigate through pages
+ * horizontally. It provides controls for moving to the next and previous pages, as well as customization
+ * options for styling and behavior.
+ *
+ * @param state The [PagerState] to be used by the [VerticalPager]. This state
+ *  object manages the current page index and scrolling behavior.
+ * @param modifier Modifier to be applied to the layout.
+ * @param enabled Controls whether the flip view is enabled for interaction.
+ * @param pageButtonColors A [VisualStateScheme] defining the colors for the next/previous page buttons.
+ * @param contentPadding The padding to be applied to the content area of the pager.
+ * @param pageSize The size of each page in the pager, defined as a [PageSize].
+ * @param beyondViewportPageCount The number of pages to be composed beyond the viewport in each direction.
+ * @param pageSpacing The space between pages in the pager.
+ * @param horizontalAlignment The horizontal alignment of pages within the pager.
+ * @param flingBehavior The fling behavior to use for scrolling.
+ * @param userScrollEnabled Controls whether the user can scroll the pager manually.
+ * @param reverseLayout Whether to reverse the layout of the pages.
+ * @param key A function to provide a unique key for each page based on its index.
+ * @param pageNestedScrollConnection The [NestedScrollConnection] to be used for nested scrolling.
+ * @param snapPosition The position at which pages should snap to.
+ * @param pageContent The composable function to render the content of each page. It receives the page index as an argument.
+ */
 @OptIn(ExperimentalFluentApi::class)
 @Composable
 fun VerticalFlipView(
@@ -185,6 +230,19 @@ fun VerticalFlipView(
     }
 }
 
+/**
+ * A composable function that creates a vertical flip view container.
+ * This container provides the layout and controls for navigating between pages vertically.
+ *
+ * @param onNextPageClick Callback function invoked when the next page button is clicked.
+ * @param onPreviousPageClick Callback function invoked when the previous page button is clicked.
+ * @param modifier Modifier to be applied to the layout.
+ * @param enabled Controls whether the flip view container is enabled for interaction.
+ * @param nextPageVisible Determines if the next page button is visible.
+ * @param previousPageVisible Determines if the previous page button is visible.
+ * @param pageButtonColors Colors for the next and previous page buttons.
+ * @param content The content to be displayed within the flip view container.
+ */
 @ExperimentalFluentApi
 @Composable
 fun VerticalFlipViewContainer(
@@ -210,6 +268,21 @@ fun VerticalFlipViewContainer(
     )
 }
 
+/**
+ * A composable function that provides a container for a horizontally oriented flip view.
+ * This container includes controls for navigating to the next and previous pages, which
+ * are displayed as buttons. The content displayed within the container is determined by
+ * the `content` parameter.
+ *
+ * @param onNextPageClick Callback invoked when the next page button is clicked.
+ * @param onPreviousPageClick Callback invoked when the previous page button is clicked.
+ * @param modifier Modifier for styling and layout of the container.
+ * @param enabled Controls whether the flip view's navigation is enabled.
+ * @param nextPageVisible Determines if the next page button should be visible.
+ * @param previousPageVisible Determines if the previous page button should be visible.
+ * @param pageButtonColors The colors used for the next and previous page buttons, defined by a [VisualStateScheme].
+ * @param content The composable content to be displayed within the flip view container.
+ */
 @ExperimentalFluentApi
 @Composable
 fun HorizontalFlipViewContainer(
@@ -359,6 +432,12 @@ private fun MaterialContainerScope.PageButton(
     }
 }
 
+/**
+ * Represents the colors used for the page navigation buttons in the [FlipView].
+ *
+ * @property background The background [Material] for the page button.
+ * @property contentColor The [Color] of the content (icon) within the page button.
+ */
 data class PageButtonColor(
     val background: Material,
     val contentColor: Color
@@ -366,8 +445,19 @@ data class PageButtonColor(
 
 object FlipViewDefaults {
 
+    /**
+     * The default spacing between pages in the [VerticalFlipView].
+     */
     val verticalPageSpacing = 4.dp
 
+    /**
+     * Creates a [PentaVisualScheme] for the page buttons, defining their colors for different states.
+     *
+     * @param default The default [PageButtonColor] for the page buttons.
+     * @param hovered The [PageButtonColor] for when the page buttons are hovered.
+     * @param pressed The [PageButtonColor] for when the page buttons are pressed.
+     * @return A [PentaVisualScheme] representing the visual scheme for the page buttons.
+     */
     @Composable
     @Stable
     fun pageButtonColors(
@@ -387,6 +477,12 @@ object FlipViewDefaults {
         disabled = default
     )
 
+    /**
+     * Returns the default [AnimationSpec] used for scrolling between pages in the [FlipView].
+     * This spec uses a tween animation with a long duration and a fast invoke easing.
+     *
+     * @return The default [AnimationSpec] for page scrolling.
+     */
     fun scrollAnimationSpec() =
         tween<Float>(FluentDuration.LongDuration, easing = FluentEasing.FastInvokeEasing)
 }

@@ -40,6 +40,18 @@ import io.github.composefluent.layout.HorizontalIndicatorContentLayout
 import io.github.composefluent.scheme.VisualStateScheme
 import io.github.composefluent.scheme.collectVisualState
 
+/**
+ * A segmented control is a linear set of two or more segments, each of which functions as a mutually exclusive button.
+ *
+ * Segmented controls allow users to switch between different views or modes.
+ *
+ * @param modifier The [Modifier] to be applied to this segmented control.
+ * @param color The background color of the segmented control. Defaults to [FluentTheme.colors.controlAlt.secondary].
+ * @param borderStroke The border stroke of the segmented control. If null, no border is drawn.
+ * Defaults to a border with [buttonBorderStrokeWidth] and [FluentTheme.colors.stroke.control.default].
+ * @param content The content of the segmented control.
+ * The content should be composed of [SegmentedButton]s, each representing a segment.
+ */
 @Composable
 fun SegmentedControl(
     modifier: Modifier = Modifier,
@@ -61,6 +73,24 @@ fun SegmentedControl(
     }
 }
 
+/**
+ * A segmented button represents a single item within a [SegmentedControl].
+ *
+ * @param checked Whether this item is currently selected.
+ * @param onCheckedChanged Callback to be invoked when this item's checked state changes.
+ * @param colors The color scheme to use for this button, based on the interaction state. If not provided,
+ * [ButtonDefaults.buttonColors] will be used when checked and [ButtonDefaults.subtleButtonColors] will be used when not checked.
+ * @param indicator The composable function that will draw an indicator to show the [checked] state. By default it will draw
+ * a [HorizontalIndicator].
+ * @param modifier The modifier to apply to this item.
+ * @param enabled Controls the enabled state of the button. When `false`, this button will not be clickable and appears
+ * visually disabled to the user.
+ * @param position The position of the button within the segmented control.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [Interaction]s for this button. You can create and
+ * pass in your own remembered [MutableInteractionSource] if desired.
+ * @param icon The icon to display in the button. If `null`, no icon will be displayed.
+ * @param text The text to display in the button. If `null`, no text will be displayed.
+ */
 @Composable
 fun SegmentedButton(
     checked: Boolean,
@@ -133,8 +163,30 @@ fun SegmentedButton(
     }
 }
 
+/**
+ * Represents the position of a segmented item within a [SegmentedControl].
+ *
+ * This enum is used to define the visual appearance and padding of a [SegmentedButton]
+ * when placed in a [SegmentedControl].
+ *
+ * - **Start**: Indicates the item is the first in the [SegmentedControl] and should have
+ *   padding on its right side to appear connected to the next item.
+ * - **Center**: Indicates the item is in the middle of the [SegmentedControl] and should
+ *   have padding on both its left and right sides to appear connected to adjacent items.
+ * - **End**: Indicates the item is the last in the [SegmentedControl] and should have
+ *   padding on its left side to appear connected to the previous item.
+ */
 enum class SegmentedItemPosition { Start, Center, End }
 
+/**
+ * A horizontal indicator that animates its width based on the [visible] state.
+ *
+ * @param modifier The modifier to be applied to the indicator.
+ * @param visible Whether the indicator should be visible. Animates its width between 0dp and 16dp.
+ * @param enabled Whether the indicator is enabled. Affects the color of the indicator.
+ * @param color The color of the indicator when enabled. Defaults to [FluentTheme.colors.fillAccent.default].
+ * @param disabledColor The color of the indicator when disabled. Defaults to [FluentTheme.colors.fillAccent.disabled].
+ */
 @Composable
 fun HorizontalIndicator(
     modifier: Modifier = Modifier,

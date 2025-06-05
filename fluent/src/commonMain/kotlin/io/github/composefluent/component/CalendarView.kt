@@ -64,9 +64,20 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
 /**
- * CalendarView shows a large view for showing and selecting dates.
- * DatePicker by contrast has a compact view with inline selection.
+ * `CalendarView` provides a large, interactive calendar interface for displaying and selecting dates.
+ * It offers a more expansive view compared to `DatePicker`, which uses a compact, inline selection approach.
+ *
+ * The view supports navigation between years, months, and days, offering a comprehensive date selection experience.
+ * It also supports selecting a day with the callback parameter [onChoose].
+ *
+ * Currently, the view offers these features:
+ *  - Year, Month, Day view switch.
+ *  - Paging among each views.
+ *
  * TODO: Add animations, scroll behaviors and refactor codes. Add selection mode (single, multiple, range)
+ *
+ * @param onChoose Callback invoked when a specific date is chosen. Provides the selected [CalendarDatePickerState.Day] object.
+ * @param state The [CalendarDatePickerState] managing the calendar's internal state (e.g., selected date, view mode).
  */
 @Composable
 @ExperimentalFluentApi
@@ -495,6 +506,28 @@ private fun Item(
     }
 }
 
+/**
+ * [CalendarDatePickerState] is the state holder for [CalendarView].
+ * It holds the current choose type, header text, day of week names, month names,
+ * current day, view month, selected day, candidate years, candidate months, candidate days,
+ * and locale start day of week.
+ *
+ * The state holder also provides the functions for toggling the choose type,
+ * selecting year/month/day, going to previous/next year/month,
+ * and computing the header text.
+ *
+ * @property currentChooseType The current choose type (YEAR, MONTH, DAY).
+ * @property viewHeaderText The header text to display in the view.
+ * @property dayOfWeekNames The names of the days of the week based on locale.
+ * @property monthNames The names of the months based on locale.
+ * @property currentDay The currently selected day.
+ * @property viewMonth The month currently being viewed.
+ * @property selectedDay The user's selected day.
+ * @property candidateYears The list of candidate years to display.
+ * @property candidateMonths The list of candidate months to display.
+ * @property candidateDays The list of candidate days to display.
+ * @property localeStartDayOfWeek The first day of the week based on locale. Sunday(1), Monday(2), ..., Saturday(7)
+ */
 class CalendarDatePickerState {
 
     val currentChooseType = mutableStateOf<ChooseType>(ChooseType.DAY)
@@ -503,6 +536,13 @@ class CalendarDatePickerState {
     val dayOfWeekNames = mutableStateOf(getLocalDayOfWeekNames())
     val monthNames = mutableStateOf(getLocalMonthNames())
 
+    /**
+     * Defines the type of view to be displayed in the calendar.
+     *
+     * - [YEAR]: Displays a grid of years for selection.
+     * - [MONTH]: Displays a grid of months for selection.
+     * - [DAY]: Displays a grid of days for selection.
+     */
     enum class ChooseType {
         YEAR, MONTH, DAY
     }

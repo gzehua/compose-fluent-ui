@@ -41,6 +41,29 @@ import io.github.composefluent.layout.overflow.OverflowRowScope
 import io.github.composefluent.layout.overflow.rememberOverflowRowState
 import io.github.composefluent.scheme.collectVisualState
 
+/**
+ * The top navigation bar is used to display primary navigation destinations.
+ *
+ * This composable provides a flexible way to display a top-level navigation bar with:
+ * - An optional header section.
+ * - An optional title section.
+ * - An `OverflowRow` for navigation items, which handles overflowing content.
+ * - An optional footer section.
+ * - An optional auto-suggest box for search or filtering.
+ *
+ * The `OverflowRow` supports an overflow action that can be expanded or collapsed, usually presenting a flyout menu
+ * when expanded.
+ *
+ * @param expanded Controls the visibility of the overflow menu.
+ * @param onExpandedChanged Callback for changes to the overflow menu's expanded state.
+ * @param modifier Modifier to be applied to the top navigation bar.
+ * @param indicatorState The state object for managing the indicator. Defaults to `rememberIndicatorState()`.
+ * @param header Optional composable for a header section displayed before the title and navigation items.
+ * @param title Optional composable for a title section displayed after the header and before the navigation items.
+ * @param footer Optional composable for a footer section displayed after the navigation items.
+ * @param autoSuggestBox Optional composable for an auto-suggest box, which will be placed between navigation items and footer.
+ * @param content The navigation items within the `OverflowRow`.
+ */
 @ExperimentalFluentApi
 @Composable
 fun TopNav(
@@ -121,6 +144,24 @@ fun TopNav(
     }
 }
 
+/**
+ * A composable function that represents a single item in the top navigation bar.
+ *
+ * @param selected Indicates whether the item is currently selected.
+ * @param onClick Callback invoked when the item is clicked. It passes a boolean indicating the new selection state.
+ * @param modifier Modifier for the item's layout.
+ * @param flyoutVisible Indicates whether the associated flyout menu is visible.
+ * @param onFlyoutVisibleChanged Callback invoked when the flyout's visibility changes.
+ * @param enabled Controls whether the item is enabled or disabled.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of Interactions for this item.
+ * @param colors [NavigationItemColorScheme] defining the colors of the item in different states.
+ * @param icon The icon composable to display within the item, it will be rendered in front of the text.
+ * @param items A composable function that defines the content of a flyout menu associated with the item.
+ * @param indicatorState The state holder for the indicator that represents the current selection or focus.
+ * @param indicator A composable function that defines the appearance of the indicator. It is passed a [Color] that represents the current indicator color.
+ * @param badge A composable function that defines an optional badge to be displayed on top of the item.
+ * @param text The text composable to display within the item.
+ */
 @ExperimentalFluentApi
 @Composable
 fun TopNavItem(
@@ -230,6 +271,15 @@ fun TopNavItem(
 
 }
 
+/**
+ * A header used within the Top Navigation component.
+ *
+ * This composable provides a styled container for header content in a Top Navigation layout.
+ * It ensures proper height and horizontal padding, as well as applying the `bodyStrong` text style.
+ *
+ * @param modifier The [Modifier] to be applied to the header container.
+ * @param content The content to be displayed within the header.
+ */
 @Composable
 fun TopNavHeader(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Box(

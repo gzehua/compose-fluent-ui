@@ -124,7 +124,23 @@ internal fun FontIcon(
     )
 }
 
-//Font icon set that contains all icon from components.
+/**
+ * Font icon set that contains all icon from components.
+ *
+ * Each [FontIconPrimitive] represents a specific icon. It stores:
+ * - `glyph`: The character representing the icon in the font.
+ * - `vector`: A lambda function that lazily provides an [ImageVector] as a fallback
+ *   when the font is not available or the icon cannot be rendered using the font.
+ *
+ * Usage:
+ *
+ * ```kotlin
+ * FontIcon(type = FontIconPrimitive.Add, contentDescription = "Add")
+ * ```
+ *
+ *  The Solid8 icons is used for small button action.
+ *
+ */
 enum class FontIconPrimitive(
     internal val glyph: Char,
     //Lazy create fallback icon
@@ -161,6 +177,19 @@ enum class FontIconPrimitive(
     Settings('\uE713', { Icons.Default.Settings })
 }
 
+/**
+ * A composable function that displays a font icon based on the specified [FontIconPrimitive].
+ *
+ * @param type The [FontIconPrimitive] representing the icon to be displayed.
+ * @param contentDescription Text used by accessibility services to describe what this icon represents.
+ *    This should always be provided unless this icon is used for decorative purposes,
+ *    and does not represent a meaningful action that a user can take.
+ *    This text should be localized, such as by using [androidx.compose.ui.res.stringResource] or similar.
+ * @param modifier The [Modifier] to be applied to the icon.
+ * @param size The desired [FontIconSize] of the icon. Defaults to [FontIconSize.Standard].
+ * @param fallbackSize The [FontIconSize] to use when displaying the fallback vector icon if the font is not loaded.
+ *    Defaults to [FontIconSize] with 2f added to the value of [size].
+ */
 @Composable
 fun FontIcon(
     type: FontIconPrimitive,
@@ -180,6 +209,20 @@ fun FontIcon(
 }
 
 
+/**
+ * A composable function that displays a font icon with a fixed size of 8.
+ *
+ * This function provides a convenient way to display icons with a pre-defined size,
+ * suitable for UI elements where consistency in icon size is desired. It uses a size of 8f
+ * for the icon by default, but allows you to specify the type, content description,
+ * modifier, and a fallback size.
+ *
+ * @param type The type of the font icon to display, selected from the [FontIconPrimitive] enum.
+ * @param contentDescription The content description for accessibility.
+ * @param modifier Modifier to apply to the icon.
+ * @param size The fixed size of the icon, defaults to 8f.
+ * @param fallbackSize The fallback size to use if the font icon cannot be displayed, defaults to size.value + 6f.
+ */
 @Composable
 fun FontIconSolid8(
     type: FontIconPrimitive,
@@ -197,8 +240,21 @@ fun FontIconSolid8(
     )
 }
 
+/**
+ * Contains the default values used for [FontIcon].
+ */
 object FontIconDefaults {
 
+    /**
+     * A composable function that creates a back icon with a press animation.
+     *
+     * @param interactionSource The [InteractionSource] that represents the stream of [Interaction]s
+     * for this component.
+     * @param size The size of the icon. Defaults to [FontIconSize.Standard].
+     * @param contentDescription The content description for the icon, used for accessibility.
+     * Defaults to "Back".
+     * @param modifier The [Modifier] to be applied to the icon.
+     */
     @Composable
     fun BackIcon(
         interactionSource: InteractionSource,
@@ -225,6 +281,19 @@ object FontIconDefaults {
         )
     }
 
+    /**
+     * A composable function that displays a navigation icon.
+     *
+     * This function provides a visual representation of a navigation icon, typically used to
+     * indicate a menu or navigation drawer. It includes an interaction effect where the icon
+     * scales down slightly when pressed.
+     *
+     * @param interactionSource The [InteractionSource] to observe for user interactions.
+     * @param size The size of the icon, defaulting to [FontIconSize.Standard].
+     * @param contentDescription The content description for the icon, used for accessibility.
+     *  Defaults to "Navigation".
+     * @param modifier The modifier to apply to the icon.
+     */
     @Composable
     fun NavigationIcon(
         interactionSource: InteractionSource,
@@ -250,6 +319,18 @@ object FontIconDefaults {
         )
     }
 
+    /**
+     * A composable function that displays a settings icon with a rotation animation on press.
+     *
+     * The icon rotates slightly (-30 degrees) when pressed and then performs a full rotation (360 degrees)
+     * upon release or cancellation of the press. The animation durations and easing are defined using
+     * `FluentDuration` and `FluentEasing`.
+     *
+     * @param interactionSource The [InteractionSource] that will be used to detect press interactions.
+     * @param size The size of the icon, defaulting to [FontIconSize.Standard].
+     * @param contentDescription The content description for accessibility, defaulting to "Settings".
+     * @param modifier The modifier to be applied to the icon.
+     */
     @Composable
     fun SettingIcon(
         interactionSource: InteractionSource,
@@ -307,6 +388,14 @@ object FontIconDefaults {
     }
 }
 
+/**
+ * Represents the size of a font icon.
+ *
+ * This class is a value class that wraps a [Float] representing the size.
+ * It provides a convenient way to define and manage icon sizes, ensuring type safety.
+ *
+ * @property value The size value of the font icon.
+ */
 @Immutable
 @JvmInline
 value class FontIconSize(val value: Float) {

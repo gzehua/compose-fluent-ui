@@ -29,6 +29,19 @@ import io.github.composefluent.background.Layer
 import io.github.composefluent.icons.Icons
 import io.github.composefluent.icons.regular.Dismiss
 
+/**
+ * An InfoBar is a transient UI element that presents brief, relevant information to the user.
+ *
+ * @param title The title content of the InfoBar. Usually a short, bold summary of the message.
+ * @param message The main message content of the InfoBar. Provides more details related to the title.
+ * @param modifier Modifier to be applied to the layout of the InfoBar.
+ * @param colors The set of colors used for the InfoBar, such as background, content, and icon colors.
+ *               Defaults to [InfoBarDefaults.informationalColors].
+ * @param icon Optional icon content of the InfoBar. If null, no icon will be displayed. Defaults to a
+ *             badge indicating informational severity.
+ * @param action Optional action content for the InfoBar, such as a button.
+ * @param closeAction Optional close action content for the InfoBar.
+ */
 @Composable
 fun InfoBar(
     title: @Composable () -> Unit,
@@ -78,6 +91,22 @@ fun InfoBar(
     }
 }
 
+/**
+ * An [InfoBar] component that displays a title, message, and optional icon, action, and close action.
+ * This overload provides a predefined severity level to quickly set up common InfoBar types.
+ *
+ * @param title The title of the InfoBar.
+ * @param message The message displayed within the InfoBar.
+ * @param severity The [InfoBarSeverity] level (e.g., Informational, Success, Warning, Critical).
+ * This determines the default colors and icon if not explicitly overridden.
+ * @param modifier Modifier for styling and layout of the InfoBar.
+ * @param colors The [InfoBarColors] to be used for this InfoBar. If not specified,
+ * it defaults to colors based on the provided [severity].
+ * @param icon An optional composable to display an icon. If not specified, it defaults to a badge
+ * with an icon determined by the provided [severity].
+ * @param action An optional composable to display an action button.
+ * @param closeAction An optional composable to display a close action button.
+ */
 @Composable
 fun InfoBar(
     title: @Composable () -> Unit,
@@ -102,14 +131,33 @@ fun InfoBar(
     )
 }
 
+/**
+ * Represents the color scheme for the [InfoBar] component.
+ *
+ * @param backgroundColor The background color of the InfoBar.
+ * @param contentColor The color of the text content within the InfoBar.
+ * @param iconColor The color of the icon within the InfoBar.
+ */
 data class InfoBarColors(
     val backgroundColor: Color,
     val contentColor: Color,
     val iconColor: Color
 )
 
+/**
+ * Contains the default values used for [InfoBar].
+ */
 object InfoBarDefaults {
 
+    /**
+     * A composable function that creates a close action button, typically used to dismiss
+     * an InfoBar.
+     *
+     * @param onClick The callback to be invoked when the button is clicked.
+     * @param modifier The modifier to be applied to the button.
+     * @param enabled Controls the enabled state of the button. When `false`, the button will be
+     *        disabled and will not respond to user interactions.
+     */
     @Composable
     fun CloseActionButton(
         onClick: () -> Unit,
@@ -127,6 +175,16 @@ object InfoBarDefaults {
         )
     }
 
+    /**
+     * A badge to show the severity of the [InfoBar].
+     *
+     * @param modifier The [Modifier] to be applied to this badge.
+     * @param severity The [InfoBarSeverity] that this badge will display.
+     * @param contentDescription The content description for the icon.
+     * Defaults to [InfoBarSeverity.name].
+     * @param backgroundColor The background color of the badge.
+     * Defaults to color from [FluentTheme] based on the [severity].
+     */
     @Composable
     fun Badge(
         modifier: Modifier = Modifier,
@@ -156,6 +214,12 @@ object InfoBarDefaults {
         )
     }
 
+    /**
+     * Returns the [InfoBarColors] that match the provided [severity].
+     *
+     * @param severity The [InfoBarSeverity] used to determine the colors.
+     * @return The [InfoBarColors] associated with the given [severity].
+     */
     @Stable
     @Composable
     fun colors(severity: InfoBarSeverity = InfoBarSeverity.Informational): InfoBarColors {
@@ -167,6 +231,14 @@ object InfoBarDefaults {
         }
     }
 
+    /**
+     * Creates a set of [InfoBarColors] that represent the informational color scheme of an InfoBar.
+     *
+     * @param backgroundColor The background color of the InfoBar. Defaults to `FluentTheme.colors.background.card.secondary`.
+     * @param contentColor The color of the text and other content in the InfoBar. Defaults to `FluentTheme.colors.text.text.primary`.
+     * @param iconColor The color of the icon in the InfoBar. Defaults to `FluentTheme.colors.system.attention`.
+     * @return An [InfoBarColors] object with the specified colors.
+     */
     @Stable
     @Composable
     fun informationalColors(
@@ -179,6 +251,14 @@ object InfoBarDefaults {
         iconColor = iconColor
     )
 
+    /**
+     * Creates a set of [InfoBarColors] that represent the success color scheme of an InfoBar.
+     *
+     * @param backgroundColor The background color of the InfoBar. Defaults to `FluentTheme.colors.system.successBackground`.
+     * @param contentColor The color of the text and other content in the InfoBar. Defaults to `FluentTheme.colors.text.text.primary`.
+     * @param iconColor The color of the icon in the InfoBar. Defaults to `FluentTheme.colors.system.success`.
+     * @return An [InfoBarColors] object with the specified colors.
+     */
     @Stable
     @Composable
     fun successColors(
@@ -191,6 +271,14 @@ object InfoBarDefaults {
         iconColor = iconColor
     )
 
+    /**
+     * Creates a set of [InfoBarColors] that represent the warning color scheme of an InfoBar.
+     *
+     * @param backgroundColor The background color of the InfoBar. Defaults to `FluentTheme.colors.system.cautionBackground`.
+     * @param contentColor The color of the text and other content in the InfoBar. Defaults to `FluentTheme.colors.text.text.primary`.
+     * @param iconColor The color of the icon in the InfoBar. Defaults to `FluentTheme.colors.system.caution`.
+     * @return An [InfoBarColors] object with the specified colors.
+     */
     @Stable
     @Composable
     fun warningColors(
@@ -203,6 +291,14 @@ object InfoBarDefaults {
         iconColor = iconColor
     )
 
+    /**
+     * Creates a set of [InfoBarColors] that represent the critical color scheme of an InfoBar.
+     *
+     * @param backgroundColor The background color of the InfoBar. Defaults to `FluentTheme.colors.system.criticalBackground`.
+     * @param contentColor The color of the text and other content in the InfoBar. Defaults to `FluentTheme.colors.text.text.primary`.
+     * @param iconColor The color of the icon in the InfoBar. Defaults to `FluentTheme.colors.system.critical`.
+     * @return An [InfoBarColors] object with the specified colors.
+     */
     @Stable
     @Composable
     fun criticalColors(
@@ -216,6 +312,10 @@ object InfoBarDefaults {
     )
 }
 
+/**
+ * Defines the severity levels for an [InfoBar].
+ * Each severity level indicates the type of information being conveyed, such as informational, success, warning, or critical.
+ */
 enum class InfoBarSeverity {
     Informational,
     Success,

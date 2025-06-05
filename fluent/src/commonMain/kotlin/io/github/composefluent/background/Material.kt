@@ -23,6 +23,23 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import kotlin.jvm.JvmInline
 
+/**
+ * Applies a [Material] effect to the content.
+ *
+ * This composable allows you to apply a material overlay to its content.
+ * The material effect is defined by the [material] parameter and can be
+ * enabled or disabled using the [enabled] lambda. When enabled, the
+ * composable applies a haze effect based on the material's style.
+ * When disabled, it fills the background with the first tint color defined in
+ * the material's style.
+ *
+ * @param material The [Material] to apply to the content.
+ * @param modifier The modifier to be applied to the container.
+ * @param enabled A lambda that returns true if the material effect should be
+ *   enabled, false otherwise. Defaults to `supportMaterial()`.
+ * @param border An optional [BorderStroke] to draw around the material.
+ * @param content The content to be displayed with the material effect.
+ */
 @ExperimentalFluentApi
 @Composable
 fun MaterialContainerScope.Material(
@@ -42,6 +59,17 @@ fun MaterialContainerScope.Material(
     }
 }
 
+/**
+ * A composable function that provides a container for applying material effects.
+ *
+ * This function creates a [Box] that acts as a container for material-related components.
+ * It utilizes the [MaterialContainerScope] to provide access to material-specific modifiers and properties
+ * within the content lambda.
+ *
+ * @param modifier The modifier to be applied to the container.
+ * @param content The composable content to be placed inside the material container.
+ *                This content lambda has access to the [MaterialContainerScope].
+ */
 @ExperimentalFluentApi
 @Composable
 fun MaterialContainer(
@@ -74,8 +102,51 @@ private class MaterialContainerScopeImpl(boxScope: BoxScope) : MaterialContainer
     }
 }
 
+/**
+ * A scope interface for applying material-related modifiers within a [MaterialContainer].
+ *
+ * This interface provides a set of functions that can be used to apply material design
+ * effects, such as behind-material blurring and material overlays, to composable
+ * elements within a [MaterialContainer].
+ *
+ * The [MaterialContainerScope] is designed to be used as the receiver scope within the
+ * content lambda of [MaterialContainer]. This allows you to directly use the provided
+ * extension functions (e.g., [behindMaterial], [materialOverlay]) on [Modifier] instances
+ * within the content lambda, making it easier to apply material effects to individual
+ * components.
+ *
+ * Example:
+ * ```
+ * MaterialContainer {
+ *     // Background layer
+ *     Column(
+ *         Modifier
+ *             .fillMaxSize()
+ *             .behindMaterial() // Applies a behind-material effect
+ *     ) {
+ *         // Content goes here
+ *     }
+ *
+ *     // Popup layer
+ *     Layer(
+ *         Modifier.materialOverlay(MaterialDefaults.acrylicDefault()) // Applies a material overlay
+ *     ) {
+ *        // Content goes here
+ *     }
+ * ```
+ */
 @ExperimentalFluentApi
 interface MaterialContainerScope : BoxScope {
+
+    /**
+     * Places the content behind the material source.
+     *
+     * By using this modifier, the content it's applied to will be
+     * treated as a source for the [HazeState]. It allows for the
+     * content behind to contribute to the material effect.
+     *
+     * @return A [Modifier] that positions the content as a source behind the material.
+     */
     fun Modifier.behindMaterial(): Modifier
 
     @Deprecated("Use materialOverlay instead")
@@ -90,6 +161,20 @@ interface MaterialContainerScope : BoxScope {
         )
     }
 
+    /**
+     * Applies a material overlay effect to this [Modifier].
+     *
+     * This function adds a visual effect that simulates a material overlay,
+     * such as acrylic or mica, to the composable element. The appearance of the
+     * overlay is determined by the provided [material].
+     *
+     * @param material The [Material] to be applied as an overlay. This determines
+     *                 the style and appearance of the overlay.
+     * @param enabled A lambda that returns `true` if the material overlay should
+     *                be applied, `false` otherwise. This allows for conditional
+     *                application of the effect. By default, it's enabled.
+     * @return A new [Modifier] that includes the material overlay effect.
+     */
     fun Modifier.materialOverlay(
         material: Material,
         enabled: () -> Boolean = { true }
@@ -101,6 +186,13 @@ interface MaterialContainerScope : BoxScope {
 @Immutable
 value class Material(val style: HazeStyle)
 
+/**
+ * Provides default [Material] configurations for common scenarios.
+ *
+ * This object includes predefined styles for various acrylic and mica materials,
+ * as well as utility functions to create custom acrylic materials. These defaults
+ * are designed to match the Fluent Design System's material styles.
+ */
 object MaterialDefaults {
 
     private const val acrylicNoiseFactor = 0.02f
@@ -110,7 +202,16 @@ object MaterialDefaults {
     private val micaBlurRadius = 240.dp
 
     /**
-     * A [HazeStyle] which implements a mostly translucent material.
+     * A [Material] representing a thin, translucent acrylic material.
+     *
+     * This material is designed to provide a subtle, semi-transparent overlay effect,
+     * suitable for layering over other content without fully obscuring it.
+     * It adapts to dark and light modes, changing its base color and luminosity
+     * to ensure readability and aesthetic consistency.
+     *
+     * @param isDark `true` if the material should be rendered in dark mode,
+     *   `false` for light mode. Defaults to the current `darkMode` state of the [FluentTheme].
+     * @return A [Material] object representing the thin acrylic material.
      */
     @Composable
     @ReadOnlyComposable
@@ -135,7 +236,20 @@ object MaterialDefaults {
     )
 
     /**
-     * A [HazeStyle] which implements a translucent material used for the most translucent layer with accent color.
+     * A [Material] representing an acrylic material with accent color, designed for the most translucent layer.
+     *
+     * This function creates a material that simulates the appearance of translucent acrylic, incorporating
+     * an accent color. It's intended for use in UI layers where a high degree of translucency and
+     * visual depth are desired. This material adapts to light and dark color schemes, adjusting its
+     * tint and luminosity to maintain a consistent appearance.
+     *
+     * @param tint The primary accent color for the material. Defaults to the `accentAcrylic.base` color
+     *             from the current [FluentTheme].
+     * @param fallback The fallback color used when the acrylic effect is not supported. Defaults to
+     *                 the `accentAcrylic.baseFallback` color from the current [FluentTheme].
+     * @param isDark Determines whether to apply dark mode settings to the material. Defaults to the
+     *               current `darkMode` setting from [FluentTheme].
+     * @return A [Material] object configured with the specified accent acrylic style.
      */
     @Composable
     @ReadOnlyComposable
@@ -154,7 +268,15 @@ object MaterialDefaults {
     )
 
     /**
-     * A [HazeStyle] which implements a translucent material used for the popup container background with accent color.
+     * A [HazeStyle] which implements a translucent material with accent color, intended for use as a popup container background.
+     *
+     * This material applies an acrylic effect with the specified accent color, providing a subtle
+     * visual distinction for popup elements. It adapts to both light and dark themes and provides
+     * fallback colors for environments where the acrylic effect may not be supported.
+     *
+     * @param tint The accent color to use for the acrylic effect. Defaults to the `accentAcrylic.default` color in [FluentTheme].
+     * @param fallback The fallback color to use if the acrylic effect is not supported. Defaults to the `accentAcrylic.defaultFallback` color in [FluentTheme].
+     * @param isDark `true` if the dark theme is active, `false` otherwise. Determines the opacity levels of the acrylic effect. Defaults to [FluentTheme]'s `darkMode` setting.
      */
     @Composable
     @ReadOnlyComposable
@@ -173,7 +295,14 @@ object MaterialDefaults {
     )
 
     /**
-     * A [HazeStyle] which implements a translucent material used for the most translucent layer.
+     * A [HazeStyle] representing a translucent acrylic material intended for use as the most translucent background layer.
+     *
+     * This function provides a material style suitable for backgrounds where a high degree of translucency is desired.
+     * It adapts to dark and light modes by adjusting tint and luminosity opacities, creating a subtle visual effect.
+     *
+     * @param isDark Determines whether the material should be rendered in dark mode.
+     *   Defaults to `FluentTheme.colors.darkMode`. When `true`, the material uses darker tint and luminosity settings.
+     * @return A [Material] object configured for a highly translucent acrylic effect.
      */
     @Composable
     @ReadOnlyComposable
@@ -190,7 +319,15 @@ object MaterialDefaults {
     )
 
     /**
-     * A [HazeStyle] which implements a translucent material used for the popup container background.
+     * A [HazeStyle] which implements a translucent material, suitable for popup container backgrounds.
+     *
+     * This material provides a semi-transparent effect, ideal for use behind popups or dialogs.
+     * It adapts to light and dark themes, adjusting its opacity and luminosity to ensure
+     * consistency and readability. In light mode, it has a subtle luminosity effect without any tint, while
+     * in dark mode, it uses a slight tint and luminosity.
+     *
+     * @param isDark `true` if the dark theme is active, `false` otherwise. This determines the
+     *               opacity and luminosity levels. Defaults to [FluentTheme]'s `darkMode` setting.
      */
     @Composable
     @ReadOnlyComposable
@@ -208,6 +345,13 @@ object MaterialDefaults {
 
     /**
      * A [HazeStyle] which implements a translucent application background material.
+     *
+     * This material provides a subtle translucent effect, suitable for application backgrounds.
+     * It adapts its appearance based on whether the app is in dark mode or light mode.
+     *
+     * @param isDark `true` if dark mode is enabled, `false` otherwise. Determines the colors
+     *               and opacities used for the effect. Defaults to the current dark mode
+     *               setting from [FluentTheme.colors.darkMode].
      */
     @Composable
     @ReadOnlyComposable
@@ -224,7 +368,10 @@ object MaterialDefaults {
     )
 
     /**
-     * A [HazeStyle] which implements a translucent application background material used for the tab experience.
+     * A [HazeStyle] which implements a translucent application background material specifically designed for
+     * tab experiences. It provides an alternative to [mica] with adjusted opacity for improved tab
+     * separation and visibility. The dark mode uses no tint, while light mode retains a tint, ensuring
+     * appropriate contrast and visual appeal across both themes.
      */
     @Composable
     @ReadOnlyComposable
@@ -240,6 +387,19 @@ object MaterialDefaults {
         darkLuminosityOpacity = 1f,
     )
 
+    /**
+     * Creates a custom acrylic material with the specified properties.
+     *
+     * @param tint The base color for the acrylic effect.
+     * @param fallback The fallback color to use if the acrylic effect is not supported. Defaults to `tint`.
+     * @param backgroundColor The background color behind the material, Defaults to `fallback`.
+     * @param isDark Determines if the material should be rendered in dark mode. Defaults to `true` if the luminance of `tint` is less than 0.5, otherwise `false`.
+     * @param lightTintOpacity The opacity of the tint color when in light mode. Defaults to `0.8f`.
+     * @param lightLuminosityOpacity The opacity of the luminosity effect when in light mode. Defaults to `0.8f`.
+     * @param darkTintOpacity The opacity of the tint color when in dark mode. Defaults to `lightTintOpacity`.
+     * @param darkLuminosityOpacity The opacity of the luminosity effect when in dark mode. Defaults to `darkTintOpacity`.
+     * @return A [Material] object representing the custom acrylic material.
+     */
     fun customAcrylic(
         tint: Color,
         fallback: Color = tint,

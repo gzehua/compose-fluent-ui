@@ -10,6 +10,34 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 
+/**
+ * Represents the color palette for the Fluent UI design system.
+ *
+ * This class provides a comprehensive set of colors used throughout the Fluent design system,
+ * including text colors, control colors, background colors, and more. It supports both light
+ * and dark modes, with colors dynamically generated based on the current theme.
+ *
+ * @property darkMode Whether the color set should be in dark mode.
+ * @property shades The base color shades to be used.
+ * @property text Colors used for text elements, including primary, secondary, and disabled text colors.
+ * @property control Colors used for controls, including default, secondary, and disabled states.
+ * @property controlAlt Alternate colors used for controls.
+ * @property controlSolid Solid colors used for controls.
+ * @property controlStrong Strong colors used for controls.
+ * @property subtleFill Colors for subtle fill effects.
+ * @property controlOnImage Colors for controls displayed on top of images.
+ * @property fillAccent Colors for accent fills.
+ * @property background Colors for backgrounds, including cards, layers, and solid backgrounds.
+ * @property stroke Colors for strokes and borders around elements.
+ * @property borders Colors for borders around elements.
+ * @property system System colors, such as attention, success, caution, and critical.
+ *
+ * All color properties are mutable states, which means they will automatically recompose
+ * when their values change.
+ *
+ * @param shades The [Shades] object defining the base, light, and dark shades of the accent color.
+ * @param darkMode A boolean indicating whether to use the dark mode color scheme.
+ */
 @Stable
 class Colors(
     shades: Shades,
@@ -45,6 +73,15 @@ class Colors(
         internal set
 }
 
+/**
+ * Represents the border brushes used for various UI elements.
+ *
+ * @property control The brush used for general control borders.
+ * @property accentControl The brush used for borders of accented controls.
+ * @property circle The brush used for circular borders.
+ * @property textControl The brush used for borders around text controls.
+ * @property textControlFocused The brush used for borders around focused text controls.
+ */
 data class Borders(
     val control: Brush,
     val accentControl: Brush,
@@ -53,6 +90,20 @@ data class Borders(
     val textControlFocused: Brush
 )
 
+/**
+ * Represents a set of color shades based on a base color.
+ *
+ * Each shade is a variation of the [base] color, providing a range of light and dark tones.
+ * This set of colors is designed to provide a harmonious palette for UI elements.
+ *
+ * @property base The core, or primary, color of the shade set.
+ * @property light1 A lighter variation of the base color.
+ * @property light2 A second, even lighter variation of the base color.
+ * @property light3 The lightest variation of the base color.
+ * @property dark1 A darker variation of the base color.
+ * @property dark2 A second, even darker variation of the base color.
+ * @property dark3 The darkest variation of the base color.
+ */
 data class Shades(
     val base: Color,
     val light1: Color,
@@ -63,12 +114,39 @@ data class Shades(
     val dark3: Color,
 )
 
+/**
+ * Represents the text colors used in the Fluent Design System.
+ *
+ * This data class groups together different categories of text colors,
+ * including the standard text colors, accent text colors, and text colors
+ * specifically designed to be displayed on accent backgrounds.
+ *
+ * @property text A [ColorCompound] object containing the primary, secondary,
+ *   tertiary, and disabled colors for standard text.
+ * @property accent A [ColorCompound] object containing the primary, secondary,
+ *   tertiary, and disabled colors for text displayed with an accent treatment.
+ * @property onAccent A [TextOnAccentColorCompound] object containing the primary,
+ *   secondary, disabled, and selected text colors for text displayed
+ *   on accent backgrounds.
+ */
 data class TextColor(
     val text: ColorCompound,
     val accent: ColorCompound,
     val onAccent: TextOnAccentColorCompound
 )
 
+/**
+ * Represents a compound color with different levels of emphasis.
+ *
+ * This data class groups together four colors: primary, secondary, tertiary, and disabled.
+ * This is useful for defining color palettes for elements that have multiple states
+ * or levels of visual hierarchy, such as text or controls.
+ *
+ * @property primary The primary color, typically used for the most important elements.
+ * @property secondary The secondary color, used for less important elements or supporting text.
+ * @property tertiary The tertiary color, used for subtle details or low-emphasis text.
+ * @property disabled The color used for disabled or inactive elements.
+ */
 data class ColorCompound(
     val primary: Color,
     val secondary: Color,
@@ -76,6 +154,18 @@ data class ColorCompound(
     val disabled: Color
 )
 
+/**
+ * Represents the compound color set for text on an accent background.
+ *
+ * This data class defines the different color states for text elements when placed
+ * on a background with an accent color. It includes colors for primary, secondary,
+ * disabled, and selected text states.
+ *
+ * @property primary The primary color for text on an accent background.
+ * @property secondary The secondary color for text on an accent background.
+ * @property disabled The color for disabled text on an accent background.
+ * @property selectedText The color for selected text on an accent background.
+ */
 data class TextOnAccentColorCompound(
     val primary: Color,
     val secondary: Color,
@@ -83,6 +173,17 @@ data class TextOnAccentColorCompound(
     val selectedText: Color,
 )
 
+/**
+ * Represents the colors used for various controls in the UI.
+ *
+ * @property default The default color for controls.
+ * @property secondary The secondary color for controls, often used for hover or secondary states.
+ * @property tertiary The tertiary color for controls, often used for pressed or disabled states.
+ * @property quaternary The quaternary color for controls, used for specific visual distinctions.
+ * @property disabled The color for disabled controls.
+ * @property transparent A transparent color for controls.
+ * @property inputActive The color for controls that are active input fields.
+ */
 data class ControlColors(
     val default: Color,
     val secondary: Color,
@@ -93,6 +194,18 @@ data class ControlColors(
     val inputActive: Color,
 )
 
+/**
+ * Represents a set of alternate control colors.
+ *
+ * These colors are used for controls in specific contexts where a different visual
+ * style is required compared to the default [ControlColors].
+ *
+ * @property transparent A transparent color for controls.
+ * @property secondary A secondary color for alternate controls.
+ * @property tertiary A tertiary color for alternate controls.
+ * @property quaternary A quaternary color for alternate controls.
+ * @property disabled A disabled state color for alternate controls.
+ */
 data class ControlAltColors(
     val transparent: Color,
     val secondary: Color,
@@ -101,15 +214,43 @@ data class ControlAltColors(
     val disabled: Color
 )
 
+/**
+ * Represents a set of solid control colors.
+ *
+ * These colors are used for controls that have a solid background fill.
+ *
+ * @property default The default solid background color for controls.
+ */
 data class ControlSolidColors(
     val default: Color
 )
 
+/**
+ * Represents the strong colors used for controls.
+ *
+ * Strong colors are typically used for elements that require higher emphasis,
+ * such as borders of focused controls or specific states.
+ *
+ * @property default The default strong color for controls.
+ * @property disabled The strong color for controls in a disabled state.
+ */
 data class ControlStrongColors(
     val default: Color,
     val disabled: Color
 )
 
+/**
+ * Represents the colors used for accent fills in the Fluent Design System.
+ *
+ * These colors are typically used to highlight interactive elements or provide visual emphasis.
+ * They are derived from the main accent color and adjusted for different states.
+ *
+ * @property default The default color for accent fills.
+ * @property secondary A secondary color for accent fills, slightly less prominent than the default.
+ * @property tertiary A tertiary color for accent fills, even less prominent than the secondary.
+ * @property disabled The color used for accent fills when the element is disabled.
+ * @property selectedTextBackground The background color for selected text when using accent colors.
+ */
 data class FillAccentColors(
     val default: Color,
     val secondary: Color,
@@ -118,6 +259,17 @@ data class FillAccentColors(
     val selectedTextBackground: Color
 )
 
+/**
+ * Represents the colors used for controls displayed on top of images.
+ *
+ * These colors are specifically designed to provide good contrast and visibility when
+ * rendered over varying image content.
+ *
+ * @property default The default color for controls on images.
+ * @property secondary A secondary color for controls on images, typically a lighter shade.
+ * @property tertiary A tertiary color for controls on images, typically an even lighter shade.
+ * @property disabled The color for disabled controls on images.
+ */
 data class ControlOnImageColors(
     val default: Color,
     val secondary: Color,
@@ -125,6 +277,18 @@ data class ControlOnImageColors(
     val disabled: Color
 )
 
+/**
+ * Represents the stroke colors used for borders and outlines of various UI elements.
+ *
+ * This includes strokes for controls, surfaces, cards, dividers, and focus indicators.
+ *
+ * @property control Colors for strokes around controls.
+ * @property controlStrong Colors for strong strokes around controls.
+ * @property surface Colors for strokes around surfaces.
+ * @property card Colors for strokes around cards.
+ * @property divider Color for divider lines.
+ * @property focus Colors for focus indicators.
+ */
 data class Stroke(
     val control: Control,
     val controlStrong: ControlStrong,
@@ -133,6 +297,17 @@ data class Stroke(
     val divider: Divider,
     val focus: Focus
 ) {
+    /**
+     * Represents the control stroke colors used for various UI elements.
+     *
+     * @property default The default stroke color for controls.
+     * @property secondary The secondary stroke color for controls.
+     * @property onAccentDefault The default stroke color for controls placed on an accent background.
+     * @property onAccentSecondary The secondary stroke color for controls placed on an accent background.
+     * @property onAccentTertiary The tertiary stroke color for controls placed on an accent background.
+     * @property onAccentDisabled The disabled stroke color for controls placed on an accent background.
+     * @property forStrongFillWhenOnImage The stroke color for strong fill controls placed on images.
+     */
     data class Control(
         val default: Color,
         val secondary: Color,
@@ -143,31 +318,76 @@ data class Stroke(
         val forStrongFillWhenOnImage: Color
     )
 
+    /**
+     * Represents a set of strong control colors.
+     *
+     * These colors are typically used for controls that require a more pronounced visual presence.
+     *
+     * @property default The default color for strong controls.
+     * @property disabled The color for strong controls in a disabled state.
+     */
     data class ControlStrong(
         val default: Color,
         val disabled: Color
     )
 
+    /**
+     * Surface stroke colors.
+     *
+     * @property default The default surface stroke color.
+     * @property flyout The surface stroke color for flyout elements.
+     */
     data class Surface(
         val default: Color,
         val flyout: Color
     )
     
+    /**
+     * Colors used for strokes and borders around cards.
+     *
+     * @property default The default stroke color for cards.
+     * @property defaultSolid The default solid stroke color for cards.
+     */
     data class Card(
         val default: Color,
         val defaultSolid: Color
     )
 
+    /**
+     * Represents the color of dividers.
+     *
+     * @property default The default color for dividers.
+     */
     data class Divider(
         val default: Color
     )
 
+    /**
+     * Represents the focus colors for UI elements.
+     *
+     * This data class defines the colors used to indicate when an element has keyboard focus.
+     * It typically consists of an outer and inner color for a focus ring or indicator.
+     *
+     * @property outer The color of the outer focus indicator.
+     * @property inner The color of the inner focus indicator.
+     */
     data class Focus(
         val outer: Color,
         val inner: Color
     )
 }
 
+/**
+ * Represents colors used for subtle fill effects, often for subtle buttons or other elements.
+ *
+ * Subtle fills are semi-transparent colors used to provide a subtle visual distinction
+ * for elements like cards or containers without being overly prominent.
+ *
+ * @property transparent A fully transparent color.
+ * @property secondary A secondary subtle fill color.
+ * @property tertiary A tertiary subtle fill color.
+ * @property disabled A subtle fill color for disabled states.
+ */
 data class SubtleFillColors(
     val transparent: Color,
     val secondary: Color,
@@ -175,6 +395,12 @@ data class SubtleFillColors(
     val disabled: Color
 )
 
+/**
+ * Represents the various background colors used in the Fluent Design System.
+ *
+ * This includes colors for cards, smoke effects, layered surfaces, solid backgrounds,
+ * Mica and Acrylic materials, and accent-colored Acrylic materials.
+ */
 data class Background(
     val card: Card,
     val smoke: Smoke,
@@ -396,6 +622,26 @@ data class Background(
     )
 }
 
+/**
+ * Represents system-specific colors used for various states and feedback.
+ *
+ * These colors are typically used to indicate status or provide feedback to the user,
+ * such as attention, success, caution, and critical states.
+ *
+ * @property attention The color used to draw attention to an element or state.
+ * @property attentionBackground The background color associated with the attention state.
+ * @property solidAttentionBackground The solid background color associated with the attention state.
+ * @property success The color used to indicate a successful action or state.
+ * @property successBackground The background color associated with the success state.
+ * @property caution The color used to indicate a cautionary state or potential issue.
+ * @property cautionBackground The background color associated with the caution state.
+ * @property critical The color used to indicate a critical error or severe issue.
+ * @property criticalBackground The background color associated with the critical state.
+ * @property neutral The color used for neutral states or elements.
+ * @property neutralBackground The background color associated with the neutral state.
+ * @property solidNeutral The solid color used for neutral states or elements.
+ * @property solidNeutralBackground The solid background color associated with the neutral state.
+ */
 data class SystemColors(
     val attention: Color,
     val attentionBackground: Color,
@@ -412,6 +658,15 @@ data class SystemColors(
     val solidNeutralBackground: Color,
 )
 
+/**
+ * Generates a set of [Shades] based on the provided accent color.
+ *
+ * If the provided accent color has a pre-defined set of shades in [getAccentShades],
+ * that set is returned. Otherwise, the default shades are returned.
+ *
+ * @param accent The base accent color to generate shades from.
+ * @return A [Shades] object containing the base color and its light and dark variations.
+ */
 fun generateShades(accent: Color): Shades {
     return getAccentShades()[accent] ?: getDefaultShades()
 }
@@ -431,11 +686,34 @@ internal fun getAccentShades() = mapOf<Color, Shades>(
 )
 
 
+/**
+ * Returns the content color for a given background color.
+ *
+ * This function determines an appropriate color for text or other content to be
+ * displayed on top of the provided `backgroundColor` to ensure sufficient contrast
+ * and readability according to the Fluent design system.
+ *
+ * If no specific content color is defined for the given background color within the
+ * current [FluentTheme.colors], it falls back to the [LocalContentColor.current].
+ *
+ * @param backgroundColor The background color for which to determine the content color.
+ * @return The content color that provides sufficient contrast with the background.
+ */
 @Composable
 @ReadOnlyComposable
 fun contentColorFor(backgroundColor: Color) =
     FluentTheme.colors.contentColorFor(backgroundColor).takeOrElse { LocalContentColor.current }
 
+/**
+ * Returns the default content color for the given background color.
+ *
+ * This function provides a suggested content color (like text color) that ensures sufficient
+ * contrast and legibility when placed on the provided [backgroundColor]. The determination
+ * is based on the Fluent UI color palette and aims to follow accessibility guidelines.
+ *
+ * @param backgroundColor The background color for which to determine the content color.
+ * @return The suggested content color for the given [backgroundColor].
+ */
 fun Colors.contentColorFor(backgroundColor: Color): Color {
     // TODO: Remove this
     return when (backgroundColor) {

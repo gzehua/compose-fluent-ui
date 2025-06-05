@@ -40,6 +40,21 @@ import io.github.composefluent.animation.FluentEasing
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.collectVisualState
 
+/**
+ * A composable function that renders a Switcher UI element.
+ *
+ * @param checked The current checked state of the Switcher.
+ * @param onCheckStateChange A callback function invoked when the checked state changes.
+ *   It receives the new checked state as a parameter.
+ * @param text An optional text label to display alongside the Switcher.
+ * @param textBefore Whether to display the text label before the Switcher (true) or after (false). Defaults to false.
+ * @param enabled Whether the Switcher is enabled (true) or disabled (false). Defaults to true.
+ * @param styles The visual styles to apply to the Switcher, defined by [SwitcherStyleScheme].
+ *   Defaults to selected styles if [checked] is true, or default styles otherwise.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of [androidx.compose.foundation.interaction.Interaction]s
+ * for this Switcher. You can create and pass in your own remembered [MutableInteractionSource] if you want to observe
+ * the Switcher's interactions in your custom UI.
+ */
 @Composable
 fun Switcher(
     checked: Boolean,
@@ -152,8 +167,23 @@ fun Switcher(
     }
 }
 
+/**
+ * Contains the default values used for [Switcher].
+ */
 object SwitcherDefaults {
 
+    /**
+     * Creates a default [SwitcherStyleScheme] for the [Switcher] component.
+     *
+     * This function defines the visual appearance of the [Switcher] in its different states:
+     * default, hovered, pressed, and disabled. It uses the [FluentTheme] for styling.
+     *
+     * @param default The [SwitcherStyle] for the default state.
+     * @param hovered The [SwitcherStyle] for the hovered state.
+     * @param pressed The [SwitcherStyle] for the pressed state.
+     * @param disabled The [SwitcherStyle] for the disabled state.
+     * @return A [SwitcherStyleScheme] containing the styles for each state.
+     */
     @Stable
     @Composable
     fun defaultSwitcherStyle(
@@ -185,6 +215,18 @@ object SwitcherDefaults {
         disabled = disabled
     )
 
+    /**
+     * Creates a [SwitcherStyleScheme] for a selected state of the [Switcher].
+     *
+     * This function defines the visual styles for the [Switcher] when it's in a selected state.
+     * It allows customization of the appearance based on different interaction states (default, hovered, pressed, disabled).
+     *
+     * @param default The default [SwitcherStyle] applied when no specific interaction is occurring.
+     * @param hovered The [SwitcherStyle] applied when the switcher is hovered over.
+     * @param pressed The [SwitcherStyle] applied when the switcher is pressed.
+     * @param disabled The [SwitcherStyle] applied when the switcher is disabled.
+     * @return A [SwitcherStyleScheme] containing the styles for each state.
+     */
     @Stable
     @Composable
     fun selectedSwitcherStyle(
@@ -219,6 +261,15 @@ object SwitcherDefaults {
 
 typealias SwitcherStyleScheme = PentaVisualScheme<SwitcherStyle>
 
+/**
+ * Represents the visual style of a [Switcher].
+ *
+ * @property fillColor The fill color of the switcher's background.
+ * @property labelColor The color of the text label associated with the switcher.
+ * @property controlColor The color of the movable control within the switcher.
+ * @property controlSize The size of the movable control within the switcher.
+ * @property borderBrush The brush used to draw the border around the switcher's background.
+ */
 data class SwitcherStyle(
     val fillColor: Color,
     val labelColor: Color,

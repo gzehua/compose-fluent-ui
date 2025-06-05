@@ -21,9 +21,11 @@ import io.github.composefluent.FluentTheme
 import io.github.composefluent.animation.FluentDuration
 
 /**
- * Progress bar
- * @param progress `0f` to `1f`
- * @param color Line color
+ * A determinate progress bar that displays progress from `0f` to `1f`.
+ *
+ * @param progress The current progress, a value between `0f` (0%) and `1f` (100%).
+ * @param modifier Modifier for styling and layout.
+ * @param color The color of the progress track. Defaults to the accent color of the current theme.
  */
 @Composable
 fun ProgressBar(
@@ -74,8 +76,13 @@ private val ShortWidth = 50.dp
 private val Easing = CubicBezierEasing(0.5f, 0f, 0.5f, 1.0f)
 
 /**
- * Undetermined progress bar
- * @param color Line color
+ * An indeterminate progress bar that displays a continuous, looping animation.
+ * This component indicates ongoing activity without specifying a completion percentage.
+ *
+ * The animation consists of two moving segments: a long bar and a short bar, which loop across the width of the component.
+ *
+ * @param modifier The modifier to apply to this layout.
+ * @param color The color of the moving segments. Defaults to `FluentTheme.colors.fillAccent.default`.
  */
 @Composable
 fun ProgressBar(

@@ -44,7 +44,19 @@ internal val LocalTypography = staticCompositionLocalOf {
 }
 
 /**
+ * The Fluent Design typography system, providing a set of predefined text styles.
+ *
+ * Based on the guidelines from Microsoft's Fluent Design documentation:
  * https://docs.microsoft.com/en-us/windows/apps/design/signature-experiences/typography
+ *
+ * @property caption Style for smaller text, often used for labels or annotations.
+ * @property body Standard body text style.
+ * @property bodyStrong Bold version of the standard body text style.
+ * @property bodyLarge Larger version of the standard body text style.
+ * @property subtitle Style for subtitles or secondary headings.
+ * @property title Style for main titles.
+ * @property titleLarge Style for large titles, suitable for prominent headings.
+ * @property display Style for very large text, often used for headlines or displays.
  */
 @Immutable
 class Typography(
@@ -58,8 +70,19 @@ class Typography(
     val display: TextStyle
 )
 
+/**
+ * CompositionLocal containing the current [TextStyle] for text components.
+ */
 val LocalTextStyle = compositionLocalOf(structuralEqualityPolicy()) { TextStyle.Default }
 
+/**
+ * This composable provides a [TextStyle] to the composition local tree.
+ * Any text composables within the `content` lambda will use this provided text style.
+ * The provided [value] is merged with the current [LocalTextStyle].
+ *
+ * @param value The [TextStyle] to provide. This will be merged with the current [LocalTextStyle].
+ * @param content The composable content that will inherit the provided [TextStyle].
+ */
 @Composable
 fun ProvideTextStyle(value: TextStyle, content: @Composable () -> Unit) {
     val mergedStyle = LocalTextStyle.current.merge(value)

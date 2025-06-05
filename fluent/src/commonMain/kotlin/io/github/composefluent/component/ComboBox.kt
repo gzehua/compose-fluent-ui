@@ -60,7 +60,17 @@ fun <T> ComboBox(
 */
 
 /**
- * Use a combo box (also known as a drop-down list) to present a list of items that a user can select from. A combo box starts in a compact state and expands to show a list of selectable items.
+ * Use a combo box (also known as a drop-down list) to present a list of items that a user can select from.
+ * A combo box starts in a compact state, displaying either a selected item or a placeholder, and expands to show a list of selectable items when interacted with.
+ *
+ * @param modifier Modifier to apply to the component.
+ * @param header Optional header text to display above the combo box.
+ * @param placeholder Optional placeholder text to display when no item is selected.
+ * @param disabled Whether the combo box is disabled.
+ * @param items The list of items to display in the combo box.
+ * @param selected The index of the currently selected item, or null if no item is selected.
+ * @param onSelectionChange Callback function triggered when a new item is selected. Provides the index and the item's string value.
+ *
  * TODO: Editable ComboBox
  */
 @Composable
@@ -116,6 +126,12 @@ fun ComboBox(
     }
 }
 
+/**
+ * Represents the colors used for an item in a ComboBox.
+ *
+ * @property fillColor The background color of the item.
+ * @property contentColor The color of the text or other content within the item.
+ */
 data class ItemColor(
     val fillColor: Color,
     val contentColor: Color
@@ -165,6 +181,13 @@ private val selectedItemColors: PentaVisualScheme<ItemColor>
     )
 
 
+/**
+ * Composable function that represents a single item within a ComboBox dropdown.
+ *
+ * @param selected Indicates whether the item is currently selected.
+ * @param label The text label to display for the item.
+ * @param onClick Callback function invoked when the item is clicked.
+ */
 @Composable
 fun ComboBoxItem(
     selected: Boolean,
@@ -202,7 +225,23 @@ fun ComboBoxItem(
     }
 }
 
+/**
+ * Scope for the content of a ComboBox.
+ *
+ * This scope provides functions to define the items within a [ComboBox].
+ */
 interface ComboBoxScope<T> {
+    /**
+     * Adds an item to the ComboBox.
+     *
+     * @param key A unique key to identify this item. This is not currently used, but may be used in the future for item management.
+     * @param content The composable content to display for this item. It receives the item as a parameter.
+     */
     fun Item(key: String, content: @Composable (item: T) -> Unit)
+    /**
+     * A [ComboBoxScope] item representing a string.
+     *
+     * @param label The string to display for this item.
+     */
     fun StringItem(label: String)
 }

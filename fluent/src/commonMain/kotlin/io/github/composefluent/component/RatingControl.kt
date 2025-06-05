@@ -50,13 +50,21 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.isActive
 
 /**
- * @param width: star width
- * @param placeholderValue: the placeholder value will display when value is 0f
- * @param maxRating: star count
- * @param isClearEnabled: click same star value will clear value.
- * @param caption: addition info for rating control
- * @param stepValue: if true, [onValueChanged] will set value as int, otherwise [onValueChanged] will set value as float
- * @param isReadOnly: if true, user can't set [value] by click.
+ * A composable function that creates a rating control, allowing users to select a rating from a set of stars.
+ *
+ * @param value The current rating value, ranging from 0f to [maxRating].
+ * @param onValueChanged A callback function that is invoked when the rating value changes. It receives the new rating value as a parameter.
+ * @param modifier Modifier for styling and layout of the rating control.
+ * @param colors A [VisualStateScheme] that defines the colors used for different visual states of the rating control (e.g., default, hovered, pressed, disabled).
+ * @param width The width of each individual star in the rating control.
+ * @param interactionSource A [MutableInteractionSource] to handle user interactions with the rating control.
+ * @param placeholderValue A value to display as a placeholder when the [value] is 0f. This allows for showing a default rating (e.g., an average rating).
+ * @param maxRating The maximum rating value, which determines the number of stars displayed.
+ * @param caption A composable function that displays additional information or a label associated with the rating control.
+ * @param stepValue If true, the [onValueChanged] callback will provide integer rating values (e.g., 1, 2, 3). If false, it will provide floating-point values, allowing for fractional ratings (e.g., 1.5, 2.7).
+ * @param isReadOnly If true, the user cannot interact with the rating control to change the [value]. It will be displayed as a static rating.
+ * @param isClearEnabled If true, clicking on the currently selected star will clear the rating, setting the [value] to 0f.
+ * @param disabled If true, the rating control will be disabled, preventing user interaction and displaying it in a disabled state.
  */
 @Composable
 fun RatingControl(
@@ -194,6 +202,14 @@ fun RatingControl(
 
 typealias RatingControlColorScheme = PentaVisualScheme<RatingControlColor>
 
+/**
+ * Represents the color scheme for the [RatingControl] component.
+ *
+ * @param color The color of the rating star when it's not selected.
+ * @param selectedColor The color of the rating star when it's selected.
+ * @param captionColor The color of the caption text displayed next to the rating stars.
+ * @param placeholderColor The color of the rating star when it's used as a placeholder.
+ */
 @Immutable
 data class RatingControlColor(
     val color: Color,
@@ -202,8 +218,21 @@ data class RatingControlColor(
     val placeholderColor: Color
 )
 
+/**
+ * Contains the default values used for [RatingControl].
+ */
 object RatingControlDefaults {
 
+    /**
+     * Creates a [RatingControlColorScheme] with the default colors for a [RatingControl].
+     *
+     * @param default The default [RatingControlColor] to use.
+     * @param hovered The [RatingControlColor] to use when the rating control is hovered.
+     * @param pressed The [RatingControlColor] to use when the rating control is pressed.
+     * @param disabled The [RatingControlColor] to use when the rating control is disabled.
+     *
+     * @return A [RatingControlColorScheme] that contains the specified colors.
+     */
     @Composable
     @Stable
     fun colors(

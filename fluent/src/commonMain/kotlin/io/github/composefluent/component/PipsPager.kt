@@ -55,6 +55,23 @@ import io.github.composefluent.scheme.collectVisualState
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+/**
+ * A horizontal pager that displays a series of pips, allowing users to navigate between pages.
+ *
+ * This component provides a visual indicator of the current page and allows users to navigate
+ * through the pages by clicking on the pips or using the associated page buttons.
+ *
+ * @param state The state object to be used to control or observe the pager state.
+ * @param modifier The modifier to be applied to the pager.
+ * @param scrollAnimationSpec The animation specification for scrolling between pages. Defaults to [FlipViewDefaults.scrollAnimationSpec].
+ * @param visibleCount The number of pips that are visible at any given time.
+ * @param enabled Controls the enabled state of the pips pager. When `false`, the pips and page
+ *   buttons will be disabled.
+ * @param pageButtonVisibleStrategy The strategy to determine when the page buttons (e.g., arrows) should be visible.
+ *   Defaults to [PageButtonVisibleStrategy.Never].
+ * @param pipsColors The color scheme for the pips in different visual states (e.g., default, hovered, pressed).
+ *   Defaults to [PipsPagerDefaults.pipsColors].
+ */
 @Composable
 fun HorizontalPipsPager(
     state: PagerState,
@@ -87,6 +104,18 @@ fun HorizontalPipsPager(
     )
 }
 
+/**
+ * A vertical pips pager that displays a series of pips, allowing the user to navigate between pages.
+ * This is a wrapper for [PipsPager] and uses [PagerState] for the current page and the page count.
+ *
+ * @param state The [PagerState] that holds the current page and the number of pages.
+ * @param modifier Modifier to be applied to the pips pager.
+ * @param scrollAnimationSpec The animation spec used when scrolling between pages. Defaults to [FlipViewDefaults.scrollAnimationSpec].
+ * @param visibleCount The maximum number of pips that should be visible at once.
+ * @param enabled Whether the pips pager is enabled. Defaults to `true`.
+ * @param pageButtonVisibleStrategy The strategy for showing/hiding the page buttons. Defaults to [PageButtonVisibleStrategy.Never].
+ * @param pipsColors The color scheme for the pips. Defaults to [PipsPagerDefaults.pipsColors].
+ */
 @Composable
 fun VerticalPipsPager(
     state: PagerState,
@@ -119,6 +148,22 @@ fun VerticalPipsPager(
     )
 }
 
+/**
+ * A horizontal pager that displays a series of pips (dots) to represent pages.
+ *
+ * @param selectedIndex The index of the currently selected page.
+ * @param onSelectedIndexChange A callback that is invoked when the selected page changes.
+ * The parameter is the new selected index.
+ * @param count The total number of pages.
+ * @param modifier Modifier for styling and layout customization.
+ * @param visibleCount The number of pips that are visible at one time. The pager will
+ * scroll if the count exceeds this value.
+ * @param enabled Controls the enabled state of the pips pager. When `false`, the user
+ * cannot interact with the pager and it will be displayed in a disabled state.
+ * @param pageButtonVisibleStrategy Determines the visibility of the page navigation buttons.
+ * See [PageButtonVisibleStrategy] for available options.
+ * @param pipsColors A [VisualStateScheme] that provides the color for each visual state of the pips.
+ */
 @Composable
 fun HorizontalPipsPager(
     selectedIndex: Int,
@@ -143,6 +188,24 @@ fun HorizontalPipsPager(
     )
 }
 
+/**
+ * A vertical pager that displays a series of pips, allowing the user to navigate between
+ * different pages.
+ *
+ * @param selectedIndex The index of the currently selected page.
+ * @param onSelectedIndexChange A callback that is invoked when the selected page changes.
+ *   It provides the new index.
+ * @param count The total number of pages.
+ * @param modifier The modifier to be applied to the pager.
+ * @param enabled Controls the enabled state of the pager. When `false`, the user cannot
+ *   interact with the pager.
+ * @param pageButtonVisibleStrategy Determines when the page navigation buttons should be visible.
+ *   See [PageButtonVisibleStrategy] for details.
+ * @param visibleCount The maximum number of pips to display at once. If the total number of pages
+ *   exceeds this value, the pager will be scrollable.
+ * @param pipsColors The color scheme for the pips, determining their appearance in different states.
+ *   See [PipsPagerDefaults.pipsColors] for details.
+ */
 @Composable
 fun VerticalPipsPager(
     selectedIndex: Int,
@@ -288,8 +351,20 @@ private fun PipsPager(
 
 typealias PipsColorScheme = PentaVisualScheme<Color>
 
+/**
+ * Contains the default values used for [PipsPager].
+ */
 object PipsPagerDefaults {
 
+    /**
+     * Creates a [PipsColorScheme] with the specified colors.
+     *
+     * @param default The default color of the pips.
+     * @param hovered The color of the pips when hovered.
+     * @param pressed The color of the pips when pressed.
+     * @param disabled The color of the pips when disabled.
+     * @return A [PipsColorScheme] with the specified colors.
+     */
     @Stable
     @Composable
     fun pipsColors(
@@ -360,9 +435,22 @@ private fun Pips(
     )
 }
 
+/**
+ * Defines the strategy for determining when the page buttons (e.g., previous/next arrows)
+ * should be visible in the [PipsPager].
+ */
 enum class PageButtonVisibleStrategy {
+    /**
+     * Always show the page buttons.
+     */
     Always,
+    /**
+     * Page buttons are only visible when the pager is hovered.
+     */
     VisibleOnHovered,
+    /**
+     * The page button is never visible.
+     */
     Never
 }
 

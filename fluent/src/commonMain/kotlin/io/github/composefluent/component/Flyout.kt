@@ -53,6 +53,27 @@ import io.github.composefluent.background.ElevationDefaults
 import io.github.composefluent.background.Layer
 import io.github.composefluent.background.calculateBorderPadding
 
+/**
+ * A container composable that displays a flyout and its content.
+ *
+ * The [FlyoutContainer] manages the visibility and placement of a flyout, while also providing a
+ * [FlyoutContainerScope] for defining the flyout and the main content.
+ *
+ * @param flyout A composable lambda representing the content of the flyout.
+ *               It has access to the [FlyoutContainerScope].
+ * @param modifier The modifier to be applied to the container.
+ * @param initialVisible The initial visibility state of the flyout. Defaults to `false`.
+ * @param placement The placement strategy for the flyout. Defaults to [FlyoutPlacement.Auto].
+ * @param adaptivePlacement If `true`, the flyout will try to adapt to the available space.
+ *                          Defaults to `false`.
+ * @param onKeyEvent An optional callback invoked when a key event is dispatched to the flyout.
+ *                   If not null, it will be focusable.
+ * @param onPreviewKeyEvent An optional callback invoked when a key event is dispatched to the flyout
+ *                          before it is dispatched to any focused view. If not null, it will be
+ *                          focusable.
+ * @param content A composable lambda representing the main content within the container.
+ *                It also has access to the [FlyoutContainerScope].
+ */
 @Composable
 fun FlyoutContainer(
     flyout: @Composable FlyoutContainerScope.() -> Unit,
@@ -105,6 +126,24 @@ internal fun BasicFlyoutContainer(
 
 }
 
+/**
+ * Defines the possible placement positions of a flyout relative to its anchor.
+ *
+ * - **Auto**: The system automatically determines the best placement based on available space.
+ * - **Full**: The flyout will occupy the full available space.
+ * - **Start**: The flyout will be placed at the start side of the anchor.
+ * - **StartAlignedTop**: The flyout will be placed at the start side of the anchor, with its top edge aligned with the anchor's top edge.
+ * - **StartAlignedBottom**: The flyout will be placed at the start side of the anchor, with its bottom edge aligned with the anchor's bottom edge.
+ * - **Top**: The flyout will be placed above the anchor.
+ * - **TopAlignedStart**: The flyout will be placed above the anchor, with its start edge aligned with the anchor's start edge.
+ * - **TopAlignedEnd**: The flyout will be placed above the anchor, with its end edge aligned with the anchor's end edge.
+ * - **End**: The flyout will be placed at the end side of the anchor.
+ * - **EndAlignedTop**: The flyout will be placed at the end side of the anchor, with its top edge aligned with the anchor's top edge.
+ * - **EndAlignedBottom**: The flyout will be placed at the end side of the anchor, with its bottom edge aligned with the anchor's bottom edge.
+ * - **Bottom**: The flyout will be placed below the anchor.
+ * - **BottomAlignedStart**: The flyout will be placed below the anchor, with its start edge aligned with the anchor's start edge.
+ * - **BottomAlignedEnd**: The flyout will be placed below the anchor, with its end edge aligned with the anchor's end edge.
+ */
 enum class FlyoutPlacement {
     Auto,
     Full,
@@ -122,6 +161,28 @@ enum class FlyoutPlacement {
     BottomAlignedEnd
 }
 
+/**
+ * A Flyout is a transient view that displays content that is either contextual to or provides additional
+ * information about a specific UI element. Flyouts are meant to be temporary and are dismissed when the
+ * user interacts outside of the flyout or when the parent UI element is hidden or removed.
+ *
+ * @param visible Whether the flyout is currently visible.
+ * @param onDismissRequest Callback invoked when the flyout should be dismissed. This typically happens
+ * when the user clicks outside the flyout or presses the back button.
+ * @param modifier Modifier to be applied to the flyout.
+ * @param placement The preferred placement of the flyout relative to its anchor.
+ * Defaults to [FlyoutPlacement.Auto].
+ * @param adaptivePlacement If `true`, the flyout will automatically adjust its placement to ensure
+ * it remains within the bounds of the screen. If `false`, the flyout will stick to the specified
+ * placement, potentially overflowing the screen. Defaults to `false`.
+ * @param shape The shape of the flyout's background. Defaults to [FluentTheme.shapes.overlay].
+ * @param onKeyEvent Optional callback to intercept and handle key events while the flyout is
+ * visible. Return `true` to consume the event, `false` to allow it to propagate. Defaults to `null`.
+ * @param onPreviewKeyEvent Optional callback to preview key events before they are dispatched to
+ * the flyout's content. Return `true` to consume the event, `false` to allow it to propagate.
+ * Defaults to `null`.
+ * @param content The content to be displayed within the flyout.
+ */
 @Composable
 fun Flyout(
     visible: Boolean,
@@ -341,6 +402,31 @@ private class FlyoutContainerScopeImpl(
     override var isFlyoutVisible: Boolean by visibleState
 }
 
+/**
+ * Scope for the content of a [FlyoutContainer].
+ *
+ * This scope provides access to the [isFlyoutVisible] state, which determines whether the flyout is currently visible.
+ * You can use this scope to control the visibility of the flyout and interact with the anchor.
+ *
+ * The [isFlyoutVisible] property should be set to true to show the flyout and false to hide it.
+ * It's a two-way binding that updates the flyout's visibility and is updated when the flyout is dismissed.
+ *
+ *  **Example:**
+ *
+ * ```kotlin
+ * FlyoutContainer(
+ *   flyout = {
+ *      Text("Flyout Content")
+ *   }
+ * ) {
+ *    Button(onClick = { isFlyoutVisible = true }) {
+ *       Text("Show Flyout")
+ *    }
+ * }
+ * ```
+ * In this example, clicking the "Show Flyout" button will set `isFlyoutVisible` to true, causing the flyout to appear.
+ * Clicking outside of the flyout will set `isFlyoutVisible` to false, hiding the flyout.
+ */
 @OptIn(ExperimentalFluentApi::class)
 interface FlyoutContainerScope: FlyoutAnchorScope {
 
@@ -348,6 +434,11 @@ interface FlyoutContainerScope: FlyoutAnchorScope {
 
 }
 
+/**
+ * Scope for configuring the anchor and size of a flyout.
+ *
+ * This interface provides functions to define the flyout's anchoring point and control its size relative to the anchor.
+ */
 @ExperimentalFluentApi
 interface FlyoutAnchorScope {
 
@@ -356,6 +447,22 @@ interface FlyoutAnchorScope {
     fun Modifier.flyoutSize(matchAnchorWidth: Boolean = false): Modifier
 }
 
+/**
+ * Provides a scope for defining the anchor point and size constraints for a Flyout.
+ *
+ * This composable establishes a context where the anchor for a Flyout can be defined,
+ * allowing subsequent components within the scope to be positioned relative to this anchor.
+ * It also manages the padding around the anchor, ensuring proper spacing between the anchor
+ * and the flyout.
+ *
+ * @param anchorPadding The padding to be applied around the flyout anchor.
+ *  Defaults to `flyoutPopPaddingFixShadowRender + flyoutDefaultPadding`, which
+ *  considers adjustments for shadow rendering and a default padding value.
+ * @param content The composable content that defines the Flyout anchor and
+ *  any additional components that should be part of the Flyout's context.
+ *  This lambda receives a `FlyoutAnchorScope` instance, allowing the use of
+ *  modifier functions like `flyoutAnchor()` and `flyoutSize()` within this context.
+ */
 @ExperimentalFluentApi
 @Composable
 fun FlyoutAnchorScope(

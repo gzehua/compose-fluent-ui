@@ -81,24 +81,79 @@ internal fun OverflowRow(
     )
 }
 
+/**
+ * Determines the position of the overflow action within the [OverflowRow].
+ *
+ * This enum defines where the overflow indicator (e.g., a three-dot button) should be
+ * positioned relative to the other items in the row when there is not enough space to display
+ * all items.
+ *
+ * - **Start**: The overflow action is placed at the start (left in LTR, right in RTL) of the row.
+ *   Items that overflow will be hidden from the right.
+ * - **Center**: The overflow action is placed in the center of the row. Items that overflow will
+ *   be hidden from both sides, equally.
+ * - **End**: The overflow action is placed at the end (right in LTR, left in RTL) of the row.
+ *   Items that overflow will be hidden from the left.
+ */
 enum class OverflowPosition {
     Start,
     Center,
     End
 }
 
+/**
+ * Scope for the overflow action.
+ *
+ * This scope provides information about the items that are currently in the overflow and allows
+ * rendering them.
+ */
 interface OverflowActionScope {
 
+    /**
+     * The number of items that are currently in the overflow.
+     */
     val overflowItemCount: Int
 
+    /**
+     * Returns the key for the item at the specified [index] in the overflow menu.
+     *
+     * This key is used to uniquely identify the item when it's displayed in the
+     * overflow menu (e.g., in a [LazyColumn]).
+     *
+     * @param index The index of the item within the overflow menu.
+     * @return The unique key associated with the item at the given index.
+     */
     fun overflowItemKey(index: Int): Any
 
+    /**
+     * Returns the content type for the item at the given [index] in the overflow area.
+     * This is used by [LazyColumn] to optimize item recycling.
+     *
+     * @param index The index of the item in the overflow area.
+     * @return The content type of the item, or `null` if there is no specific type.
+     */
     fun overflowItemContentType(index: Int): Any?
 
+    /**
+     * Composable function to render an item within the overflow area.
+     *
+     * @param index The index of the item within the overflow area. This index is relative
+     *              to the start of the overflow range, not the overall item list.
+     */
     @Composable
     fun overflowItem(index: Int)
 }
 
+/**
+ * A container for displaying overflow items in a flyout.
+ *
+ * This composable provides a flyout that appears when the overflow action button is clicked.
+ * It displays the overflow items within a scrollable column inside the flyout.
+ *
+ * @param actionButton The composable that represents the overflow action button. When clicked,
+ *        it triggers the flyout to be shown. The content of the action button will be passed to the
+ *        [BasicFlyoutContainer] `content` param.
+ */
 @Composable
 fun OverflowActionScope.OverflowFlyoutContainer(
     actionButton: @Composable FlyoutContainerScope.() -> Unit
@@ -131,6 +186,16 @@ fun OverflowActionScope.OverflowFlyoutContainer(
     )
 }
 
+/**
+ * A flyout container that displays the overflow items in a lazy column.
+ *
+ * This composable provides a container for overflow actions that are displayed within a flyout.
+ * It uses a [LazyColumn] to display the overflow items, which enables efficient rendering of a large number of items.
+ * The lazy column is scrollable and includes a scrollbar.
+ *
+ * @param actionButton The composable that triggers the display of the overflow flyout.
+ *   This is typically a button or an icon that, when clicked, shows the overflow items.
+ */
 @Composable
 fun OverflowActionScope.LazyOverflowFlyoutContainer(
     actionButton: @Composable FlyoutContainerScope.() -> Unit

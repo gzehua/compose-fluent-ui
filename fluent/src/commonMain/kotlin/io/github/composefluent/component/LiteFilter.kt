@@ -37,6 +37,14 @@ import androidx.compose.ui.unit.dp
 import io.github.composefluent.animation.FluentDuration
 import kotlinx.coroutines.launch
 
+/**
+ * A composable function that creates a horizontal filter component with scrollable items.
+ * It displays navigation buttons (left and right arrows) to indicate scrollability.
+ *
+ * @param modifier Modifier for styling and layout of the filter.
+ * @param state The [ScrollState] to manage the horizontal scroll.
+ * @param content The composable content (items) within the filter row.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LiteFilter(

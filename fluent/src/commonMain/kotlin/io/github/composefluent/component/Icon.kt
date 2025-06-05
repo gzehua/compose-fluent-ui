@@ -22,6 +22,18 @@ import io.github.composefluent.LocalContentAlpha
 import io.github.composefluent.LocalContentColor
 
 
+/**
+ * A composable that draws an [ImageVector] as an icon.
+ *
+ * @param imageVector The [ImageVector] to draw.
+ * @param contentDescription Text used by accessibility services to describe what this icon
+ * represents. This should always be provided unless this icon is used for decorative purposes,
+ * and does not represent a meaningful action that a user can take. This text should be
+ * localized, such as by using [stringResource] or similar.
+ * @param modifier Modifier to apply to this icon.
+ * @param tint The tint to apply to the icon. If [Color.Unspecified] is provided, then no tint is
+ * applied.
+ */
 @Composable
 fun Icon(
     imageVector: ImageVector,
@@ -33,6 +45,21 @@ fun Icon(
     Icon(painter, tint, contentDescription, modifier)
 }
 
+/**
+ * A composable that draws a [Painter] using the current theme's icon color and alpha.
+ *
+ * This function is useful for displaying icons that are provided as a [Painter] object.
+ * It automatically applies the correct color and alpha to the icon based on the current
+ * [LocalContentColor] and [LocalContentAlpha].
+ *
+ * @param painter The [Painter] to draw.
+ * @param tint The color to apply to the [painter]. If [Color.Unspecified] is provided, then no tint is
+ *  applied.
+ * @param contentDescription Text used by accessibility services to describe what this icon
+ *  represents. This should always be provided unless this icon is used for decorative purposes,
+ *  and does not represent a meaningful action that a user can take.
+ * @param modifier Optional [Modifier] to be applied to the icon.
+ */
 @Composable
 fun Icon(
     painter: Painter,

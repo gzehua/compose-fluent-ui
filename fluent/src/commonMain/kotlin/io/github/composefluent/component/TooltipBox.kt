@@ -51,6 +51,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+/**
+ * A composable that displays a tooltip when the user hovers over or long-presses the content.
+ *
+ * @param tooltip The composable content of the tooltip.
+ * @param state The state of the tooltip, controlling its visibility and interaction. Defaults to a
+ * remembered [TooltipState].
+ * @param modifier The modifier to be applied to the tooltip's container.
+ * @param positionProvider The provider for the tooltip's position relative to the content. Defaults
+ * to a remembered [PopupPositionProvider] using [rememberTooltipPositionProvider].
+ * @param enabled Whether the tooltip is enabled. If false, the tooltip will not be shown. Defaults
+ * to true.
+ * @param content The composable content that triggers the tooltip.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @ExperimentalFluentApi
 @Composable
@@ -87,6 +100,14 @@ fun TooltipBox(
     }
 }
 
+/**
+ * Creates and remembers a [TooltipState].
+ *
+ * @param initialIsVisible the initial visibility state of the tooltip.
+ * @param isPersistent whether the tooltip should remain visible until explicitly hidden.
+ * @param mutatorMutex the [MutatorMutex] used to mutually exclude state changes.
+ * @return a [TooltipState] that can be used to control the tooltip's visibility.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @ExperimentalFluentApi
 @Composable
@@ -168,6 +189,19 @@ private fun Modifier.gestureHandle(
     }
 }
 
+/**
+ * Creates and remembers a [PopupPositionProvider] for a tooltip, based on the provided
+ * [state] and [anchorPadding].
+ *
+ * This function calculates the position of the tooltip popup relative to its anchor or
+ * the mouse pointer, ensuring it remains within the screen bounds.
+ *
+ * @param state The [TooltipState] that controls the tooltip's visibility and provides
+ *              information about the pointer position.
+ * @param anchorPadding Additional padding to apply around the anchor bounds when
+ *                      calculating the tooltip position. Defaults to 0.dp.
+ * @return A [PopupPositionProvider] that can be used to position the tooltip popup.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun rememberTooltipPositionProvider(
@@ -182,6 +216,15 @@ fun rememberTooltipPositionProvider(
     }
 }
 
+/**
+ * A state object that can be hoisted to control and observe tooltip box state.
+ *
+ * In most cases, this will be created via [rememberTooltipState].
+ *
+ * @param initialIsVisible The initial visibility state of the tooltip.
+ * @param isPersistent Whether the tooltip should stay visible when clicked.
+ * @param mutatorMutex Mutex for managing mutual exclusion of visibility changes.
+ */
 @Stable
 @ExperimentalFoundationApi
 class TooltipState(
@@ -199,11 +242,28 @@ class TooltipState(
         internal set
 }
 
+/**
+ * Contains the default values used for [TooltipBox].
+ */
 @ExperimentalFluentApi
 object TooltipBoxDefaults {
 
+    /**
+     * The spacing between the icon and the text in the tooltip.
+     */
     val iconSpacing = 8.dp
 
+    /**
+     * Displays a tooltip with the given [content] when [visible] is true.
+     *
+     * This function provides a simple way to show a tooltip that appears and disappears based
+     * on the provided visibility state. It uses a [MutableTransitionState] internally to
+     * animate the visibility change.
+     *
+     * @param visible `true` if the tooltip should be visible, `false` otherwise.
+     * @param modifier Modifier to be applied to the tooltip.
+     * @param content The composable content of the tooltip.
+     */
     @Composable
     fun Tooltip(
         visible: Boolean,
@@ -221,6 +281,14 @@ object TooltipBoxDefaults {
         )
     }
 
+    /**
+     * Creates a tooltip with the specified [visibleState] to control its visibility.
+     *
+     * @param visibleState A [MutableTransitionState] to control the visibility of the tooltip.
+     *   When `true`, the tooltip is shown. When `false`, the tooltip is hidden.
+     * @param modifier The [Modifier] to be applied to the tooltip.
+     * @param content The content to be displayed within the tooltip.
+     */
     @Composable
     fun Tooltip(
         visibleState: MutableTransitionState<Boolean>,

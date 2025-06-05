@@ -10,6 +10,16 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.PopupPositionProvider
 import kotlin.jvm.JvmInline
 
+/**
+ * Creates and remembers a [FlyoutPositionProvider] that can be used to position a flyout relative to an anchor.
+ *
+ * @param initialPlacement The initial placement of the flyout. Defaults to [FlyoutPlacement.Auto].
+ * @param paddingToAnchor The padding between the flyout and its anchor. Defaults to [flyoutDefaultPadding].
+ * @param adaptivePlacement Whether the flyout should adapt its placement based on available space.
+ *   If `true`, the flyout will try to reposition itself to fit within the window bounds.
+ *   If `false`, the flyout will strictly adhere to the [initialPlacement].
+ * @return A remembered [FlyoutPositionProvider] instance.
+ */
 @Composable
 fun rememberFlyoutPositionProvider(
     initialPlacement: FlyoutPlacement = FlyoutPlacement.Auto,
@@ -22,6 +32,16 @@ fun rememberFlyoutPositionProvider(
     }
 }
 
+/**
+ * [FlyoutPositionProvider] is a [PopupPositionProvider] that calculates the position of a flyout
+ * popup relative to an anchor. It considers the available space in the window and the
+ * preferred placement of the flyout to determine the optimal position.
+ *
+ * @param density The density of the display.
+ * @param initialPlacement The initial placement preference of the flyout. Defaults to [FlyoutPlacement.Auto].
+ * @param paddingToAnchor The padding between the flyout and the anchor. Defaults to [flyoutDefaultPadding].
+ * @param adaptivePlacement Whether the placement should adapt based on available space. Defaults to false.
+ */
 @Stable
 open class FlyoutPositionProvider(
     private val density: Density,

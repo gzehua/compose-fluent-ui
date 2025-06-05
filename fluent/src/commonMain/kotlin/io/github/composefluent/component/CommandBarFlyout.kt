@@ -27,6 +27,20 @@ import io.github.composefluent.layout.overflow.OverflowRow
 import io.github.composefluent.layout.overflow.OverflowRowScope
 import io.github.composefluent.layout.overflow.rememberOverflowRowState
 
+/**
+ * A flyout that displays a command bar.
+ *
+ * @param visible Whether the flyout is visible.
+ * @param onDismissRequest Called when the user requests to dismiss the flyout.
+ * @param expanded Whether the flyout is expanded to show the secondary items.
+ * @param onExpandedChanged Called when the expanded state changes.
+ * @param modifier The modifier to apply to the flyout.
+ * @param secondary The content to display in the secondary area when the flyout is expanded.
+ *  the parameter [hasOverFlowItem] is true when [content] has items that overflow.
+ * @param spacing The spacing between items in the command bar.
+ * @param positionProvider The position provider for the flyout.
+ * @param content The primary content to display in the command bar.
+ */
 @Composable
 fun CommandBarFlyout(
     visible: Boolean,
@@ -53,6 +67,20 @@ fun CommandBarFlyout(
     )
 }
 
+/**
+ * A large command bar flyout.
+ *
+ * @param visible Whether the flyout is visible.
+ * @param onDismissRequest Called when the user requests to dismiss the flyout.
+ * @param expanded Whether the secondary content of the flyout is expanded.
+ * @param onExpandedChanged Called when the expanded state changes.
+ * @param modifier The modifier to be applied to the flyout.
+ * @param secondary The secondary content to be displayed in the flyout.
+ * The lambda receives a boolean indicating if there's any overflow items.
+ * @param spacing The spacing between items in the flyout.
+ * @param positionProvider The position provider for the flyout.
+ * @param content The primary content of the flyout.
+ */
 @Composable
 fun LargeCommandBarFlyout(
     visible: Boolean,

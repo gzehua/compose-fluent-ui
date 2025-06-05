@@ -13,6 +13,15 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
+/**
+ * A composable that applies the Mica background effect.
+ *
+ * This function provides a basic Mica background using the `mica.base` color from the Fluent theme.
+ * It also sets the content color to the primary text color from the Fluent theme.
+ *
+ * @param modifier The modifier to be applied to the Mica background.
+ * @param content The composable content to be displayed on top of the Mica background.
+ */
 @Composable
 fun Mica(modifier: Modifier, content: @Composable () -> Unit) {
     Box(modifier.background(FluentTheme.colors.background.mica.base)) {
@@ -22,6 +31,15 @@ fun Mica(modifier: Modifier, content: @Composable () -> Unit) {
     }
 }
 
+/**
+ * A composable that creates a Mica effect, providing a translucent, layered appearance.
+ *
+ * This function renders the content on top of a blurred background, creating the Mica effect.
+ *
+ * @param background The composable to be used as the background. This will be blurred to create the Mica effect.
+ * @param modifier The modifier to be applied to the root container.
+ * @param content The content to be displayed on top of the Mica effect.
+ */
 @Composable
 fun Mica(
     background: @Composable () -> Unit,

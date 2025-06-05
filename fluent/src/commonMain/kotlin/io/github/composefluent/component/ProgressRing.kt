@@ -19,12 +19,24 @@ import androidx.compose.ui.unit.dp
 import io.github.composefluent.FluentTheme
 import io.github.composefluent.animation.FluentDuration
 
+/**
+ * Defines the pre-defined sizes for the [ProgressRing].
+ */
 object ProgressRingSize {
     val Large = 64.dp
     val Medium = 32.dp
     val Small = 16.dp
 }
 
+/**
+ * A composable function that creates a progress ring with a specified progress value.
+ *
+ * @param progress The progress value of the ring, ranging from 0.0 to 1.0.
+ * @param modifier The modifier to be applied to the progress ring.
+ * @param size The size of the progress ring. Defaults to [ProgressRingSize.Medium].
+ * @param width The width of the progress ring's stroke. Defaults to 3/32 of the size.
+ * @param color The color of the progress ring. Defaults to the accent color in the Fluent theme.
+ */
 @Composable
 fun ProgressRing(
     progress: Float,
@@ -43,6 +55,14 @@ fun ProgressRing(
     )
 }
 
+/**
+ * An indeterminate [ProgressRing] that animates a ring to show progress.
+ *
+ * @param modifier The modifier to be applied to the ProgressRing.
+ * @param size The size of the ProgressRing. Default is [ProgressRingSize.Medium].
+ * @param width The width of the ring stroke. Default is calculated based on the size.
+ * @param color The color of the ring. Default is [FluentTheme.colors.fillAccent.default].
+ */
 @Composable
 fun ProgressRing(
     modifier: Modifier = Modifier,
