@@ -239,9 +239,9 @@ fun IconsScreen() {
                                 val item = selectedItem.value ?: return@board
                                 val isCore = iconCoreSet.value.contains(item)
                                 val packageName = if (isCore) {
-                                    "com.konyaco:fluent-icons-core"
+                                    "io.github.compose-fluent:fluent-icons-core"
                                 } else {
-                                    "com.konyaco:fluent-icons-extended"
+                                    "io.github.compose-fluent:fluent-icons-extended"
                                 }
                                 Column(
                                     verticalArrangement = Arrangement.spacedBy(12.dp),

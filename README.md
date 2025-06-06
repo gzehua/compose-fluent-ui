@@ -1,9 +1,10 @@
 <h1><img src="assets/icon.png" alt="Compose Fluent logo" height="48" valign="middle"> Compose Fluent</h1>
 
-[![License](https://img.shields.io/github/license/Konyaco/compose-fluent-ui)](LICENSE)
-[![Version](https://img.shields.io/github/v/release/Konyaco/compose-fluent-ui?include_prereleases)](https://github.com/Konyaco/compose-fluent-ui/releases)
-[![Maven Central](https://img.shields.io/maven-central/v/com.konyaco/fluent)](https://central.sonatype.com/artifact/com.konyaco/fluent/)
-[![Snapshot](https://img.shields.io/nexus/s/com.konyaco/fluent?server=https%3A%2F%2Fs01.oss.sonatype.org%2F&label=snapshot)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/konyaco/fluent)
+[![License](https://img.shields.io/github/license/compose-fluent/compose-fluent-ui)](LICENSE)
+[![Version](https://img.shields.io/github/v/release/compose-fluent/compose-fluent-ui?include_prereleases)](https://github.com/compose-fluent/compose-fluent-ui/releases)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.compose-fluent/fluent)](https://central.sonatype.com/artifact/io.github.compose-fluent/fluent/)
+
+[//]: # ([![Snapshot]&#40;https://img.shields.io/nexus/s/io.github.compose-fluent/fluent?server=https%3A%2F%2Fcentral.sonatype.com&label=snapshot&#41;]&#40;https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/io/github/compose-fluent&#41;)
 
 **Fluent Design** UI library for **Compose Multiplatform**
 
@@ -18,40 +19,50 @@ Please note that there are lots of hard-coding and workarounds in our source cod
 Thank you for using our library. We look forward to receiving your feedback and contributions!
 
 ### Supported Kotlin Targets
-| Target | Platform |
-| :--- | :--- |
-| desktop | Linux, macOS, Windows |
-| iosX64 | iPhone, iPad |
-| iosArm64 | iPhone, iPad |
-| iosSimulatorArm64 | iOS Simulator |
-| androidTarget | Android devices |
-| wasmJs | Web browsers |
-| js | Web browsers |
+
+| Target            | Platform              |
+|:------------------|:----------------------|
+| desktop           | Linux, macOS, Windows |
+| iosX64            | iPhone, iPad          |
+| iosArm64          | iPhone, iPad          |
+| iosSimulatorArm64 | iOS Simulator         |
+| androidTarget     | Android Devices       |
+| wasmJs            | Web Browsers          |
+| js                | Web Browsers          |
 
 ## Quick Start
 
 ### Add Dependency
 
 ```kts
-implementation("com.konyaco:fluent:0.0.1-dev.8")
-implementation("com.konyaco:fluent-icons-extended:0.0.1-dev.8") // If you want to use full fluent icons.
+implementation("io.github.compose-fluent:fluent:0.0.1-dev.8")
+implementation("io.github.compose-fluent:fluent-icons-extended:0.0.1-dev.8") // If you want to use full fluent icons.
 ```
 
-### Snapshot Repository
-If you want to use the snapshot version, please add the snapshot maven repository.
-```
-dependencyResolutionManagement {
-    repositories {
-        // Add this repository
-        maven(https://s01.oss.sonatype.org/content/repositories/snapshots/)
-    }
+#### Snapshot Versions
+
+Snapshot versions are automatically published from the `dev` branch. To access snapshot artifacts, add the Sonatype snapshot repository to your `build.gradle.kts`:
+
+```kotlin
+repositories {
+    mavenCentral()
+    // Add Sonatype snapshots repository
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
 }
 ```
+
+Then specify the snapshot dependency with the `-SNAPSHOT` suffix:
+
+```kotlin
+implementation("io.github.compose-fluent:fluent:0.0.1-SNAPSHOT")
+```
+
+You can check our latest snapshots at [Maven Central](https://central.sonatype.com/artifact/io.github.compose-fluent/fluent/).
 
 ### Example
 
 ```kotlin
-import com.konyaco.fluent.component.*
+import io.github.composefluent.component.*
 
 @Composable
 fun App() {
@@ -71,12 +82,6 @@ See [`gallery`](gallery) module for more details.
 - `FluentTheme()` is the context and entry point of the application, just like `MaterialTheme`
 - Components are under `component` package
 - `Mica` and `Layer` are under `background` package
-
-## License
-
-This library is under Apache-2.0 license.
-
-The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs to Microsoft.
 
 ## Components
 
@@ -177,13 +182,21 @@ The copyright of the icon assets (in `com.konyaco.fluent.icons` package) belongs
 - [ ] Accessibility Semantics
 
 ## Contribution
+
 See [CONTRIBUTION.md](CONTRIBUTION.md)
+
+## License
+
+This library is licensed under the Apache License 2.0.
+
+The copyright of the icon assets (in `io.github.composefluent.icons` package) belongs to Microsoft.
 
 ## Credits
 
 This project is built upon the foundations laid by several remarkable open-source projects. We extend our sincere gratitude to the developers and maintainers of these projects for their invaluable contributions to the open-source community.
 
 ### Fluent
+
 | Project | Description | License |
 |---|---|---|
 | **[Windows UI Kit (Figma)](https://www.figma.com/community/file/1440832812269040007/windows-ui-kit)** | Provided design mockups for controls. | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
