@@ -17,13 +17,13 @@ We are thrilled to have you considering contributing to Compose-Fluent-UI. Contr
 
 - **Create the source code**: In the `fluent/components` directory, create the source code for the component that corresponds to the Windows UI Kit.
 ```Kotlin
-//Button.kt
-package com.konyaco.fluent.components
+// Button.kt
+package io.github.composefluent.components
 ```
 - **Handle internal classes**: If your component involves internal classes that may be used by other components (such as `OverflowRow`), create the relevant classes in the appropriate package (e.g., `/layout`).
 ```Kotlin
-//OverflowRow.kt
-package com.konyaco.fluent.layout.overflow
+// OverflowRow.kt
+package io.github.composefluent.layout.overflow
 
 @Composable
 internal fun OverflowRow(
@@ -48,7 +48,7 @@ The Gallery app uses KSP and KotlinPoet to automatically generate a navigation t
 1. **Create [YourComponent]Screen.kt**: In the package corresponding to the component group, create a `[YourComponent]Screen.kt` file.
 ```Kotlin
 // ButtonScreen.kt
-package com.konyaco.fluent.gallery.screen.basicinput
+package io.github.composefluent.fluent.gallery.screen.basicinput
 ```
 2. **Create a method with @Component annotation**: Create a method named `[YourComponent]Screen` and annotate it with `@Component`, providing the relevant `description` and `index`.
 ```Kotlin
@@ -122,10 +122,10 @@ private fun ButtonSample(enabled: Boolean = true, onClick: () -> Unit) {
 6. **Add new groups if needed**: If you cannot find the appropriate group for the component, add a new group in the `ComponentGroupInfo` object, following the format of the existing groups. After adding the group, place the Screen file in the corresponding package.
 ```Kotlin
 // ComponentGrupInfo.kt
-package com.konyaco.fluent.gallery.component
+package io.github.composefluent.gallery.component
 
 object ComponentGroupInfo {
-    prival const val screenPackage: String = "com.konyaco.fluent.gallery.screen"
+    prival const val screenPackage: String = "io.github.composefluent.gallery.screen"
 
     // Basic Input is group name, ChckboxChecked is icon, packageMap is the component screens under this group were placed, like ButtonScreen
     @ComponentGroup("CheckboxChecked", index = 2, packageMap = "$screenPackage.basicinput")
