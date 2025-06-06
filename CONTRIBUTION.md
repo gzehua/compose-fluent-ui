@@ -48,7 +48,7 @@ The Gallery app uses KSP and KotlinPoet to automatically generate a navigation t
 1. **Create [YourComponent]Screen.kt**: In the package corresponding to the component group, create a `[YourComponent]Screen.kt` file.
 ```Kotlin
 // ButtonScreen.kt
-package io.github.composefluent.fluent.gallery.screen.basicinput
+package io.github.composefluent.gallery.screen.basicinput
 ```
 2. **Create a method with @Component annotation**: Create a method named `[YourComponent]Screen` and annotate it with `@Component`, providing the relevant `description` and `index`.
 ```Kotlin
