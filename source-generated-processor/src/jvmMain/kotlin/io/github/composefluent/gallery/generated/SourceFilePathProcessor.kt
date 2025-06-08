@@ -1,8 +1,10 @@
 package io.github.composefluent.gallery.generated
 
+import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -26,6 +28,9 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
     private var rootPath = ""
 
     private val logger = environment.logger
+
+    private val codeGenerator = environment.codeGenerator
+    private val sourceFiles = mutableListOf<KSFile>()
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         if (!enabled) return emptyList()
@@ -51,6 +56,7 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
                             .initializer("\"${it.filePath.substringAfter(rootPath.replace("\\", "/")).removePrefix("/")}\"")
                             .build()
                     )
+                sourceFiles.add(it)
             }
         }
 
@@ -64,6 +70,11 @@ class SourceFilePathProcessor(environment: SymbolProcessorEnvironment): IProcess
             if (!targetDir.exists()) targetDir.mkdirs()
             val targetFile = File(targetDir, "$objectName.kt")
             if (!targetFile.exists()) targetFile.createNewFile()
+            codeGenerator.createNewFileByPath(
+                dependencies = Dependencies(aggregating = true, sources = sourceFiles.toTypedArray()),
+                path = File(packagePath, objectName).path,
+                extensionName = "source"
+            )
             OutputStreamWriter(targetFile.outputStream(), StandardCharsets.UTF_8).use(
                 FileSpec.builder(
                 packageName,

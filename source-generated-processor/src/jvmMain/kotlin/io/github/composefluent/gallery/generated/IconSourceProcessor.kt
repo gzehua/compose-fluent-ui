@@ -1,8 +1,10 @@
 package io.github.composefluent.gallery.generated
 
+import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.ClassName
@@ -27,13 +29,17 @@ class IconSourceProcessor(environment: SymbolProcessorEnvironment) : IProcessor 
     private val packagePath = packageName.replace(".", "/")
 
     private val logger = environment.logger
+    private val codeGenerator = environment.codeGenerator
 
     private val icons = mutableListOf<IconNode>()
     private var rootPath = ""
 
+    private val sourceFiles = mutableListOf<KSFile>()
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         if (iconSourceEnabled.not() || componentName.isEmpty()) return emptyList()
         resolver.getAllFiles().forEach { file ->
+            var hasDeclaration = false
             file.declarations.forEach declaration@{ declaration ->
                 if (!declaration.modifiers.contains(Modifier.PUBLIC)) return@declaration
                 val declarationPackageName = declaration.packageName.asString()
@@ -51,6 +57,10 @@ class IconSourceProcessor(environment: SymbolProcessorEnvironment) : IProcessor 
                             if (rootPath.isEmpty()) {
                                 val projectFile = File(file.filePath.substringBefore("/src/"))
                                 rootPath = projectFile.parentFile.path
+                            }
+                            if (!hasDeclaration) {
+                                hasDeclaration = true
+                                sourceFiles.add(file)
                             }
                             icons.add(
                                 IconNode(
@@ -114,6 +124,11 @@ class IconSourceProcessor(environment: SymbolProcessorEnvironment) : IProcessor 
                     if (!targetDir.exists()) targetDir.mkdirs()
                     val targetFile = File(targetDir, "${iconFile.name}.kt")
                     if (!targetFile.exists()) targetFile.createNewFile()
+                    codeGenerator.createNewFileByPath(
+                        dependencies = Dependencies(aggregating = true, sources = sourceFiles.toTypedArray()),
+                        path = File(packagePath, iconFile.name).path,
+                        extensionName = "source"
+                    )
                     OutputStreamWriter(
                         targetFile.outputStream(),
                         StandardCharsets.UTF_8
