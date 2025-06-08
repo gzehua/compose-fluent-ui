@@ -67,7 +67,9 @@ import io.github.composefluent.component.TooltipBox
 import io.github.composefluent.gallery.jna.windows.ComposeWindowProcedure
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCAPTION
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCLIENT
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCLOSE
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTMAXBUTTON
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTMINBUTTON
 import io.github.composefluent.gallery.jna.windows.structure.isWindows11OrLater
 import io.github.composefluent.icons.Icons
 import io.github.composefluent.icons.regular.Dismiss
@@ -110,6 +112,8 @@ fun FrameWindowScope.WindowsWindowFrame(
 
     val paddingInset = remember { MutableWindowInsets() }
     val maxButtonRect = remember { mutableStateOf(Rect.Zero) }
+    val minButtonRect = remember { mutableStateOf(Rect.Zero) }
+    val closeButtonRect = remember { mutableStateOf(Rect.Zero) }
     val captionBarRect = remember { mutableStateOf(Rect.Zero) }
     val layoutHitTestOwner = rememberLayoutHitTestOwner()
     val contentPaddingInset = remember { MutableWindowInsets() }
@@ -119,6 +123,8 @@ fun FrameWindowScope.WindowsWindowFrame(
             hitTest = { x, y ->
                 when {
                     maxButtonRect.value.contains(x, y) -> HTMAXBUTTON
+                    minButtonRect.value.contains(x, y) -> HTMINBUTTON
+                    closeButtonRect.value.contains(x, y) -> HTCLOSE
                     captionBarRect.value.contains(x, y) && !layoutHitTestOwner.hitTest(x, y) -> HTCAPTION
 
                     else -> HTCLIENT
@@ -186,6 +192,12 @@ fun FrameWindowScope.WindowsWindowFrame(
                 onMaximizeButtonRectUpdate = {
                     maxButtonRect.value = it
                 },
+                onMinimizeButtonRectUpdate = {
+                    minButtonRect.value = it
+                },
+                onCloseButtonRectUpdate = {
+                    closeButtonRect.value = it
+                },
                 accentColor = procedure.windowFrameColor,
                 frameColorEnabled = procedure.isWindowFrameAccentColorEnabled,
                 isActive = procedure.isWindowActive,
@@ -206,7 +218,9 @@ fun Window.CaptionButtonRow(
     frameColorEnabled: Boolean,
     onCloseRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    onMaximizeButtonRectUpdate: (Rect) -> Unit
+    onMaximizeButtonRectUpdate: (Rect) -> Unit,
+    onMinimizeButtonRectUpdate: (Rect) -> Unit = {},
+    onCloseButtonRectUpdate: (Rect) -> Unit = {}
 ) {
     //Draw the caption button
     Row(
@@ -220,11 +234,14 @@ fun Window.CaptionButtonRow(
         }
         CaptionButton(
             onClick = {
-                User32.INSTANCE.CloseWindow(windowHandle)
+                User32.INSTANCE.ShowWindow(windowHandle, WinUser.SW_MINIMIZE)
             },
             icon = CaptionButtonIcon.Minimize,
             isActive = isActive,
-            colors = colors
+            colors = colors,
+            modifier = Modifier.onGloballyPositioned {
+                onMinimizeButtonRectUpdate(it.boundsInWindow())
+            }
         )
         CaptionButton(
             onClick = {
@@ -255,7 +272,10 @@ fun Window.CaptionButtonRow(
             icon = CaptionButtonIcon.Close,
             onClick = onCloseRequest,
             isActive = isActive,
-            colors = CaptionButtonDefaults.closeColors()
+            colors = CaptionButtonDefaults.closeColors(),
+            modifier = Modifier.onGloballyPositioned {
+                onCloseButtonRectUpdate(it.boundsInWindow())
+            }
         )
     }
 }

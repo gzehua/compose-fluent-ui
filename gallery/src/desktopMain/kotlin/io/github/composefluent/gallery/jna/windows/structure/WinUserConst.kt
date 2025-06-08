@@ -32,8 +32,12 @@ object WinUserConst {
     internal val HTCLIENT = 1
     // title bar
     internal val HTCAPTION = 2
+    // min button
+    internal val HTMINBUTTON = 8
     // max button
     internal val HTMAXBUTTON = 9
+    // close button
+    internal val HTCLOSE = 20
     // window edges
     internal val HTLEFT = 10
     internal val HTRIGHT = 11

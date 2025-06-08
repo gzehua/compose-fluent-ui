@@ -76,10 +76,27 @@ internal abstract class ReflectLayoutHitTestOwner: LayoutHitTestOwner {
     }
 
     protected fun Any.layoutNodeHitTest(x: Float, y: Float): Boolean {
-        val result = hitTestResultClass.getDeclaredConstructor().newInstance() as List<Modifier.Node>
-        layoutNodeHitTestMethod.invoke(this, packFloats(x, y), result, false, true)
-        val lastNode = result.lastOrNull()
-        return lastNode is PointerInputModifierNode
+        try {
+            val result = hitTestResultClass.getDeclaredConstructor().newInstance()
+            // Try with the original parameter order
+            try {
+                layoutNodeHitTestMethod.invoke(this, packFloats(x, y), result, false, true)
+            } catch (e: IllegalArgumentException) {
+                // If that fails, try with a different parameter order
+                try {
+                    layoutNodeHitTestMethod.invoke(this, packFloats(x, y), result, true, false)
+                } catch (e2: IllegalArgumentException) {
+                    // If both fail, try without the boolean parameters
+                    layoutNodeHitTestMethod.invoke(this, packFloats(x, y), result)
+                }
+            }
+            val resultAsList = result as? List<*> ?: return false
+            val lastNode = resultAsList.lastOrNull()
+            return lastNode is PointerInputModifierNode
+        } catch (e: Exception) {
+            // If anything goes wrong, return false to be safe
+            return false
+        }
     }
 
     protected class CopiedList<T>(
