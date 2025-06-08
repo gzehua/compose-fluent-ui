@@ -1,7 +1,9 @@
 package io.github.composefluent.gallery.jna.windows
 
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCLIENT
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTCLOSE
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTMAXBUTTON
+import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTMINBUTTON
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.HTTRANSPANRENT
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_LBUTTONDOWN
 import io.github.composefluent.gallery.jna.windows.structure.WinUserConst.WM_LBUTTONUP
@@ -48,7 +50,7 @@ class SkiaLayerWindowProcedure(
                 hitResult = hitTest(point.x.toFloat(), point.y.toFloat())
                 point.clear()
                 when(hitResult) {
-                    HTCLIENT, HTMAXBUTTON -> LRESULT(hitResult.toLong())
+                    HTCLIENT, HTMAXBUTTON, HTMINBUTTON, HTCLOSE -> LRESULT(hitResult.toLong())
                     else -> LRESULT(HTTRANSPANRENT.toLong())
                 }
             }
