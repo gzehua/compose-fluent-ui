@@ -565,7 +565,7 @@ object TextFieldDefaults {
         },
         innerTextField: @Composable () -> Unit,
     ) {
-        HeaderContainer(header = header) {
+        HeaderContainer(header = header, modifier = modifier) {
             Box(
                 modifier = Modifier.textFieldModifier(shape).hoverable(interactionSource),
                 propagateMinConstraints = true
