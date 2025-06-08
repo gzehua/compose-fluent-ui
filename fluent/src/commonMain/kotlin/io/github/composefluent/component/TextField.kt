@@ -452,12 +452,14 @@ object TextFieldDefaults {
      * @param color The color scheme for the text field, including colors for the background, text,
      *   placeholder, and border.
      * @param modifier Optional [Modifier] to be applied to the outer layer of the text field.
-     *   By default, it includes the bottom line drawing.
      * @param shape The [Shape] of the text field's background layer.
+     * @param header Optional composable that will be displayed above the text field.
      * @param placeholder Optional composable that will be displayed when the text field is empty
      *   and not focused.
      * @param leadingIcon Optional composable that will be displayed at the start of the text field.
      * @param trailing Optional composable that will be displayed at the end of the text field, such as an action button.
+     * @param container The [TextFieldDecorator] that defines the container for the text field.
+     *  By default, it uses a [Container] with the provided shape, interaction source, color, and enabled state.
      * @param innerTextField The composable that renders the actual text field content.
      */
     @Composable
@@ -531,14 +533,16 @@ object TextFieldDefaults {
      * @param color The color scheme for the text field, including colors for the background, text,
      *   placeholder, and border.
      * @param modifier Optional [Modifier] to be applied to the outer layer of the text field.
-     *   By default, it includes the bottom line drawing.
      * @param shape The [Shape] of the text field's background layer.
      * @param onClearClick Optional callback that will be invoked when the clear button is clicked.
      *   If null, no clear button will be shown.
+     * @param header Optional composable that will be displayed above the text field.
      * @param placeholder Optional composable that will be displayed when the text field is empty
      *   and not focused.
      * @param leadingIcon Optional composable that will be displayed at the start of the text field.
      * @param trailing Optional composable that will be displayed at the end of the text field, such as an action button.
+     * @param container The [TextFieldDecorator] that defines the container for the text field.
+     *  By default, it uses a [Container] with the specified shape, interaction source, color, and enabled state.
      * @param innerTextField The composable that renders the actual text field content.
      */
     @Composable
@@ -619,6 +623,18 @@ object TextFieldDefaults {
         }
     }
 
+    /**
+     * A container composable function used within the TextField.
+     * It applies a [Layer] with specific styling for the text field,
+     * including a bottom line that changes based on focus and enabled state.
+     *
+     * @param modifier The modifier to be applied to the container.
+     * @param shape The shape of the container.
+     * @param interactionSource The interaction source to track focus state.
+     * @param color The color scheme for the text field.
+     * @param enabled A boolean indicating whether the text field is enabled.
+     * @param content The content to be displayed within the container.
+     */
     @Composable
     fun Container(
         modifier: Modifier = Modifier,
