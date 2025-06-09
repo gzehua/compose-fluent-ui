@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.compose)
+    alias(libs.plugins.compose.hotReload)
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
     alias(libs.plugins.build.konfig)
@@ -135,7 +136,7 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
     dependencies {
-        coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.9")
+        coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     }
 }
 
