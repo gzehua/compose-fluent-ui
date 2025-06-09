@@ -44,6 +44,7 @@ import com.sun.jna.platform.win32.WinDef.LPARAM
 import com.sun.jna.platform.win32.WinDef.WPARAM
 import com.sun.jna.platform.win32.WinDef.LRESULT
 import com.sun.jna.platform.win32.BaseTSD.LONG_PTR
+import com.sun.jna.platform.win32.WinDef
 import com.sun.jna.platform.win32.WinDef.HMENU
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.platform.win32.WinReg
@@ -103,6 +104,7 @@ internal class ComposeWindowProcedure(
         SkiaLayerWindowProcedure(
             skiaLayer = it,
             hitTest = { x, y ->
+                updateWindowInfo()
                 val horizontalPadding = frameX
                 val verticalPadding = frameY
                 // Hit test for resizer border
@@ -265,6 +267,24 @@ internal class ComposeWindowProcedure(
                 User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hWnd, uMsg, wParam, lParam) ?: LRESULT(0)
             }
         }
+    }
+
+    // Force update window info that resolve the hit test result is incorrect when user moving window to another monitor.
+    private fun updateWindowInfo() {
+        User32Extend.instance?.apply {
+            dpi = GetDpiForWindow(windowHandle)
+            frameX = GetSystemMetricsForDpi(WinUser.SM_CXFRAME, dpi)
+            frameY = GetSystemMetricsForDpi(WinUser.SM_CYFRAME, dpi)
+
+            val rect = WinDef.RECT()
+            if (GetWindowRect(windowHandle, rect)) {
+                rect.read()
+                width = rect.right - rect.left
+                height = rect.bottom - rect.top
+            }
+            rect.clear()
+        }
+
     }
 
     private fun updateMenuItemInfo(menu: HMENU, menuItemInfo: MENUITEMINFO, item: Int, enabled: Boolean) {
