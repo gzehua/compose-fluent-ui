@@ -47,7 +47,7 @@ class BuildPlugin : Plugin<Project> {
     private fun MavenPublishBaseExtension.setupMavenPortalPublishing(target: Project) {
         publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
         signAllPublications()
-        coordinates(target.group.toString(), "fluent", target.version.toString())
+        coordinates(target.group.toString(), target.name, target.version.toString())
 
         pom {
             name.set("Compose Fluent UI")
