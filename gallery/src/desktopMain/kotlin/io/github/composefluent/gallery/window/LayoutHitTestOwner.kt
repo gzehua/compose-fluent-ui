@@ -1,22 +1,26 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "INVISIBLE_MEMBER", "INVISIBLE_REFERENCE", "DEPRECATED")
 
 package io.github.composefluent.gallery.window
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.InternalComposeUiApi
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.node.HitTestResult
+import androidx.compose.ui.node.LayoutNode
 import androidx.compose.ui.node.PointerInputModifierNode
+import androidx.compose.ui.node.RootNodeOwner
 import androidx.compose.ui.scene.ComposeScene
+import androidx.compose.ui.scene.CopiedList
+import androidx.compose.ui.scene.LocalComposeScene
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.compose.ui.util.packFloats
 
 @OptIn(InternalComposeUiApi::class)
 @Composable
 fun rememberLayoutHitTestOwner(): LayoutHitTestOwner {
-    val scene = getLocalComposeScene()?.current ?: error("no compose scene")
+    // TODO Remove LocalComposeScene
+    val scene = LocalComposeScene.current ?: error("no compose scene")
     return remember(scene) {
         when(scene::class.qualifiedName) {
             "androidx.compose.ui.scene.CanvasLayersComposeSceneImpl" -> {
@@ -30,16 +34,6 @@ fun rememberLayoutHitTestOwner(): LayoutHitTestOwner {
     }
 }
 
-@OptIn(InternalComposeUiApi::class)
-@Stable
-private fun getLocalComposeScene(): ProvidableCompositionLocal<ComposeScene>? {
-    val classLoader = ComposeScene::class.java.classLoader
-    val composeSceneClass = classLoader.loadClass("androidx.compose.ui.scene.ComposeScene_skikoKt")
-    val methodRef = composeSceneClass.getMethod("getLocalComposeScene")
-    methodRef.trySetAccessible()
-   return methodRef.invoke(null) as? ProvidableCompositionLocal<ComposeScene>
-}
-
 interface LayoutHitTestOwner {
 
     fun hitTest(x: Float, y: Float): Boolean {
@@ -48,71 +42,26 @@ interface LayoutHitTestOwner {
 }
 
 /*
-* reflect implementation for compose 1.6
+* reflect implementation for compose 1.8
  */
 internal abstract class ReflectLayoutHitTestOwner: LayoutHitTestOwner {
 
     @OptIn(InternalComposeUiApi::class)
     protected val classLoader = ComposeScene::class.java.classLoader!!
 
-    private val rootNodeOwnerOwnerField = classLoader.loadClass("androidx.compose.ui.node.RootNodeOwner")
-        .getDeclaredField("owner").apply {
-            trySetAccessible()
-        }
-
-    private val ownerRootField = classLoader.loadClass("androidx.compose.ui.node.Owner")
-        .getDeclaredMethod("getRoot").apply {
-            trySetAccessible()
-        }
-
-    private val hitTestResultClass = classLoader.loadClass("androidx.compose.ui.node.HitTestResult")
-
-    private val layoutNodeHitTestMethod = classLoader.loadClass("androidx.compose.ui.node.LayoutNode")
-        .declaredMethods.first { it.name.startsWith("hitTest-") && it.parameterCount == 4 }
-
-    protected fun getLayoutNode(rootNodeOwner: Any): Any {
-        val owner = rootNodeOwnerOwnerField.get(rootNodeOwner)
-        return ownerRootField.invoke(owner)
+    protected fun getLayoutNode(rootNodeOwner: RootNodeOwner): LayoutNode {
+        return rootNodeOwner.owner.root
     }
 
-    protected fun Any.layoutNodeHitTest(x: Float, y: Float): Boolean {
+    protected fun LayoutNode.layoutNodeHitTest(x: Float, y: Float): Boolean {
         try {
-            val result = hitTestResultClass.getDeclaredConstructor().newInstance()
-            // Try with the original parameter order
-            try {
-                layoutNodeHitTestMethod.invoke(this, packFloats(x, y), result, false, true)
-            } catch (e: IllegalArgumentException) {
-                // If that fails, try with a different parameter order
-                try {
-                    layoutNodeHitTestMethod.invoke(this, packFloats(x, y), result, true, false)
-                } catch (e2: IllegalArgumentException) {
-                    // If both fail, try without the boolean parameters
-                    layoutNodeHitTestMethod.invoke(this, packFloats(x, y), result)
-                }
-            }
-            val resultAsList = result as? List<*> ?: return false
-            val lastNode = resultAsList.lastOrNull()
+            val result = HitTestResult()
+            this.hitTest(pointerPosition = Offset(x, y), hitTestResult = result)
+            val lastNode = result.lastOrNull()
             return lastNode is PointerInputModifierNode
         } catch (e: Exception) {
             // If anything goes wrong, return false to be safe
             return false
-        }
-    }
-
-    protected class CopiedList<T>(
-        private val populate: (MutableList<T>) -> Unit
-    ) : MutableList<T> by mutableListOf() {
-        inline fun withCopy(
-            block: (List<T>) -> Unit
-        ) {
-            // In case of recursive calls, allocate new list
-            val copy = if (isEmpty()) this else mutableListOf()
-            populate(copy)
-            try {
-                block(copy)
-            } finally {
-                copy.clear()
-            }
         }
     }
 }
@@ -123,11 +72,11 @@ internal class PlatformLayersLayoutHitTestOwner(scene: ComposeScene) : ReflectLa
 
     private val mainOwnerRef = sceneClass.getDeclaredMethod("getMainOwner").let {
         it.trySetAccessible()
-        it.invoke(scene)
+        it.invoke(scene) as RootNodeOwner
     }
 
     override fun hitTest(x: Float, y: Float): Boolean {
-        return getLayoutNode(mainOwnerRef).layoutNodeHitTest(x, y)
+        return mainOwnerRef.owner.root.layoutNodeHitTest(x, y)
     }
 }
 
@@ -138,13 +87,13 @@ internal class CanvasLayersLayoutHitTestOwner(private val scene: ComposeScene) :
 
     private val mainOwnerRef = sceneClass.getDeclaredField("mainOwner").let {
         it.trySetAccessible()
-        it.get(scene)
+        it.get(scene) as RootNodeOwner
     }
 
-    private val layersRef = sceneClass.getDeclaredField("layers").let {
+    private val _layers = sceneClass.getDeclaredField("_layersCopyCache").let {
         it.trySetAccessible()
         it.get(scene)
-    } as MutableList<Any>
+    } as CopiedList<*>
 
     private val focusedLayerField = sceneClass.getDeclaredField("focusedLayer").apply {
         trySetAccessible()
@@ -160,17 +109,11 @@ internal class CanvasLayersLayoutHitTestOwner(private val scene: ComposeScene) :
             trySetAccessible()
         }
 
-    private val _layers = CopiedList {
-        for (layer in layersRef) {
-            it.add(layer)
-        }
-    }
-
     override fun hitTest(x: Float, y: Float): Boolean {
         _layers.withCopy {
             it.fastForEachReversed { layer ->
                 if (layerIsInBoundMethod.invoke(layer, packFloats(x, y)) == true) {
-                    return getLayoutNode(layerOwnerField.get(layer)).layoutNodeHitTest(x, y)
+                    return getLayoutNode(layerOwnerField.get(layer) as RootNodeOwner).layoutNodeHitTest(x, y)
                 } else if (layer == focusedLayerField.get(scene)) {
                     return false
                 }
