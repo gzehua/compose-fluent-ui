@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -177,7 +178,7 @@ fun ContentDialog(
 ) {
     FluentDialog(visible, size) {
         Column {
-            Column(Modifier.background(FluentTheme.colors.background.layer.alt).padding(24.dp)) {
+            Column(Modifier.fillMaxWidth().background(FluentTheme.colors.background.layer.alt).padding(24.dp)) {
                 Text(
                     style = FluentTheme.typography.subtitle,
                     text = title,
