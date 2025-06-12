@@ -115,7 +115,7 @@ fun TextField(
 ) {
     val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
     BasicTextField(
-        modifier = modifier.textFieldModifier(shape),
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         textStyle = LocalTextStyle.current.copy(color = color.contentColor),
@@ -255,7 +255,7 @@ fun TextField(
 ) {
     val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
     BasicTextField(
-        modifier = modifier.textFieldModifier(shape),
+        modifier = modifier,
         state = state,
         textStyle = LocalTextStyle.current.copy(color = color.contentColor),
         enabled = enabled,
@@ -310,7 +310,7 @@ fun SecureTextField(
 ) {
     val color = colors.schemeFor(interactionSource.collectVisualState(!enabled, focusFirst = true))
     BasicSecureTextField(
-        modifier = modifier.textFieldModifier(shape),
+        modifier = modifier,
         state = state,
         textStyle = LocalTextStyle.current.copy(color = color.contentColor),
         enabled = enabled,
