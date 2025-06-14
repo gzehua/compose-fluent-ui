@@ -110,7 +110,7 @@ fun RadioButton(
         label?.let {
             Spacer(Modifier.width(8.dp))
             Text(
-                modifier = Modifier.offset(y = (-1).dp),
+                modifier = Modifier.offset(y = (-1).dp).align(Alignment.CenterVertically),
                 text = it,
                 style = FluentTheme.typography.body.copy(
                     color = style.labelColor
