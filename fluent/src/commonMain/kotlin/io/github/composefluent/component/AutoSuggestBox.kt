@@ -167,6 +167,7 @@ object AutoSuggestBoxDefaults {
                 paddingToAnchor = PaddingValues()
             ),
             contentPadding = PaddingValues(),
+            focusable = false,
             content = {
                 CompactMode(enabled = compactMode) {
                     val adapter = rememberScrollbarAdapter(state)

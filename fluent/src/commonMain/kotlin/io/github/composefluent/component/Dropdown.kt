@@ -55,8 +55,6 @@ import io.github.composefluent.background.Layer
  * @param onDismissRequest Called when the user requests to dismiss the menu, such as by clicking
  * outside the menu's bounds.
  * @param modifier The modifier to be applied to the menu.
- * @param focusable Whether the menu should be focusable. This affects whether the menu can be
- * navigated using the keyboard.
  * @param onPreviewKeyEvent Called when a key event is received by the menu, before it is dispatched
  * to the focusable content. Return true to consume the event.
  * @param onKeyEvent Called when a key event is received by the menu, after it is dispatched to
@@ -69,7 +67,6 @@ fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    focusable: Boolean = false,
     onPreviewKeyEvent: ((KeyEvent) -> Boolean) = { false },
     onKeyEvent: ((KeyEvent) -> Boolean) = { false },
     offset: DpOffset = DpOffset(0.dp, 0.dp), // TODO: Offset
@@ -84,7 +81,7 @@ fun DropdownMenu(
         val popupPositionProvider = DropdownMenuPositionProvider(density, offset)
 
         Popup(
-            properties = PopupProperties(focusable = focusable),
+            properties = PopupProperties(focusable = true),
             onDismissRequest = onDismissRequest,
             onKeyEvent = onKeyEvent,
             onPreviewKeyEvent = onPreviewKeyEvent,

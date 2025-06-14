@@ -71,6 +71,8 @@ import io.github.composefluent.background.calculateBorderPadding
  * @param onPreviewKeyEvent An optional callback invoked when a key event is dispatched to the flyout
  *                          before it is dispatched to any focused view. If not null, it will be
  *                          focusable.
+ * @param focusable Determines whether the flyout is focusable. Setting to false allows user to interact
+ * with the outside area of the flyout. Defaults to `true`.
  * @param content A composable lambda representing the main content within the container.
  *                It also has access to the [FlyoutContainerScope].
  */
@@ -83,6 +85,7 @@ fun FlyoutContainer(
     adaptivePlacement: Boolean = false,
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    focusable: Boolean = true,
     content: @Composable FlyoutContainerScope.() -> Unit
 ) {
     BasicFlyoutContainer(
@@ -94,6 +97,7 @@ fun FlyoutContainer(
                 adaptivePlacement = adaptivePlacement,
                 onKeyEvent = onKeyEvent,
                 onPreviewKeyEvent = onPreviewKeyEvent,
+                focusable = focusable,
                 content = { flyout() }
             )
         },
@@ -181,6 +185,8 @@ enum class FlyoutPlacement {
  * @param onPreviewKeyEvent Optional callback to preview key events before they are dispatched to
  * the flyout's content. Return `true` to consume the event, `false` to allow it to propagate.
  * Defaults to `null`.
+ * @param focusable Determines whether the flyout is focusable. Setting to false allows user to interact
+ * with the outside area of the flyout. Defaults to `true`.
  * @param content The content to be displayed within the flyout.
  */
 @Composable
@@ -193,6 +199,7 @@ fun Flyout(
     shape: Shape = FluentTheme.shapes.overlay,
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    focusable: Boolean = true,
     content: @Composable () -> Unit
 ) {
     BasicFlyout(
@@ -206,6 +213,7 @@ fun Flyout(
         shape = shape,
         onKeyEvent = onKeyEvent,
         onPreviewKeyEvent = onPreviewKeyEvent,
+        focusable = focusable,
         content = content
     )
 }
@@ -221,6 +229,7 @@ internal fun BasicFlyout(
     positionProvider: FlyoutPositionProvider = rememberFlyoutPositionProvider(),
     onKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
     onPreviewKeyEvent: ((keyEvent: KeyEvent) -> Boolean)? = null,
+    focusable: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val visibleState = remember {
@@ -232,7 +241,7 @@ internal fun BasicFlyout(
             onDismissRequest = onDismissRequest,
             properties = PopupProperties(
                 clippingEnabled = false,
-                focusable = onKeyEvent != null || onPreviewKeyEvent != null
+                focusable = focusable
             ),
             popupPositionProvider = positionProvider,
             onKeyEvent = onKeyEvent,
@@ -428,7 +437,7 @@ private class FlyoutContainerScopeImpl(
  * Clicking outside of the flyout will set `isFlyoutVisible` to false, hiding the flyout.
  */
 @OptIn(ExperimentalFluentApi::class)
-interface FlyoutContainerScope: FlyoutAnchorScope {
+interface FlyoutContainerScope : FlyoutAnchorScope {
 
     var isFlyoutVisible: Boolean
 
