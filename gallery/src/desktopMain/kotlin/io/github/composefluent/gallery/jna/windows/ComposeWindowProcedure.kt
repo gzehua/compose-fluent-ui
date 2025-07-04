@@ -225,8 +225,8 @@ internal class ComposeWindowProcedure(
 
                         // 获取鼠标位置
                         val lParamValue = lParam.toInt()
-                        val x = lParamValue and 0xFFFF
-                        val y = (lParamValue shr 16) and 0xFFFF
+                        val x = lParamValue.lowWord
+                        val y = lParamValue.highWord
 
                         // 显示菜单并获取用户选择
                         val ret = user32.TrackPopupMenu(menu, TPM_RETURNCMD, x, y, 0, hWnd, null)
@@ -284,7 +284,6 @@ internal class ComposeWindowProcedure(
             }
             rect.clear()
         }
-
     }
 
     private fun updateMenuItemInfo(menu: HMENU, menuItemInfo: MENUITEMINFO, item: Int, enabled: Boolean) {
@@ -351,7 +350,5 @@ internal class ComposeWindowProcedure(
             }
         }
     }
-
-
 
 }

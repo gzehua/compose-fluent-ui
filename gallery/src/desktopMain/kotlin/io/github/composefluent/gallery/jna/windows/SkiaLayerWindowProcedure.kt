@@ -43,12 +43,7 @@ class SkiaLayerWindowProcedure(
         return when(uMsg) {
 
             WM_NCHITTEST -> {
-                val x = lParam.toInt() and 0xFFFF
-                val y = (lParam.toInt() shr 16) and 0xFFFF
-                val point = POINT(x, y)
-                User32Extend.instance?.ScreenToClient(windowHandle, point)
-                hitResult = hitTest(point.x.toFloat(), point.y.toFloat())
-                point.clear()
+                hitResult = lParam.useMousePoint { x, y -> hitTest(x.toFloat(), y.toFloat()) }
                 when(hitResult) {
                     HTCLIENT, HTMAXBUTTON, HTMINBUTTON, HTCLOSE -> LRESULT(hitResult.toLong())
                     else -> LRESULT(HTTRANSPANRENT.toLong())
@@ -74,5 +69,17 @@ class SkiaLayerWindowProcedure(
                 User32Extend.instance?.CallWindowProc(defaultWindowProcedure, hwnd, uMsg, wParam, lParam) ?: LRESULT(0)
             }
         }
+    }
+
+    internal inline fun <T> WinDef.LPARAM.useMousePoint(crossinline block: (x: Int, y: Int) -> T): T {
+        val lParamValue = toInt()
+        val x = lParamValue.lowWord.toShort().toInt()
+        val y = lParamValue.highWord.toShort().toInt()
+        val point = POINT(x, y)
+        User32Extend.instance?.ScreenToClient(windowHandle, point)
+        point.read()
+        val result = block(point.x, point.y)
+        point.clear()
+        return result
     }
 }

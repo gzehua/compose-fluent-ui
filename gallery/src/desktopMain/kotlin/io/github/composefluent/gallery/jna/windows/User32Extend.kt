@@ -83,3 +83,9 @@ internal fun User32.updateWindowStyle(hWnd: HWND, styleBlock: (oldStyle: Int) ->
     val oldStyle = GetWindowLong(hWnd, WinUser.GWL_STYLE)
     SetWindowLong(hWnd, WinUser.GWL_STYLE, styleBlock(oldStyle))
 }
+
+internal val Int.lowWord: Int
+    get() = (this and 0xFFFF)
+
+internal val Int.highWord: Int
+    get() = (this shr 16) and 0xFFFF
