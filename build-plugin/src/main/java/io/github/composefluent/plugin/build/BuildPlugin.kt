@@ -1,7 +1,6 @@
 package io.github.composefluent.plugin.build
 
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
-import com.vanniktech.maven.publish.SonatypeHost
 import io.github.composefluent.plugin.build.BuildConfig.branch
 import io.github.composefluent.plugin.build.BuildConfig.integerVersionName
 import io.github.composefluent.plugin.build.BuildConfig.isRelease
@@ -45,7 +44,7 @@ class BuildPlugin : Plugin<Project> {
     }
 
     private fun MavenPublishBaseExtension.setupMavenPortalPublishing(target: Project) {
-        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+        publishToMavenCentral()
         signAllPublications()
         coordinates(target.group.toString(), target.name, target.version.toString())
 

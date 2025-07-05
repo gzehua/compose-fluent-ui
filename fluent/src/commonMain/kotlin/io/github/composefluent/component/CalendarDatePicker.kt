@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.github.composefluent.ExperimentalFluentApi
+import kotlin.time.ExperimentalTime
 
 /**
  * A calendar date picker that allows the user to select a single date from a calendar view within a flyout.
@@ -21,6 +22,7 @@ import io.github.composefluent.ExperimentalFluentApi
  * @param onChoose Callback invoked when a date is selected by the user. Receives the selected [CalendarDatePickerState.Day].
  * @param state The state of the calendar date picker, allowing customization of the displayed calendar.
  */
+@OptIn(ExperimentalTime::class)
 @Composable
 @ExperimentalFluentApi
 fun CalendarDatePicker(

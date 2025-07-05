@@ -54,15 +54,17 @@ import io.github.composefluent.background.Layer
 import io.github.composefluent.component.CalendarDatePickerState.ChooseType
 import io.github.composefluent.scheme.PentaVisualScheme
 import io.github.composefluent.scheme.collectVisualState
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.minus
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * `CalendarView` provides a large, interactive calendar interface for displaying and selecting dates.
@@ -80,6 +82,7 @@ import kotlinx.datetime.toLocalDateTime
  * @param onChoose Callback invoked when a specific date is chosen. Provides the selected [CalendarDatePickerState.Day] object.
  * @param state The [CalendarDatePickerState] managing the calendar's internal state (e.g., selected date, view mode).
  */
+@OptIn(ExperimentalTime::class)
 @Composable
 @ExperimentalFluentApi
 fun CalendarView(
@@ -94,6 +97,7 @@ fun CalendarView(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 internal fun CalendarViewLayout(
     onChoose: (day: CalendarDatePickerState.Day) -> Unit,
@@ -531,6 +535,7 @@ private fun Item(
  * @property candidateDays The list of candidate days to display.
  * @property localeStartDayOfWeek The first day of the week based on locale. Sunday(1), Monday(2), ..., Saturday(7)
  */
+@OptIn(ExperimentalTime::class)
 class CalendarDatePickerState(
     initialInstant: Instant = Clock.System.now(),
     timeZone: TimeZone = TimeZone.currentSystemDefault()
@@ -580,8 +585,8 @@ class CalendarDatePickerState(
     init {
         val dateTime = initialInstant.toLocalDateTime(timeZone)
         val year = dateTime.year
-        val monthValue = dateTime.monthNumber - 1
-        val day = dateTime.dayOfMonth
+        val monthValue = dateTime.month.number - 1
+        val day = dateTime.day
 //        currentYear = mutableStateOf(Year(year))
 //        viewYear = mutableStateOf(Year(year))
 //        selectedYear = mutableStateOf(Year(year))
@@ -638,7 +643,7 @@ class CalendarDatePickerState(
         val daysToDisplay = 7 * 6
         this.candidateDays.value = List(daysToDisplay) { i ->
             startDay.plus(DatePeriod(days = i))
-                .let { Day(it.year, it.monthNumber - 1, it.dayOfMonth) }
+                .let { Day(it.year, it.month.number - 1, it.day) }
         }
     }
 
