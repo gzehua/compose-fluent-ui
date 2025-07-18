@@ -161,7 +161,8 @@ internal fun MenuFlyout(
         positionProvider = positionProvider,
         contentPadding = PaddingValues(vertical = 3.dp),
         onKeyEvent = onKeyEvent,
-        onPreviewKeyEvent = onPreviewKeyEvent
+        onPreviewKeyEvent = onPreviewKeyEvent,
+        focusable = false
     ) {
         val state = rememberScrollState()
         ScrollbarContainer(

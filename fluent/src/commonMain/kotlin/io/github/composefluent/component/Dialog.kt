@@ -85,14 +85,14 @@ class DialogSize(
  *
  * @param visible Controls the visibility of the dialog. When `true`, the dialog is shown; otherwise, it's hidden.
  * @param size The size of the dialog, defining its minimum and maximum width. Defaults to [DialogSize.Standard].
- * @param properties Additional properties for the dialog's popup, such as focusability. Defaults to non-focusable.
+ * @param properties Additional properties for the dialog's popup, such as focusability.
  * @param content The composable content to display within the dialog.
  */
 @Composable
 fun FluentDialog(
     visible: Boolean,
     size: DialogSize = DialogSize.Standard,
-    properties: PopupProperties = PopupProperties(focusable = false),
+    properties: PopupProperties = PopupProperties(focusable = true),
     content: @Composable () -> Unit
 ) {
     val visibleState = remember { MutableTransitionState(false) }
