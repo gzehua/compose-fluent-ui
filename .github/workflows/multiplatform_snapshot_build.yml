@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - dev
+      - update_project_structure
     paths-ignore:
       - 'assets/**'
       - '**.md'
@@ -76,7 +77,7 @@ jobs:
 
       # Publish Snapshot Library
       - name: Publish Library
-        if: ${{ github.event_name == 'push' && matrix.type == 'PublishLibrary' }}
+        if: ${{ github.ref == 'refs/heads/dev' && github.event_name == 'push' && matrix.type == 'PublishLibrary' }}
         run: |
           ./gradlew publishToMavenLocal
           ./gradlew publishToMavenCentral --no-configuration-cache
