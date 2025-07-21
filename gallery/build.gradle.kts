@@ -16,7 +16,7 @@ plugins {
 }
 
 kotlin {
-    applyTargets(publish = false)
+    applyTargets()
     wasmJs { binaries.executable() }
     js { binaries.executable() }
 
@@ -32,7 +32,7 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(compose.foundation)
                 implementation(compose.components.resources)
@@ -44,31 +44,21 @@ kotlin {
             }
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.androidx.activity.compose)
-            }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
         }
-        val androidUnitTest by getting
-        val androidInstrumentedTest by getting {
-            dependencies {
-                implementation(libs.androidx.test.junit)
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.androidx.test.junit)
         }
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.preview)
-                implementation(libs.window.styler)
-                implementation(libs.jna.platform)
-                implementation(libs.jna)
-            }
+        named("desktopMain").dependencies {
+            implementation(compose.preview)
+            implementation(libs.window.styler)
+            implementation(libs.jna.platform)
+            implementation(libs.jna)
         }
-        val desktopTest by getting
     }
 }
 

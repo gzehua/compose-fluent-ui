@@ -42,7 +42,7 @@ compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "hot-reload" }
 
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidGradlePlugin" }
 
 build-konfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
