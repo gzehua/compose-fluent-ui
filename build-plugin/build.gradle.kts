@@ -5,16 +5,22 @@ plugins {
 
 repositories {
     mavenCentral()
+    google()
 }
 
 dependencies {
     implementation(gradleApi())
 
     implementation(kotlin("gradle-plugin", libs.versions.kotlin.get()))
+    gradlePluginImplementation(libs.plugins.android.kotlin.multiplatform.library.get())
+    gradlePluginImplementation(libs.plugins.maven.publish.get())
+}
+
+fun DependencyHandler.gradlePluginImplementation(plugin: PluginDependency) {
     implementation(
-        "com.vanniktech.maven.publish",
-        "com.vanniktech.maven.publish.gradle.plugin",
-        libs.versions.mavenPublish.get()
+        group = plugin.pluginId,
+        name = "${plugin.pluginId}.gradle.plugin",
+        version = plugin.version.toString()
     )
 }
 
