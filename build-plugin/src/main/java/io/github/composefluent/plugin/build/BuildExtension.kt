@@ -37,7 +37,7 @@ fun KotlinMultiplatformExtension.applyTargets(namespaceModule: String = "") {
                 }
             }
 
-            group("jvm") {
+            group("jvmCommon") {
                 withJvm()
                 withAndroidTarget()
                 withCompilations { it.target.name == "android" }
