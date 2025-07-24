@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.androidx.test.junit)
         }
         named("desktopMain").dependencies {
+            implementation(compose.desktop.currentOs)
             implementation(compose.preview)
             implementation(libs.window.styler)
             implementation(libs.jna.platform)
