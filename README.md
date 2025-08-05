@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/github/license/compose-fluent/compose-fluent-ui)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/compose-fluent/compose-fluent-ui?include_prereleases)](https://github.com/compose-fluent/compose-fluent-ui/releases)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.compose-fluent/fluent)](https://central.sonatype.com/artifact/io.github.compose-fluent/fluent/)
+[![Telegram Link](https://img.shields.io/badge/Telegram-compose__fluent__ui-blue?logo=telegram&logoColor=fff)](https://t.me/compose_fluent_ui)
 
 [//]: # ([![Snapshot]&#40;https://img.shields.io/nexus/s/io.github.compose-fluent/fluent?server=https%3A%2F%2Fcentral.sonatype.com&label=snapshot&#41;]&#40;https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/io/github/compose-fluent&#41;)
 
