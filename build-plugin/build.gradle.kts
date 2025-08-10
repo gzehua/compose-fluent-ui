@@ -5,11 +5,23 @@ plugins {
 
 repositories {
     mavenCentral()
+    google()
 }
 
 dependencies {
     implementation(gradleApi())
+
     implementation(kotlin("gradle-plugin", libs.versions.kotlin.get()))
+    gradlePluginImplementation(libs.plugins.android.kotlin.multiplatform.library.get())
+    gradlePluginImplementation(libs.plugins.maven.publish.get())
+}
+
+fun DependencyHandler.gradlePluginImplementation(plugin: PluginDependency) {
+    implementation(
+        group = plugin.pluginId,
+        name = "${plugin.pluginId}.gradle.plugin",
+        version = plugin.version.toString()
+    )
 }
 
 kotlin {
@@ -23,8 +35,8 @@ kotlin {
 gradlePlugin {
     plugins {
         create("BuildPlugin") {
-            id = "com.konyaco.fluent.plugin.build"
-            implementationClass = "com.konyaco.fluent.plugin.build.BuildPlugin"
+            id = "io.github.composefluent.plugin.build"
+            implementationClass = "io.github.composefluent.plugin.build.BuildPlugin"
         }
     }
 }
